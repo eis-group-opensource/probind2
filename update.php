@@ -81,6 +81,13 @@ else {
 	print $start_frame;
 	exit();
 }
+if ( $LOG_DIR ) {
+	if ( !opendir($LOG_DIR) ) {
+		die("<H3><FONT color=\"red\">Can not open log directory: $LOG_DIR</FONT></H3>\n");
+	};
+	closedir();
+	$UPDATE_LOG = $LOG_DIR."/".date("YmdHis").".log";
+}
 
 $query = "SELECT id, domain, master FROM zones WHERE updated AND domain != 'TEMPLATE' ORDER BY domain";
 $rid1 = sql_query($query);
@@ -164,6 +171,7 @@ while ($row = mysql_fetch_array($rid)) {
 			$cmd = "$BIN/mknamed.conf $server >named.conf";
 			exec($cmd);
 			$cmd = "$SBIN/$script $server $zonedir>>$UPDATE_LOG 2>&1";
+			print "$cmd<br>\n";
 			exec($cmd);
 		}
 		print "Updated $server as a ".($type=='M' ? "master" : "slave")."<P>\n";
@@ -175,6 +183,11 @@ mysql_free_result($rid);
 
 # !!!
 leave_crit('PUSH');
+if ($LOG_DIR) {
+	print "<H3>LOG file: $UPDATE_LOG</H3>\n<HR>\n<PRE>\n";
+	passthru("/bin/cat $UPDATE_LOG");
+	print "<HR>\n</PRE>\n";
+};
 
 print "<P>Done.<P><HR>\n".$html_bottom;
 

@@ -33,6 +33,13 @@ on the settings menu.
 #
 # MAIN
 #
+if ( $LOG_DIR ) {
+	if ( !opendir($LOG_DIR) ) {
+		die("<H3><FONT color=\"red\">Can not open log directory: $LOG_DIR</FONT></H3>\n");
+	};
+	closedir();
+	$UPDATE_LOG = $LOG_DIR."/".date("YmdHis").".log";
+}
 
 $opts = getopts($argv, "f");
 
@@ -67,8 +74,12 @@ if ($user = patient_enter_crit($REMOTE_USER, 'PUSH')) {
 
 exec("/bin/rm -rf $TMP/master $TMP/slave");
 mkdir("$TMP/master", 0755);
-mkdir("$TMP/slave", 0755);
-chdir("$TMP/master") or die("chdir($TMP/master) failed.\n");
+mkdir("$TMP/slave",  0755);
+if (!chdir("$TMP/master")) 
+{
+	leave_crit('PUSH'); 
+	die("chdir($TMP/master) failed.\n");
+}
 while ($zone = mysql_fetch_row($rid1)) {
 	if ($zone[2])
 		adjust_serial($zone[0]); # We don't make zone files for slaves
@@ -109,6 +120,7 @@ while ($row = mysql_fetch_array($rid)) {
 			chdir("$TMP/master") || die("$!: $TMP/master\n");
 			$cmd = "$BIN/mknamed.conf $server >named.conf";
 			exec($cmd);
+			print "<br>$cmd<br>\n";
 			$cmd = "$SBIN/$script $server $zonedir>>$UPDATE_LOG 2>&1";
 			exec($cmd);
 		} else {
@@ -116,6 +128,7 @@ while ($row = mysql_fetch_array($rid)) {
 			chdir("$TMP/slave") || die("$!: $TMP/slave\n");
 			$cmd = "$BIN/mknamed.conf $server >named.conf";
 			exec($cmd);
+			print "<br>$cmd<br>\n";
 			$cmd = "$SBIN/$script $server $zonedir>>$UPDATE_LOG 2>&1";
 			exec($cmd);
 		}
@@ -128,7 +141,12 @@ mysql_free_result($rid);
 
 # !!!
 leave_crit('PUSH');
-
+if ($LOG_DIR) {
+	print "<H3>LOG file: $UPDATE_LOG</H3>\n<HR>\n<PRE>\n";
+	passthru("/bin/cat $UPDATE_LOG");
+	print "<HR>\n</PRE>\n";
+};
+	
 print "Done.\n";
 
 ?>

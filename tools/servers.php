@@ -150,7 +150,7 @@ function valid_server($name, $ipno, $type, $push, $zonedir, $template, $script)
 		$warns .= "The template is not a valid filename<BR>\n";
 	if (strlen($template) && !file_exists("$TOP/etc/$template"))
 		$warns .= "'$TOP/etc/$template' does not exist<BR>\n";
-	if (strlen($script) && !preg_match("/^[\w.-_]+$/", $script))
+	if (strlen($script) && !preg_match("/^[-\w._]+$/", $script))
 		$warns .= "The script is not a valid filename<BR>\n";
 	if (strlen($script) && !file_exists("$TOP/sbin/$script"))
 		$warns .= "'$TOP/sbin/$script' does not exist<BR>\n";

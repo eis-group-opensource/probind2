@@ -47,7 +47,7 @@ print STDERR "$cmd\n";
 	exit(0);
 }
 wait();
-$cmd = "/usr/sbin/ndc restart";
+$cmd = "/usr/local/sbin/ndc restart";
 $cmd .= "; cd $BIND_DIR; mkdir DELETED 2>/dev/null; cat deadlist | xargs -i mv {} DELETED" if ($deadlist);
 print STDERR "$cmd\n";
 exec($cmd);
