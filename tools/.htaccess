@@ -1,11 +1,14 @@
 <FILES "settings.php">
+       AuthName pribind-ADMIN-External
        require group dnsadm
 </FILES>
 
 <FILES "servers.php">
+       AuthName pribind-ADMIN-External
        require group dnsadm
 </FILES>
 
 <FILES "bulkupdate.php">
+       AuthName pribind-ADMIN-External
        require group dnsadm
 </FILES>
