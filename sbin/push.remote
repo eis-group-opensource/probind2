@@ -7,7 +7,7 @@
 #
 PATH=/opt/sfw/bin:/usr/ucb:/usr/bin:/usr/local/bin:/bin:
 
-RSYNC="rsync -b -p -t -r --exclude='*.b,CVS,SEC,*.pid' --suffix=.bck"
+RSYNC="rsync -b -p -t -r --exclude='*.b,CVS,SEC,*.pid' --cvs-exclude --suffix=.bck"
 USER=named
 # SSH (not open ssh) - enforce ssh2 (it does not work with ssh)
 # For openssh, use "ssh -x" instead.
@@ -103,6 +103,9 @@ then
  # If this directory is saved into the CVS, save it after a successfull reconfiguration
  if [ -d CVS ]
  then
+	export CVSROOT=
+	id
+	set -x
 	cvs -q remove -l .                 < /dev/null
 	cvs -q add  -m ""       *.*        < /dev/null 2>& 1 |  grep -v 'already'
 	cvs -q commit -l        -m ""  *.* < /dev/null

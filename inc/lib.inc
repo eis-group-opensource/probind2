@@ -235,7 +235,7 @@ function valid_ip($ip)
 # the domain is a master domain.
 function add_domain($domain, $master, $eoptions = "")
 {
-	global $domain_lock_msg, $REMOTE_USER;
+	global $domain_lock_msg, $REMOTE_USER, $SLAVE_ON_SLAVES;
 	# Find the template data
 	$rid = sql_query("SELECT id FROM zones WHERE domain = 'TEMPLATE'");
 	$templateid = mysql_result($rid, 0);
@@ -267,7 +267,10 @@ function add_domain($domain, $master, $eoptions = "")
 
 
 	if ($master != "''") {
-		sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M'");
+		if ($SLAVE_ON_SLAVES)
+		    sql_query("UPDATE servers SET state = 'OUT'");
+		else
+		    sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M'");
 		leave_crit('DOMAIN');
 		return $newzone;
 	}
@@ -277,7 +280,7 @@ function add_domain($domain, $master, $eoptions = "")
 	}
 	mysql_free_result($rid);
 	sql_query("UPDATE records SET ctime = mtime WHERE zone = $newzone");
-	if ($master != "''")
+	if ($master != "''" && !$SLAVE_ON_SLAVES)
 		sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M'");
 	else
 	    sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M' OR type = 'S'");
@@ -293,6 +296,7 @@ function add_domain($domain, $master, $eoptions = "")
 function del_zone($zoneid)
 {
 	global $REMOTE_USER, $domain_lock_msg;
+	global $SLAVE_ON_SLAVES;
 	# Make sure that no one else is working on the domain list while
 	# we do this.
 	if ($user = patient_enter_crit($REMOTE_USER, 'DOMAIN'))
@@ -315,7 +319,7 @@ function del_zone($zoneid)
 	$rrcount = mysql_affected_rows();
 	sql_query("DELETE FROM annotations WHERE zone = $zoneid");
 	sql_query("DELETE FROM zones WHERE id = $zoneid");
-	if ($master)
+	if ($master && !$SLAVE_ON_SLAVES)
 		sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M'");
 	else
 	    sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M' OR type = 'S'");
@@ -494,12 +498,15 @@ function upd_soa_record($id, $ttlspec)
 # Update the information about an existing domain
 function update_zone($id, $serial, $refresh, $retry, $expire, $master, $zonefile, $disabled = 0)
 {
+	global $SLAVE_ON_SLAVES;
 	if (!strlen($master)) {
 		$query = "UPDATE zones SET serial = $serial, refresh = $refresh, retry = $retry, expire = $expire, zonefile = '$zonefile', updated = 1, disabled=$disabled WHERE id = $id";
 	} else {
 		$query = "UPDATE zones SET master = '$master', zonefile = '$zonefile', updated = 1, disabled = $disabled WHERE id = $id";
 	}
 	$rid = sql_query($query);
+	if ($SLAVE_ON_SLAVES)
+	    sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'S' AND state != 'OUT'");
 }
 
 # Return a formatted HTML string which describes the problems with 
@@ -616,6 +623,7 @@ function get_input()
 # updates the database as needed.
 function get_serial($id)
 {
+
 	$query = "SELECT serial, updated, master FROM zones WHERE id = $id";
 	$rid = sql_query($query);
 	list($serial, $updated, $master) = mysql_fetch_row($rid);
