@@ -72,6 +72,8 @@ while ($row = mysql_fetch_row($rid)) {
 	$mkrec = ($row[5] ? 'Yes' : 'No');
 	$state = $row[6];
 	$B = "";
+	if ($push == 'No')
+	    $state = 'OK';
 	switch ($state) {
 			case 'OK':  
 				$T = "<B>OK</B>";

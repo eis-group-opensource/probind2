@@ -94,7 +94,7 @@ function browse_settings()
 	while ($setting = each($settings_list)) {
 		$name = $setting[0];
 		$text = $settings_list[$name];
-		if (!$seen[$name])
+		if (!$seen[$name]) {
 		    $bool = $is_bool[$name];
 		    if ($bool) {
 			if ($value == 1) {
@@ -113,6 +113,7 @@ function browse_settings()
  <TD>$text</TD>
  <TD valign=\"top\">$field</TD>
 </TR>\n";
+		}
 	}
 	$result .= "<TR><TD></TD><TD><INPUT type=\"submit\" value=\"Update settings\"></TD></TR></TABLE>\n</FORM>\n";
 	mysql_free_result($rid);
