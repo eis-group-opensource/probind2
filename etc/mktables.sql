@@ -8,7 +8,7 @@
 # 20030110 alex Version 2.1
 
 DROP TABLE IF EXISTS zones, zoneattr, records, annotations, servers, deleted_domains, typesort, blackboard;
-
+#
 #
 # For each domain served by our BIND servers, exactly one record
 # must exist in the zones table. The update flag is supposed to be
@@ -37,7 +37,7 @@ CREATE TABLE zones (
 # Either master or zonefile must be set, but not both
 	zonefile	CHAR(80) NOT NULL,
 # Zone options. $ACL will be replaced by the access list.
-    options     VARCHAR(255),
+	options     VARCHAR(255),
 # Zone record last modification time
 	mtime	TIMESTAMP(14) NOT NULL,
 # Zone record creation time
@@ -87,7 +87,7 @@ CREATE TABLE records (
 # Should PTR be generated for this record
 	genptr  INT(1),
 # disabled?
-	disabled INT(1) DEFAULT '0';
+	disabled INT(1) DEFAULT '0',
 	PRIMARY KEY (id)
 );
 
