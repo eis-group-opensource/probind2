@@ -113,7 +113,7 @@ function result_form($INPUT_VARS)
 	$pointer = ltrim(rtrim($INPUT_VARS['pointer']));
 	if (!strlen($zdomain.$rdomain.$pref.$data) && $type == '*')
 		return $empty_result;
-	$queryhead = "SELECT zones.id AS zid, zones.domain AS zdom, records.domain AS rdom, type, pref, data FROM zones, records ";
+	$queryhead = "SELECT zones.id AS zid, zones.domain AS zdom, records.domain AS rdom, records.id AS rrid, type, pref, data FROM zones, records ";
 	$counthead = "SELECT count(*) FROM zones, records ";
 	$querycond = "WHERE zones.id = records.zone AND zones.domain != 'TEMPLATE' AND type != 'SOA'";
 	if (strlen($zdomain)) {
@@ -183,7 +183,7 @@ function result_form($INPUT_VARS)
 	while ($row = mysql_fetch_array($rid)) {
 		$result .= "<TR><TD>".$row['rdom']."</TD>";
 		$result .= "<TD><A HREF=\"brzones.php?frame=records&zone=";
-		$result .= $row['zid']."\">".$row['zdom']."</A></TD>";
+		$result .= $row['zid']."&rrid=".$row['rrid']."\">".$row['zdom']."</A></TD>";
 		$result .= "<TD>".$row['type']."</TD>";
 		$result .= "<TD>".$row['pref']."</TD>";
 		$result .= "<TD>".$row['data']."</TD></TR>\n";

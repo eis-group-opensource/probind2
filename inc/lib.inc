@@ -335,11 +335,16 @@ function domain_list($lookfor, $type, $format)
 	$query .= " ORDER BY domain";
 	$rid = sql_query($query);
 	$typestr = "";
+	$result1 = "";
 	while (list($id, $domain, $master) = mysql_fetch_row($rid)) {
 		if ($type == "*")
 			$typestr = ($master ? " (slave)" : "");
-		$result .= sprintf($format, $id, $domain, $typestr);
+		if (preg_match("/\.in-addr\.arpa(\.)?$/", $domain))
+			$result1 .= sprintf($format, $id, $domain, $typestr);
+		else
+			$result .= sprintf($format, $id, $domain, $typestr);
 	}
+	$result .= $result1;
 	mysql_free_result($rid);
 	return $result;
 }
@@ -502,8 +507,11 @@ function validate_record($zone, &$domain, $ttl, &$type, &$pref, &$data)
 		$pref = '';
 	elseif ($pref < 0 || $pref > 65535 || !strlen($pref))
 		$warnings .= "<LI>You must specify an unsigned 16-bit preference for MX records.\n";
-	if (strchr($data, ".") && ($type != "TXT") && !valid_ip($data) && $data[strlen($data)-1] != ".")
-		$data .= ".";
+	//
+	// This modification makes wrong result in the 'import' so turn it off. We always can use it on the high level if necessary.
+	//if (strchr($data, ".") && ($type != "TXT") && !valid_ip($data) && $data[strlen($data)-1] != ".")
+	//	$data .= ".";
+	//
 	$zone = get_zone($zone);
 	if ($type == 'CNAME' && (($zone['domain']."." == $domain) || $domain == '@'))
 		$warnings .= "<LI>A CNAME may not exist for the entire domain.\n";

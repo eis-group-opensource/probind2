@@ -145,6 +145,10 @@ $rr_form_top = '
 <INPUT type="hidden" name="zone" value="%d">
 ';
 
+$rr_form_hr = '
+<TR><TD colspan="9"><HR noshadow></TD></TR>
+';
+
 $rr_form_bot = '
 </FORM></TABLE>
 </TD></TR></TABLE>
@@ -294,14 +298,16 @@ function record_form($record)
 
 function record_view($record)
 {
+	$id = $record['id'];
 	$result = "";
 	if ($record['type'] == 'SOA') {
+		$result .= sprintf("<INPUT type=\"hidden\" name=\"rrid\">");
 		$result .= sprintf("<TR>\n\t<TD></TD>\n");
 		$result .= sprintf("<TD><INPUT type=\"submit\" name=\"mode\" value=\"edit zone\" class=\"button\" onmouseover=\"this.className='buttonhover'\" onmouseout=\"this.className='button'\"></TD>\n");
 		$result .= sprintf("\t<TD>%s</TD>\n", seconds_to_ttl($record['ttl']));
-		$result .= "\t<TD>SOA</TD>\n\t<TD></TD>\n\t<TD colspan=2></TD>\n\t<TD colspan=2 width=\"70%\"></TD>\n</TR>\n";
+		$result .= "\t<TD>SOA</TD>\n\t<TD></TD>\n\t<TD colspan=2></TD>\n\t<TD colspan=2></TD>\n</TR>\n";
 	} else {
-		$result .= sprintf("<TR>\n\t<TD></TD>\n");
+		$result .= sprintf("<TR><TD><INPUT type=\"submit\" name=\"edit\" value=\"edit\" onclick=\"rrid.value='$id'\" class=\"button\" onmouseover=\"this.className='buttonhover'\" onmouseout=\"this.className='button'\"></TD>\n");
 		$result .= sprintf("\t<TD>%s</TD>\n", $record['domain']);
 		$result .= sprintf("\t<TD>%s</TD>\n", seconds_to_ttl($record['ttl']));
 		$result .= sprintf("\t<TD>%s</TD>\n", $record['type']);
@@ -315,7 +321,7 @@ function record_view($record)
 			$result .= "\t<TD></TD>\n";
 		}
 		$result .= sprintf("\t<TD colspan=2>%s</TD>\n", $record['data']);
-		$result .= sprintf("\t<TD>%s</TD>\n</TR>\n", strip_tags($record['comment']));
+		$result .= sprintf("\t<TD>; %s</TD>\n</TR>\n", strip_tags($record['comment']));
 	}
 	return $result;
 }
@@ -326,6 +332,7 @@ function right_frame($vars)
 	global $slave_zone_detail_form, $nodomain_right_frame;
 	global $rr_form_top, $rr_form_bot, $static_head, $static_bottom;
 	$result = $html_top;
+	$search = '';
 	if (($dom = $vars['domain']) && !$vars['zone']) {
 		$rid = sql_query("SELECT * FROM zones WHERE domain = '$dom'");
 		if ($record = mysql_fetch_array($rid)) {
@@ -367,21 +374,28 @@ function right_frame($vars)
 				seconds_to_ttl($record['expire']));
 		if ($record['master'])
 			return $result;
+		if ($vars['rrid']) 
+			$rrid = $vars['rrid'];
 		$rid = sql_query("SELECT id, domain, ttl, records.type AS type, pref, data, genptr, comment, lpad(pref, 5, '0') AS sortpref FROM records, typesort WHERE zone = $zone AND records.type = typesort.type ORDER BY typesort.ord, domain, sortpref");
 		$result .= sprintf($rr_form_top, $zone);
+		$result1 = "";
 		while ($record = mysql_fetch_array($rid)) {
-			if ( $vars['mode'] == "view") {
-				$result .= record_view($record);
-			} 
-			else {
+			if ( $vars['mode'] == 'edit' || $vars['mode'] == 'edit zone') {
 				$result .= record_form($record);
-			}
+			} else {
+				$result1 .= record_view($record);
+				if ($rrid && $record['id'] == $rrid) {
+					$result .= record_form($record);
+					$result .= $rr_hr;
+				}
+			} 
 			if ($record['type'] == 'PTR')
 				$explicit_ptrs[$record['domain']]++;
 			elseif ($record['type'] == 'SOA')
 				$soa_ttl = $record['ttl'];
 		}
 		mysql_free_result($rid);
+		$result .= $result1;
 		$result .= $static_head;
 		$servers = published_servers();
 		$ttl = default_ttl($zone);
@@ -542,6 +556,8 @@ case 'addrrform':
 	print add_record($INPUT_VARS);
 	$info = get_zone($INPUT_VARS['zone']);
 	print sprintf($add_form, $info['domain'], $INPUT_VARS['zone'], type_menu("type", ''));
+	if (!$INPUT_VARS['mode'])
+		$INPUT_VARS['mode'] = 'view';
 	print right_frame($INPUT_VARS);
 	break;
 case 'rrform':
@@ -549,6 +565,7 @@ case 'rrform':
 		print "$html_top.$res\n";
 		exit();
 	}
+
 	print right_frame($INPUT_VARS);
 	break;
 case 'Delete Zone?':
