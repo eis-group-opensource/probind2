@@ -22,6 +22,10 @@ function fmt_timestamp($timestamp)
 
 function update_description($domain, $descrip, $options)
 {
+	if (strlen($options) > 254) {
+		print "<FONT color=RED size=+2>Too much options; maximum options length is 255 symbols</FONT><BR>\n";
+		return;
+	}
 	$query = "SELECT id FROM zones WHERE domain = '$domain'";
 	$rid = sql_query($query);
 	($zone = mysql_fetch_array($rid))
@@ -51,22 +55,19 @@ function domain_details($domain)
 	$result .= "<FORM action=\"zonedetails.php\" method=\"post\">\n";
 	$result .= "<TABLE width=\"100%\" border><TR align=left><TH>Zone created in database</TH><TH>Last update in database</TH></TR>
 <TR><TD>$ctime</TD><TD>$mtime</TD></TR>
-<TR><TD colspan=2>Zone options (<b>no syntax check here!</b>): <INPUT type=text  name=\"options\" value=\"$options\" size=80 maxlenght=255></TD></TR>
-</TABLE>
-<P>When you create or modify a domain, please add a note to the domain
+<TR><TD colspan=2 align=CENTER>Zone options (<b>no syntax check here!</b>):<HR> <TEXTAREA rows=10 cols=60 name=\"options\">$options</TEXTAREA></TD></TR>
+<TR><TD colspan=2 align=CENTER>When you create or modify a domain, please add a note to the domain
 description. The note should contain the date, your initials and a few
 words about what was done (and perhaps why). Please add new entries
 at the top.
-<P>
+<HR>
 ";
 	$query = "SELECT descr from annotations WHERE zone = $id";
 	$rid = sql_query($query);
 	$result .= "
 <INPUT type=\"hidden\" name=\"action\" value=\"textupdate\">
 <INPUT type=\"hidden\" name=\"domain\" value=\"$domain\">
-<TABLE width=\"99%\">
-<TR><TD colspan=\"2\">
-<TEXTAREA name=\"description\" rows=20 cols=55>\n";
+<TEXTAREA name=\"description\" rows=10 cols=60>\n";
 	if ($annotation = mysql_fetch_array($rid)) {
 		$result .= $annotation['descr'];
 	}	

@@ -327,7 +327,7 @@ function generate_files($input)
 function run_scripts($input, $push, $conf)
 {
 		
-	global $UPDATE_LOG;
+	global $UPDATE_LOG, $UPDATE_LOG_NAME;
 	global $A_LOG;
 	global $A_LOGE;
 	global $HOST_DIR;
@@ -395,7 +395,7 @@ function run_scripts($input, $push, $conf)
 	else
 	    $err_text="";
 		
-	print "<H4>Log file: <A TARGET=\"VIEW\" href=\"view.php?base=LOGS&file=$UPDATE_LOG_NAME$err_text\">$UPDATE_LOG</A></H4>\n";
+	// print "<H4>Log file: <A TARGET=\"VIEW\" href=\"view.php?base=LOGS&file=$UPDATE_LOG_NAME$err_text\">$UPDATE_LOG</A></H4>\n";
 }
 
 #

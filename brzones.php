@@ -74,7 +74,7 @@ $master_zone_detail_form = '
 <INPUT type="hidden" name="formname" value="masterzone">
 <INPUT type="hidden" name="id" value="%d">
 <TR>
-  <TD valign=bottom><INPUT type="submit" value="Details" name="formname" class="button" onmouseover="this.className=\'buttonhover\'" onmouseout="this.className=\'button\'"></TD>
+  <TD valign=bottom><INPUT type="submit" value="Options" name="formname" class="button" onmouseover="this.className=\'buttonhover\'" onmouseout="this.className=\'button\'"></TD>
   <TH align=left colspan="5">Zonefile</TH>
   <TH align=left>Serial no.</TH>
   <TH align=left>Updated</TH>
@@ -120,7 +120,7 @@ $slave_zone_detail_form = '
 	<TD></TD></TR>
 </TABLE>
 <TABLE border width=60%%><TR>
-	<TD align=center><INPUT type="submit" value="Details" name="formname"></TD>
+	<TD align=center><INPUT type="submit" value="Options" name="formname"></TD>
 	<TD align=center><INPUT type="submit" value="Update" name="formname"></TD>
 	<TD align=center><INPUT type="submit" value="Delete Zone?" name="formname" class="button" onmouseover="this.className=\'buttonhover\'" onmouseout="this.className=\'button\'"></TD>
 </TR></TABLE>
@@ -573,6 +573,7 @@ case 'Delete Zone?':
 	header("Location: delzone.php?frame=delzone&domain=".$info['domain']);
 	break;
 case 'Details':
+case 'Options':
 	$info = get_zone($INPUT_VARS['id']);
 	header("Location: zonedetails.php?domain=".$info['domain']);
 	break;

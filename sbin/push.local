@@ -58,8 +58,7 @@ then
  if [ -f reconfig.sh ]
  then
     echo Now restarting named
-	sh reconfig.sh
-	exit $?
+	sh reconfig.sh  || exit $?
  else
     set -x
 	if [ -f deleted_files ]
@@ -72,7 +71,13 @@ then
 	    echo rndc failure
 		exit 1
 	fi
-    exit 0
+ fi
+ # If this directory is saved into the CVS, save it after a successfull reconfiguration
+ if [ -d CVS ]
+ then
+	cvs -q remove -l .                 < /dev/null
+	cvs -q add  -m ""       *.*        < /dev/null 2>& 1 |  grep -v 'already'
+	cvs -q commit -l        -m ""  *.* < /dev/null
  fi
 fi
 exit 0
