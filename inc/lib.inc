@@ -233,7 +233,7 @@ function valid_ip($ip)
 # NB: The 'master' parameter contains the IP number of the DNS master
 # server for the new (slave) domain, i.e., it is the empty string if 
 # the domain is a master domain.
-function add_domain($domain, $master)
+function add_domain($domain, $master, $eoptions = "")
 {
 	global $domain_lock_msg, $REMOTE_USER;
 	# Find the template data
@@ -247,6 +247,8 @@ function add_domain($domain, $master)
 	if (!$master) {
 		$zonefile = "db.$domain";
 		$master = "''";
+		if ($eoptions)
+			$options = $eoptions; // If options are specified, set up them instead of template options
 	} else {
 		$zonefile = "SEC/db.$domain";
 		$master = "'$master'";

@@ -223,7 +223,9 @@ SOA record also becomes the default TTL for new resource records.
 There is an "Upd" (for update) and "Del" (for delete) button for each
 resource record. These buttons updates the RR in the database, or deletes
 it, respectively. NB: The "Upd" button affects all resource record
-changed on the screen. So if you want to update a lot of records, you
+changed on the screen. When you change a record, the button for it changes it's color, 
+but you can continue with other records and press any of this butons in the very end.
+So if you want to update a lot of records, you
 have to change this records, and then press any "Upd" button. In "view" mode, you
 have to press "edit" button next to the record to edit this record, or you can 
 press "Edit zone (total)" button and edit as much records as you need.
@@ -441,7 +443,8 @@ the named.conf file is prepared for upload to the DNS server, the template
 is read, and 4 macros are expanded: $ZONE_DIR, $OPTIONS, $ACL and   $ZONE_DEFINITIONS. They
 expand to the directory containing zone files, server options, list of secondary servers (for the access lists)
 and the actual zone definitions (whith zone options from the zone definitions),
-respectively. A minimal named.tmpl template would look like this:
+respectively. A minimal named.tmpl template would look like this (this template mean that you need 
+to create / import 0.0.127.in-addr.arpa zone)::
 <PRE>
 options {
 	directory "$ZONE_DIR";
@@ -458,7 +461,9 @@ zone "." {
 <LI>ProBIND also needs to know how to upload the file to the DNS server. The
 script must exist in the sbin directory of the ProBIND installation. The
 script is called from a working directory containing the generated named.conf
-and all the zone files that must be uploaded. The script gets two parameters:
+and all the zone files that must be uploaded. The script gets a list of operations - 
+'-PUSH' to push a files, and '-CONF' to run reconfiguration (it is ./reconmfig.sh file
+from the template directory), and two parameters:
 the hostname of the DNS server to update, and the directory on the server
 to upload to. Additionally, the working directory may contain a file named
 "deadlist". It will contain a list of zones which have been deleted from

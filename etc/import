@@ -58,7 +58,7 @@ function next_conf_token($input)
 {
 	global $conf_input_buffer;
 	global $opts;
-	$TRE = '/([\w\.]+|"[^"]*"|\{|\}|;)/';
+	$TRE = '/([-\/\w\.]+|"[^"]*"|\{|\}|;)/';
 	$srch = array("/#.*$/", "/'/");
 	$repl = array('', '"');
 	while (!preg_match($TRE, $conf_input_buffer, $matches)) {
@@ -280,17 +280,21 @@ function parse_zone($input, $opts)
 		print "Found zone: '$zone'\n";
 	next_conf_token($input); # skip the leading brace
 	$braces = 1;
+	$options = "";
 	while ($braces > 0) {
 		switch ($token = strtolower(next_conf_token($input))) {
 		case 'type';
+			$in_options = 0;
 			if (!parse_type($input, $type))
 				return;
 			break;
 		case 'file';
+			$in_options = 0;
 			if (!parse_file($input, $file))
 				return;
 			break;
 		case 'masters';
+			$in_options = 0;
 			if (!parse_masters($input, $masters, $type))
 				return;
 			break;
@@ -299,9 +303,22 @@ function parse_zone($input, $opts)
 			break;
 		case '}':
 			$braces--;
+			if ($braces == 0)
+				$in_options = 0;
+			break;
+		default:
+			$in_options = 1;
 			break;
 #		default:
 #			print "Warning: misplaced '$token' in $zone, expected 'file', 'type' or 'masters'\n";
+		}
+		if ($in_options) {
+			if ($options && $token != ';' )
+				$options .= " ";
+			$options .= $token;
+			if ( $token == "{" || $token == ';') {
+				$options .= "\n";
+			}
 		}
 	}
 	next_conf_token(input); # Skip the trailing semicolon
@@ -312,17 +329,23 @@ function parse_zone($input, $opts)
 		return;
 	}
 	if (get_named_zone($zone)) {
-		print "Warning: '$zone' already exists in the database.\n";
+		print "Warning: '$zone' already exists in the database. options = $options\n";
 		return;
 	}
+	if ( $zone == "0.0.127.in-addr.arpa" ) {
+		print "******************************************************************************************************\n";
+		print "ATTENTION. Zone 0.0.127.in-addr.arpa imported. Be sure that this zone was not defined in the template!\n";
+		print "Delete it from the data base if you do want to keep it in the template\n";
+		print "******************************************************************************************************\n";
+	}		
 	if ($opts['v'])
 		print "Adding zone '$zone', master = '$master'\n";
-	$zid = add_domain($zone, $masters);
+	$zid = add_domain($zone, $masters, $options);
 	sql_query("DELETE FROM records WHERE zone = $zid");
 	if ($type == "master") 
 		$count = load_zone($zone, $file, $zid, $zone, $master, $opts);
 	if ($opts['v'])
-		print "Loaded '$zone'\n\n";
+		print "Loaded '$zone' options=$options\n\n";
 }
 
 #
