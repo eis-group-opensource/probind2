@@ -474,16 +474,57 @@ a successful upload. See the "push.local", "push.remote" and "nop" scripts for e
 </UL>
 
 <H2><A NAME="push">Push updates</A></H2>
-<FONT color=RED>To be changed. Now it is 3 step process (update files, push files, reconfig),
-and ProBIND maintain exact mirror of named directory for every server.</FONT>
 <P>
 The final operation in ProBIND is the step where the contents of the database
-are pushed (uploaded) to the managed DNS servers. If the database contains
-no changes, this page just tells you that there is nothing to be done.
+is used top generate (update) configuration files for the name servers (this are named.conf, zone files
+and other files found in the template directory), push this files to the server, and reconfig the server.
 <P>
-On the other hand, if there are updates in the database, you must confirm
-your decision to upload them to the DNS servers by clicking on an 
-appropriately scary-looking button. 
+"push" window contain checkboxes for all 3 operations:
+<UL>
+<LI>Generate files - system will generate files from data base if necessary;
+<LI>Push files - system will push files to the server if necessary;
+<LI>Reconfig server - system will ask a server to reconfigure if necessary;
+</UL>
+<P>Next raw contain main button, which name is 
+ "START UPDATE" or "COMPLETE UPDATE" (if files was generated and pushed already),
+and table of the servers with the columns:
+<UL>
+<LI>state - can be green "OK" (no any operations necessary), yellow "need update", "need push" or "need reconfig"
+(update is necessary for this server), or red "error" (error had place during last update).
+<LI>Do not apply - thic checkbox blocks operation for this server; it is checked up itself if
+last update caused an error, to prevent more damage to the server;
+<LI>Test - calls test program for this server, which allow to send request and see results;
+<LI>View - allow to see named.conf file and server directory (with all files generated for
+the server);
+</UL>
+
+<P>
+If some servers has a yellow status, they need to be reconfigured.
+To reconfigure servers, just click on "START UPDATE" button. 
+Window below will show you update process, with a reference to the log file which
+contain output of all scripts which runned during this process. If two step (default) update is
+configured, system will show you 'yellow' status 'need reconfig' once again, and will check out 
+'Reconfig server' checkbox; just click on the 'COMPLETE UPDATE' once again.
+<P>
+It is a good idea to verify logs on the window below (just click on the 'LOG' message) before
+doing next step of reconfiguration.
+
+<P>
+In case of error, server will show you red 'error' message, and future update will be blocked;
+you need to determine (reading 'logs' and looking into the named.conf file) the reason of
+the error and correct it, then repeat 'PUSH' operation again. By default, updates to such
+server are blocked (see checkbox) and if you just repeat "PUSH" (for example, error was caused by the
+network problem and you want to repeat an attempt without any changes in the data base),
+you need to uncheck this checkbox to apply update to the server.
+<P>
+You have "Misc. tools -&gt; Bulk update" button to make a full update of all files,
+it takes a very long time.
+<P>
+It is possible that update was cancelled by the web server, or freeze forever, or 
+die by some reason. In this case, operation will be locked until you go to the 
+"Misc. tools" and remove this lock manually. Be careful doing this, it is "last resort" 
+tool.
+
 <P>
 The mechanics of the upload process is controlled by the DNS 
 <A HREF="#servers">server descriptions</A>.
@@ -509,13 +550,27 @@ Review the import log and the database carefully. You do not want to
 update your BIND servers until your are confident that the database
 accurately represents your DNS data.
 <P>
+Import understand zone options and can create 'option' field in the imported zones;
+verify this options before pushing any updates to the server. By default, zones must have 
+option
+<PRE>
+ allow-transfer { $ACL };
+</PRE>
+which allow all secondary servers to 'xfer' zone.
+
+<P>
 If you have a lot of comments in your zone files, run import with the -a
 flag too (i.e. import -av named.conf). That way the unaltered text of a
 zone file is put into the ProBIND database as a comment text for the zone.
 
 <H2><A NAME="license">License</A></H2>
 <P>
-ProBIND was developed by Flemming S. Johansen &lt;fjohansen@proventum.net&gt;
+ProBIND version 2  was developed by Alexei Roudnev, <Alexei_Roudnev@exigengroup.com>,
+as part of our effort to set up convenient management for the internal and external DNS.
+See <A HREF="http://www.exigengroup.com/">http://www.exigengroup.com/</A> to get more information about
+our company. The copyright status of the version 2 is the same as for the version 1.
+<P>
+ProBIND version 1 was developed by Flemming S. Johansen &lt;fjohansen@proventum.net&gt;
 as part of his duties as resident DNS manager at Proventum. The software
 is copyrighted &copy 2000 by 
 <A HREF="http://www.proventum.net">Proventum</A>.
