@@ -6,6 +6,7 @@ $start_frame = '
 <HEAD>
 <TITLE>Browse Records</TITLE>
 <LINK rel="stylesheet" href="style.css" type="text/css">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 </HEAD>
 <FRAMESET rows="12,*" frameborder="0" border="0" framespacing="0">
   <FRAME src="topshadow.html" name="topshadow" noresize scrolling=no frameborder ="0" border="0" framespacing="0" marginheight="0" marginwidth="0">

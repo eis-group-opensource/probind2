@@ -7,6 +7,7 @@ $start_form = '
 <HEAD>
 <TITLE>Zone Browser</TITLE>
 <LINK rel="stylesheet" href="style.css" type="text/css">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 </HEAD>
 <FRAMESET cols="170,*" frameborder="0" border="0" framespacing="0">
   <FRAME src="brzones.php?frame=zones" name="left" noresize scrolling=auto frameborder="0" border="0" framespacing="0" marginheight="0" marginwidth="5">

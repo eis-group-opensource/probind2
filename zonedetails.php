@@ -2,6 +2,7 @@
 <HEAD>
 <TITLE>Domain details</TITLE>
 <LINK rel="stylesheet" href="style.css" type="text/css">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 </HEAD>
 <BODY bgcolor="#cccc99" background="images/BG-shadowleft.gif">
 

@@ -5,6 +5,7 @@ require 'inc/lib.inc';
 <HEAD>
 <TITLE>ProBIND Menu</TITLE>
 <LINK rel="stylesheet" href="style.css" type="text/css">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 </HEAD>
 <BODY bgcolor="#999966">
 <TABLE border="0" cellpadding="0" cellspacing="0" width="100%">    
@@ -13,7 +14,7 @@ require 'inc/lib.inc';
     <TR>
     <TR>
      <TD><IMG SRC="images/button-left.gif" width="10" height="33"></TD>
-     <TD background="images/button-middle.gif">space:<br><b> <? print $NAMESPACE;?></b></TD>
+     <TD background="images/button-middle.gif">space:<br><b> <? print $NAME_SPACE;?></b></TD>
      <TD><IMG SRC="images/button-join.gif" width="30" height="33"></TD>
      <TD background="images/button-middle.gif"><A HREF="../index.html" target="_top"><B>change</B></A></TD>
      <TD><IMG SRC="images/button-right.gif" width="10" height="33"></TD>

@@ -6,6 +6,7 @@ $html_top = '
 <HEAD>
 <TITLE>Add a zone</TITLE>
 <LINK rel="stylesheet" href="style.css" type="text/css">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 </HEAD>
 <BODY bgcolor="#cccc99" background="images/BG-shadowleft.gif">
 <TABLE width="100%">

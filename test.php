@@ -4,6 +4,8 @@ $html_top = '
 <HTML><HEAD>
 <TITLE>DNS test</TITLE>
 <LINK rel="stylesheet" href="style.css" type="text/css">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 </HEAD><BODY bgcolor="dddd99" background="images/BG-shadowtop.gif">
 ';
 

@@ -5,6 +5,7 @@ $html_top = '
 <HTML><HEAD>
 <TITLE>File viewer</TITLE>
 <LINK rel="stylesheet" href="style.css" type="text/css">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 </HEAD><BODY bgcolor="ccdd88" >
 ';
 

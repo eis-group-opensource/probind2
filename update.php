@@ -4,6 +4,7 @@ $start_frame = '
 <HTML>
 <HEAD>
 <TITLE>Add Zone</TITLE>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 </HEAD>
 <FRAMESET rows="12,60%,*" frameborder="5" border="2" framespacing="0">
       <FRAME src="topshadow.html" name="topshadow" noresize scrolling=no frameborder ="0" border="0" framespacing="0" marginheight="0" marginwidth="0">
