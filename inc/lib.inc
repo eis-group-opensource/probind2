@@ -682,7 +682,18 @@ function auto_ptrs($domain, $ttl, $reversehosts)
 			$hostname = $row['rdom'];
 		preg_match("/$iptop\.(.*)/", $row['data'], $matches);
 		$host = $matches[1];
-		if ($reversehosts[$host])
+		$host0 = ""; 
+		$host1 = "";
+		if ( preg_match("/(\d+)\.(\d+)\.(\d+)/", $host, $matches) ) {
+			$host = "$matches[3].$matches[2].$matches[1]";
+			$host0 = "$matches[2].$matches[1]";
+			$host1 = "$matches[1]";
+		}
+		else if ( preg_match("/(\d+)\.(\d+)/", $host, $matches) ) {
+			$host = "$matches[2].$matches[1]";
+			$host0 = "$matches[1]";
+		}
+		if ($reversehosts[$host] || ($host0 && $reversehosts[$host0]) || ($host1 && $reversehosts[$host1]) )
 			continue;
 		if (!$autoflag) {
 			$autoflag++;

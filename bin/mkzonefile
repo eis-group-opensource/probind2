@@ -47,7 +47,7 @@ function write_zone_file($zone, $hostmaster, $origin, $servers, $update)
 			fputs($zf, $rr['domain']."\t$rrttl IN\tTXT\t\"".$rr['data']."\"\n");
 		} else {
 			fputs($zf, $rr['domain']."\t$rrttl IN\t".$rr['type']."\t".$rr['data']."\n");
-			if ($rr['type'] == 'PTR')
+			if ($rr['type'] == 'PTR' || $rr['type'] == 'NS')
 				$reversehosts[$rr['domain']]++;
 		}
 	}
