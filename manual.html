@@ -16,7 +16,7 @@
 </TR>
 </TABLE>
 <P>
-This is the manual for ProBIND, release 1.0. ProBIND is an application 
+This is the manual for ProBIND, release 2.0. ProBIND is an application 
 for managing DNS servers. The present release is probably not suitable
 for users who are not knowledgeable about DNS in general. If you want
 to learn about DNS in general, or BIND in particular, then I highly
@@ -56,7 +56,8 @@ page.
 ProBIND is a web application for administrating one or more BIND servers.
 It is intended for small to medium sized ISPs, but there is no reason
 why it couldn't be used wherever many zones must be managed across
-a set of master and slave servers. 
+a set of master and slave servers. Version 2.0 was adapted for the middle size 
+corporative network.
 <P>
 ProBIND is written in PHP4, and uses a MySQL database for storing all
 information about the DNS servers managed. The database contents are
@@ -78,6 +79,8 @@ records that are CNAMES, and which point to a host with the string
 e.g. standard TXT and MX records, the TEMPLATE pseudo-zone will help.
 When creating a new zone, the contents of the TEMPLATE pseudo-zone
 are copied into the new zone.
+
+<LI> You can add comments to the records, zones and servers.
 
 <LI> NS records are automatically generated for all your zones. You
 may never have to add a single NS record to your database.
@@ -107,6 +110,10 @@ server you specify. You can specify either an IP number or a hostname
 as the master server, but if you specify a hostname, that hostname
 must be resolvable.
 
+<P>Each zone can contain options, which will be added into the zone description 
+in the named.conf file on master servers (options are not applied to the zones on slave servers).
+By default, options are inherited from the TEMPLATE zone and can be edited in 'details' section.
+
 <H2><A NAME="del">Deleting a zone</A></H2>
 <P>
 Enter the full name of the zone you wish to delete, and click on the
@@ -117,7 +124,8 @@ If you would rather point and click to identify the zone to be deleted,
 then locate the zone on the <A HREF="#zones">Browse zones</A> page, and 
 click on the "Delete" button on the zone page.
 <P>
-NB: There is no "undelete" feature in ProBIND. So watch your clicks.
+NB: There is no "undelete" feature in ProBIND. So watch your clicks. When you delete a zone,
+you will be requested to confirm operation one more time, but after it, zone can not be 'undeleted'.
 
 <H2><A NAME="zones">Browsing zones</A></H2>
 <P>
@@ -148,8 +156,8 @@ The display in the right frame consists of three distinct types of information:
 Zone parameters, explicit resource records and automatically generated 
 (implicit) resource records.
 <P>The zone parameter block on top begins with the name of the zone
-being displayed, and ends with a row of buttons: "Delete", "Details", "Update"
-and "Add RR". In between there are 6 fields, 5 of which can be modified:
+being displayed, and contain two buttons: "Details", and  "Update".
+In between there are 6 fields, 5 of which can be modified:
 <UL>
 <LI>The Zonefile is the filename of the zonefile on the DNS servers. This
 name is automatically generated when you create a zone, or it is 
@@ -179,9 +187,8 @@ RIPE recommendations</A>.
 <P>
 The buttons have the following uses:
 <UL>
-<LI>"Delete" does just that - it takes you to a form where you must confirm
-your intention to delete the displayed zone.
-<LI>"Details" takes you to a sub-page that contains information about when
+<LI>"Details" takes you to a sub-page that contains zone configuration options (which should be
+changed by experts only) and information about when
 the zone was created in the database, when it was last changed and a text
 annotation. The annotation is useful both as a place to document e.g.
 contact information about a zone, and as a log book where the DNS
@@ -189,8 +196,19 @@ maintainers can describe what they did, and when.
 <LI>"Update". Click on this button after updating any of the text fields
 above, or if you just want this zone to be in the next upload of the
 database to the DNS servers.
+</UL>
+<P>Next section begins with "Add RR" button, and can be in one of two forms - "view" form when
+it shows the whole zone and allow to edit single RR only, and "edit" form when all records can 
+be edited on this page. The reason is simple - "edit" mode does not allow to use "find on the page"
+feature of the browthers, and is slow in case of a very long (thousand records) zone.
+This section will contain a set of buttons:
+<UL>
 <LI>"Add RR" takes you to a sub-page where you can add Resource Records
 to the zone.
+<LI>"Edit zone (total)" (view mode only) - switch to edit mode;
+<LI>"edit" - allow to edit a single RR record;
+<LI>"Delete Zone?" does just that - it takes you to a form where you must confirm
+your intention to delete the displayed zone.
 </UL>
 <P>
 After the button row follows the explicit resource records. These are just
@@ -204,9 +222,13 @@ SOA record also becomes the default TTL for new resource records.
 <P>
 There is an "Upd" (for update) and "Del" (for delete) button for each
 resource record. These buttons updates the RR in the database, or deletes
-it, respectively. NB: The "Upd" button only affects the resource record
-it is associated with. So if you want to update a lot of records, you
-have to it one at a time.
+it, respectively. NB: The "Upd" button affects all resource record
+changed on the screen. So if you want to update a lot of records, you
+have to change this records, and then press any "Upd" button. In "view" mode, you
+have to press "edit" button next to the record to edit this record, or you can 
+press "Edit zone (total)" button and edit as much records as you need.
+<P>Button "Delete zone" in the end of edit zone send you to the "Delete zone" page where
+you will be requested to confirm deletion once more time.
 <P>
 The last part of the zone display is the implicit resource records. These
 records do not exist in the database, and you cannot manipulate them
@@ -407,16 +429,23 @@ of the DNS server in the NS records it generates. See the note above.
 the named.conf and zone files.
 <LI>A great many DNS administrators wants or needs to add some global
 options to the named.conf file. This is indirectly supported in ProBIND
-through the use of named.conf templates. A template file must be located
-in the etc directory of the ProBIND installation. The template is essentially
+through the use of templates, and directly by the server options.
+Every server is configured using a template directory, which is located in the 'templates' directory.
+Each template directory must contain  (at least) named.tmpl file, and contains (usially) 
+reconfig.sh script (which is called when configuration changed) and 
+such files and root.hint, localhost.rev zone and so on.
+Files from template directory are just copied to the server, except named.tmpl file which is used
+to generate real named.conf file. The template named.tmpl is essentially
 the entire named.conf file, except for the actual zone definitions. When 
 the named.conf file is prepared for upload to the DNS server, the template
-is read, and two macros are expanded: $ZONE_DIR and $ZONE_DEFINITIONS. They
-expand to the directory containing zone files and the actual zone definitions,
-respectively. A minimal named.conf template would look like this:
+is read, and 4 macros are expanded: $ZONE_DIR, $OPTIONS, $ACL and   $ZONE_DEFINITIONS. They
+expand to the directory containing zone files, server options, list of secondary servers (for the access lists)
+and the actual zone definitions (whith zone options from the zone definitions),
+respectively. A minimal named.tmpl template would look like this:
 <PRE>
 options {
 	directory "$ZONE_DIR";
+	$OPTIONS
 };
 
 $ZONE_DEFINITIONS
@@ -435,11 +464,13 @@ to upload to. Additionally, the working directory may contain a file named
 "deadlist". It will contain a list of zones which have been deleted from
 the database, and which should also be deleted from the DNS server. It is
 the responsibility of this script to restart the DNS server process after
-a successful upload. See the "push" and "nop" scripts for examples.
+a successful upload. See the "push.local", "push.remote" and "nop" scripts for examples.
 <LI>Finally, you can add a bit of text to describe the server.
 </UL>
 
 <H2><A NAME="push">Push updates</A></H2>
+<FONT color=RED>To be changed. Now it is 3 step process (update files, push files, reconfig),
+and ProBIND maintain exact mirror of named directory for every server.</FONT>
 <P>
 The final operation in ProBIND is the step where the contents of the database
 are pushed (uploaded) to the managed DNS servers. If the database contains
