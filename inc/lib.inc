@@ -358,7 +358,7 @@ function domain_list($lookfor, $type, $format)
 	$result1 = "";
 	while (list($id, $domain, $master, $disabled) = mysql_fetch_row($rid)) {
 		if ($disabled)
-			$d = "!";
+			$d = "<IMAGE border=0 width=\"8\" height=\"8\" SRC=\"images/noway.gif\">";
 		else
 		        $d = "";
 		if ($type == "*")

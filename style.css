@@ -16,25 +16,25 @@ H2, H3, H4 {
 A:link {
 	font-family: Verdana, Arial, Helvetica;
 	font-size: 11px;
-	color: #066;
+	color: #024;
 	text-decoration: none;
 	}
 A:visited {
 	font-family: Verdana, Arial, Helvetica;
 	font-size : 11px;
-	color : #960;
+	color : #624;
 	text-decoration: none;
 	}
 A:active {
 	font-family: Verdana, Arial, Helvetica;
 	font-size : 11px;
-	color : #963;
+	color : #635;
 	text-decoration: underline;
 	}
 A:hover {
 	font-family: Verdana, Arial, Helvetica;
 	font-size : 11px;
-	color: #963;
+	color: #646;
 	text-decoration: underline;
 	}
 INPUT, TEXTAREA {
