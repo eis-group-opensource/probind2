@@ -43,6 +43,16 @@ closedir($ht);
 
 $script_form = mk_select_a("script", $script_list, $DEFAULT_PUSH);
     
+$preamble = '
+NB: When you change these settings, the change is only reflected in
+domains which are pushed onto the DNS servers after the update. Some changes (such as
+changing primary server to the secondary) need bulk update function to be applied.
+It is a good practice to clean all generated files in the HOSTS/server_name directory,
+check <B>Update host from template</B> box, and
+run a <B>Bulk Update</B> function after the sugnificant changes.
+<BR>
+';
+
 $add_form = '
 <FORM action="servers.php" method="post">
 <INPUT type="hidden" name="action" value="Add">
@@ -356,6 +366,7 @@ get_input();
 switch (strtolower($INPUT_VARS['action'])) {
 case 'browse':
 	print browse_servers();
+	print "<HR>$preamble<HR>\n";
 	break;
 case 'detailedview':
 	print mk_update_form($INPUT_VARS['server']);

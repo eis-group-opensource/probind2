@@ -38,9 +38,25 @@ in SOA records. If you have a "hostmaster" alias which forwards to the
 DNS staff, put "hostmaster" in here. Remember to use a "." in stead
 of the "@", e.g. hostmaster.mydomain.net.';
 
+$is_bool['two_step_update'] = 1;
+$settings_list['two_step_update'] = '<B>TWO_STEP_UPDATE:</B><BR>Server update consiists of a three
+independent operations - <B>generate</B> files, <B>push</B> files, and <B>reconfigure</B> server.
+In normal mode, systep propose to make all 3 operation at once; in two step mode (valie 1),
+system makes <B>generate</B> and <B>push</B> first, and prompt to continue so operator has
+extra option to verify logs and ensure that everything went OK.';
+
+$is_bool['slave_on_slaves'] = 1;
+$settings_list['slave_on_slaves'] = '<B>SLAVE_ON_SLAVES:</B><BR>System can allocate secondary zones\
+on master servers only (if this variable is 0) or on all servers (if it is 1); in some cases (such as
+INTRANET zone) it may be necessary to turn this feature on.';
+
+$is_bool['show_all'] = 1;
+$settings_list['show_all'] = '<B>SHOW_ALL:</B><BR>If this variable is 1, system shows all zones
+on the initial screen; if 0, you need to <B>search</B> zone first. Turn it off in the very big environment.';
+
 function browse_settings()
 {
-	global $settings_list, $preamble;
+	global $settings_list, $preamble, $is_bool;
 	$query = "SELECT name, value FROM blackboard ORDER BY name";
 	$rid = sql_query($query);
 	$result = $preamble;
@@ -51,10 +67,24 @@ function browse_settings()
 		$name = $setting['name'];
 		$value = $setting['value'];
 		$text = $settings_list[$name];
+		$bool = $is_bool[$name];
+		if ($bool) {
+		    if ($value == 1) {
+			$s1 = " SELECTED";
+			$s0 = "";
+		    }
+		    else {
+			$s0 = " SELECTED";
+			$s1 = "";
+		    }
+		    $field = "<SELECT name=\"$name\"><OPTION value=0 $s0>Off</OPTION><OPTION value=1 $s1>On</OPTION></SELECT>";
+		}
+		else
+		    $field = "<INPUT type=\"text\" name=\"$name\" value=\"$value\" SIZE=40 MAXLENGTH=255>";
 		if ($text) {
 			$result .= "<TR>
  <TD>$text</TD>
- <TD valign=\"top\"><INPUT type=\"text\" name=\"$name\" value=\"$value\" SIZE=40 MAXLENGTH=255></TD>
+ <TD valign=\"top\">$field</TD>
 </TR>\n";
 			$seen[$name] = 1;
 		}
@@ -67,7 +97,7 @@ function browse_settings()
 		if (!$seen[$name])
 			$result .= "<TR>
  <TD>$text</TD>
- <TD valign=\"top\"><INPUT type=\"text\" name=\"$name\" value=\"$value\" SIZE=40 MAXLENGTH=255></TD>
+ <TD valign=\"top\">$field</TD>
 </TR>\n";
 	}
 	$result .= "<TR><TD></TD><TD><INPUT type=\"submit\" value=\"Update settings\"></TD></TR></TABLE>\n</FORM>\n";
@@ -85,7 +115,7 @@ function update_settings($input)
 	while ($setting = each($settings_list)) {
 		$name = $setting[0];
 		$value = strtr($input[$name], "@", ".");
-		if ($value) {
+		if ($value != '') {
 			$sql[] = "DELETE FROM blackboard WHERE name = '$name'";
 			$sql[] = "INSERT INTO blackboard (name, value) VALUES ('$name', '$value')";
 		} else 

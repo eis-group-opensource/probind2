@@ -881,11 +881,14 @@ mysql_select_db($MYSQL_DB, $DBLINK)
 $query = "SELECT name, value FROM blackboard";
 $rid = sql_query($query);
 while ($row = mysql_fetch_array($rid)) {
-	switch(strtoupper($row['name'])) {
+	switch($var = strtoupper($row['name'])) {
 	case 'DEFAULT_EXTERNAL_DNS': $DEFAULT_EXTERNAL_DNS = $row[1]; break;
 	case 'DEFAULT_ORIGIN': $DEFAULT_ORIGIN = $row[1]; break;
 	case 'DEFAULT_PTR_DOMAIN': $DEFAULT_PTR_DOMAIN = $row[1]; break;
 	case 'HOSTMASTER': $HOSTMASTER = $row[1]; break;
+	case 'TWO_STEP_UPDATE': $TWO_STEP_UPDATE = $row[1]; break;
+	case 'SLAVE_ON_SLAVES': $SLAVE_ON_SLAVES = $row[1]; break;
+	case 'SHOW_ALL':        $SHOW_ALL = $row[1]; break;
 	default:
 	}
 }

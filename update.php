@@ -112,11 +112,14 @@ function main_update_menu($input)
 				$T = "<B>need update</B>"; 
 				$B = " bgcolor=yellow";
 				$gen_c="CHECKED";
+				$push_c = "CHECKED";
+				$conf_c = "CHECKED";
 				break;
 			case 'CHG': 
 				$T = "<B>need push</B>";   
 				$B = " bgcolor=yellow"; 
 				$push_c = "CHECKED";
+				$conf_c = "CHECKED";
 				break;
 			case 'CFG': 
 				$T = "<B>need reconfig</B>"; 
@@ -150,8 +153,6 @@ function main_update_menu($input)
 	$res .= "</TABLE>\n";
 	
 	$up_text = "START UPDATE";
-	if ($gen_c)
-	    $push_c = "CHECKED";
 	
 	if ($TWO_STEP_UPDATE && ($gen_c || $push_c)) {
 	    $conf_c = "";
