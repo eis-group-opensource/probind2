@@ -8,7 +8,7 @@ then
 	done
 	rm -f deleted_files
 fi
-named-checkconf named.conf
+/usr/local/sbin/named-checkconf named.conf
 if [ $? = 0 ]
 then
  echo "Checkinmg named.conf - OK, named.conf.good renewed"

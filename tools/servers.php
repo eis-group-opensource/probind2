@@ -114,18 +114,21 @@ $update_form = '
 </TR><TR align=left>
  <TD colspan=3><INPUT type="text" name="zonedir" value="%s" SIZE=70 MAXLENGTH=255></TD>
 </TR><TR align=left>
- <TH colspan=3>Template directory</TH>
+ <TH colspan=1>Template directory</TH>
+ <TD colspan=1>%s</TD>
+ <TD colspan=1>Update host from template? <INPUT type="checkbox" name="updatet" value=1></TD>
 </TR><TR align=left>
- <TD colspan=3>%s</TD>
+ <TH colspan=1>Script used to push data to the server</TH>
+ <TD colspan=1>%s</TD> 
 </TR><TR align=left>
- <TH colspan=3>Script used to push data to the server</TH>
-</TR><TR align=left>
- <TD colspan=2>%s</TD>
- <TD>Update host from template? <INPUT type="checkbox" name="updatet" value=1></TD>
-</TR><TR align=left>
- <TH>Description</TH>
+ <TH colspan=3>Description</TH>
+ 
 </TR><TR>
- <TD colspan=3><TEXTAREA name="description" COLS=70 ROWS=12>%s</TEXTAREA></TD>
+ <TD colspan=3><TEXTAREA name="description" COLS=80 ROWS=4>%s</TEXTAREA></TD>
+</TR><TR>
+<TH>Options (<b>No syntax check here!</b>)</TH>
+</TR><TR>
+ <TD colspan=3><TEXTAREA name="options" COLS=80 ROWS=7>%s</TEXTAREA></TD>
 </TR><TR>
  <TD><INPUT type="reset"></TD>
  <TD><INPUT type="submit" name="subaction" value="Delete"></TD>
@@ -203,7 +206,7 @@ function add_servers($input)
 	mysql_free_result($rid);
 	if ($count)
 		return "$name already exists in the database.<BR>\n";
-	$query = "INSERT INTO servers (hostname, ipno, type, pushupdates, mknsrec, zonedir, template, script, descr, state) VALUES ('$name', '$ipno', '$type', $push, $mkrec, '$zonedir', '$template', '$script', '$descr', 'CHG')";
+	$query = "INSERT INTO servers (hostname, ipno, type, pushupdates, mknsrec, zonedir, template, script, descr, state) VALUES ('$name', '$ipno', '$type', $push, $mkrec, '$zonedir', '$template', '$script', '$descr', 'OUT')";
 	sql_query($query);
 
 	if (is_file("$TEMPL_DIR/$template/named.tmpl")) {
@@ -229,7 +232,7 @@ function add_servers($input)
 function mk_update_form($server)
 {
 	global $update_form, $template_list, $script_list;
-	$query = "SELECT id, hostname, ipno, type, pushupdates, mknsrec, zonedir, template, script, descr FROM servers WHERE id = $server";
+	$query = "SELECT id, hostname, ipno, type, pushupdates, mknsrec, zonedir, template, script, descr, options FROM servers WHERE id = $server";
 	$rid = sql_query($query);
 	if ($row = mysql_fetch_array($rid)) {
 		$id = $row['id'];
@@ -242,6 +245,7 @@ function mk_update_form($server)
 		$template = $row['template'];
 		$script = $row['script'];
 		$descr = $row['descr'];
+		$options = $row['options'];
 		$result .= sprintf($update_form,
 			$id, $name, $name, $ipno, 
 			mk_select("type", array("Master", "Slave"), $type), 
@@ -250,7 +254,7 @@ function mk_update_form($server)
 			$zonedir, 
 			mk_select_a("template", $template_list, $template),
 			mk_select_a("script", $script_list, $script),
-			$descr);
+			$descr, $options);
 	} else {
 		$result = "No such server in the database: $server.<P>\n";
 	}
@@ -308,6 +312,7 @@ function update_servers($input)
 	$script = $input['script'];
 	$descr = $input['description'];
 	$updatet=$input['updatet'];
+	$options = strtr( $input['options'], "'", '"');
 	switch (strtolower($input['subaction'])) {
 	case 'delete':
 		return sprintf($confirm_delete_form, $id, $name, $name);
@@ -325,7 +330,7 @@ function update_servers($input)
 	case 'update':
 		if ($warns = valid_server($name, $ipno, $type, $push, $zonedir, $template, $script))
 			return $warns;
-		$query = "UPDATE servers SET hostname = '$name', ipno = '$ipno', type = '$type', pushupdates = $push, mknsrec = $mkrec, zonedir = '$zonedir', template = '$template', script = '$script', descr = '$descr', state = 'CHG' WHERE id = $id";
+		$query = "UPDATE servers SET hostname = '$name', ipno = '$ipno', type = '$type', pushupdates = $push, mknsrec = $mkrec, zonedir = '$zonedir', template = '$template', script = '$script', descr = '$descr', state = 'OUT', options='$options' WHERE id = $id";
 		$rid = sql_query($query);
 		$count = mysql_affected_rows();
 		if ($updatet && is_file("$TEMPL_DIR/$template/named.tmpl")) {

@@ -149,11 +149,16 @@ function main_update_menu($input)
 	}
 	$res .= "</TABLE>\n";
 	
+	$up_text = "START UPDATE";
 	if ($gen_c)
 	    $push_c = "CHECKED";
 	
-	if ($TWO_STEP_UPDATE && ($gen_c || $push_c))
+	if ($TWO_STEP_UPDATE && ($gen_c || $push_c)) {
 	    $conf_c = "";
+	}
+	
+	if ($TWO_STEP_UPDATE && $conf_c)
+		$up_text = "COMPLETE UPDATE";
 		
 	print "<TABLE width=\"70%\"  border=\"1\">\n";
 	print "\t<TD>Generate files ($zones): <INPUT type=CHECKBOX name=\"gen\" $gen_c></TD>\n";
@@ -161,7 +166,7 @@ function main_update_menu($input)
 	print "\t<TD>Reconfig server: <INPUT type=CHECKBOX name=\"conf\" $conf_c></TD>\n";
 	print "</TR>\n";
 	print "<TR><TD colspan=3 align=center>";
-	print "<INPUT type=submit value=\"START UPDATE\" class=\"button\" onmouseover=\"this.className='buttonwarning'\" onmouseout=\"this.className='button'\">\n";
+	print "<INPUT type=submit value=\"$up_text\" class=\"button\" onmouseover=\"this.className='buttonwarning'\" onmouseout=\"this.className='button'\">\n";
 	print "</TD></TR>\n";
 	print "</TABLE>\n";
 	print $res;

@@ -240,8 +240,8 @@ function add_domain($domain, $master)
 	$rid = sql_query("SELECT id FROM zones WHERE domain = 'TEMPLATE'");
 	$templateid = mysql_result($rid, 0);
 	mysql_free_result($rid);
-	$rid = sql_query("SELECT serial, refresh, retry, expire FROM zones WHERE id = $templateid");
-	(list($serial, $refresh, $retry, $expire) = mysql_fetch_row($rid))
+	$rid = sql_query("SELECT serial, refresh, retry, expire, options FROM zones WHERE id = $templateid");
+	(list($serial, $refresh, $retry, $expire, $options) = mysql_fetch_row($rid))
 		or die("TEMPLATE zone not found in database<P>\n");
 	mysql_free_result($rid);
 	if (!$master) {
@@ -250,13 +250,14 @@ function add_domain($domain, $master)
 	} else {
 		$zonefile = "SEC/db.$domain";
 		$master = "'$master'";
+		$options = ""; // No options from TEMPLATE for the secondary zones
 	}
 	# Make sure that no one else is working on the domain list while
 	# we do this.
 	if ($user = patient_enter_crit($REMOTE_USER, 'DOMAIN'))
 		die (sprintf($domain_lock_msg, ucfirst($user)));
 	# Add the domain to the zones table
-	$rid = sql_query("INSERT INTO zones (domain, serial, refresh, retry, expire, master, updated, zonefile) VALUES ('$domain', $serial, $refresh, $retry, $expire, $master, 1, '$zonefile')");
+	$rid = sql_query("INSERT INTO zones (domain, serial, refresh, retry, expire, master, updated, zonefile, options) VALUES ('$domain', $serial, $refresh, $retry, $expire, $master, 1, '$zonefile', '$options')");
 	$newzone = mysql_insert_id();
 	sql_query("UPDATE zones SET ctime = mtime WHERE id = $newzone");
 	# Just in case a domain of the same name was recently deleted...

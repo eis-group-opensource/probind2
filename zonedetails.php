@@ -20,7 +20,7 @@ function fmt_timestamp($timestamp)
 		." CET";
 }
 
-function update_description($domain, $descrip)
+function update_description($domain, $descrip, $options)
 {
 	$query = "SELECT id FROM zones WHERE domain = '$domain'";
 	$rid = sql_query($query);
@@ -32,11 +32,13 @@ function update_description($domain, $descrip)
 	$rid = sql_query($query);
 	$query = "INSERT INTO annotations (zone, descr) VALUES ($id, '$descrip')";
 	$rid = sql_query($query);
+	$options = strtr($options, "'",'"');
+	$rid = sql_query("UPDATE zones SET options='$options', updated=1 WHERE id=$id");
 }
 
 function domain_details($domain)
 {
-	$query = "SELECT id, mtime, ctime FROM zones WHERE domain = '$domain'";
+	$query = "SELECT id, mtime, ctime, options FROM zones WHERE domain = '$domain'";
 	$rid = sql_query($query);
 	($zone = mysql_fetch_array($rid))
 		or die("No such domain: $domain<P>\n");
@@ -44,9 +46,12 @@ function domain_details($domain)
 	$mtime = fmt_timestamp($zone['mtime']);
 	$ctime = fmt_timestamp($zone['ctime']);
 	$id = $zone['id'];
+	$options = htmlspecialchars($zone['options']);
 	$result = "<H1>$domain</H1>\n";
+	$result .= "<FORM action=\"zonedetails.php\" method=\"post\">\n";
 	$result .= "<TABLE width=\"100%\" border><TR align=left><TH>Zone created in database</TH><TH>Last update in database</TH></TR>
 <TR><TD>$ctime</TD><TD>$mtime</TD></TR>
+<TR><TD colspan=2>Zone options (<b>no syntax check here!</b>): <INPUT type=text  name=\"options\" value=\"$options\" size=80 maxlenght=255></TD></TR>
 </TABLE>
 <P>When you create or modify a domain, please add a note to the domain
 description. The note should contain the date, your initials and a few
@@ -56,7 +61,7 @@ at the top.
 ";
 	$query = "SELECT descr from annotations WHERE zone = $id";
 	$rid = sql_query($query);
-	$result .= "<FORM action=\"zonedetails.php\" method=\"post\">
+	$result .= "
 <INPUT type=\"hidden\" name=\"action\" value=\"textupdate\">
 <INPUT type=\"hidden\" name=\"domain\" value=\"$domain\">
 <TABLE width=\"99%\">
@@ -84,7 +89,7 @@ get_input();
 if ($domain = $INPUT_VARS['domain']) {
 	if ($INPUT_VARS['action'] == "textupdate") {
 		update_description($INPUT_VARS['domain'],
-			htmlspecialchars($INPUT_VARS['description']));
+			htmlspecialchars($INPUT_VARS['description']), $INPUT_VARS['options']);
 	}
 	print domain_details($domain);
 } else {

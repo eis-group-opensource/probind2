@@ -35,6 +35,8 @@ CREATE TABLE zones (
 # If set, the basename of the file containing zone records
 # Either master or zonefile must be set, but not both
 	zonefile	CHAR(80) NOT NULL,
+# Zone options. $ACL will be replaced by the access list.
+    options     VARCHAR(255),
 # Zone record last modification time
 	mtime	TIMESTAMP(14) NOT NULL,
 # Zone record creation time
@@ -85,23 +87,6 @@ CREATE TABLE records (
 );
 
 #
-# This table contains additional zone info (access list, primary / secondary servers, and so on)
-# It is for the future use (so that we will not change data base if we need to add new attribute into  the system)
-#
-CREATE TABLE zoneattr (
-# Unique Resource Record ID
-	id	INT(11) DEFAULT '1' NOT NULL AUTO_INCREMENT,
-# Zone id
-	zone	INT(11) NOT NULL,
-# Attribute type
-	atype	CHAR(10) NOT NULL,
-# Attribute value
-	value	CHAR(100) DEFAULT '',
-	PRIMARY KEY (id)
-	
-);
-
-#
 # This table contains long annotations for zones or records. It is
 # basically eyecandy for the web interface, and an aid for forgetful
 # DNS admins, should any such exist (I don't remember meeting any').
@@ -138,6 +123,8 @@ CREATE TABLE servers (
 	template	VARCHAR(255) NOT NULL,
 # Path to script that will push updates to this server
 	script		VARCHAR(255) NOT NULL,
+# Server options (additional)
+	options         TEXT,
 # Descriptive text
 	descr		TEXT,
 # Current status; can be 'OK', 
@@ -187,8 +174,8 @@ CREATE TABLE blackboard (
 # By definition, this zone gets ID = 1
 # The default refresh, retry, expire and minimum TTL are taken from
 # the RIPE recommendations found at http://www.ripe.net/ripe/docs/ripe-203.html
-INSERT INTO zones (domain, serial, refresh, retry, expire)
-	VALUES ('TEMPLATE', 1, 86400, 7200, 3628800);
+INSERT INTO zones (domain, serial, refresh, retry, expire, options)
+	VALUES ('TEMPLATE', 1, 86400, 7200, 3628800, 'allow-transfer{ $ACL };' );
 UPDATE zones SET ctime = mtime;
 INSERT INTO records (zone, domain, ttl, type)
 	VALUES (1, '@', 172800, 'SOA');

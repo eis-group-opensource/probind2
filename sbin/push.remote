@@ -3,16 +3,24 @@
 # Push new versions of zone and name.conf files to a BIND server, and
 # restart the server.
 # 
-# push.local  [-PUSH] [-CONF] [-u USER] HOST REMOTE-DIRECTORY
+# push.local  [-v] [-PUSH] [-CONF] [-u USER] HOST REMOTE-DIRECTORY
 #
 PATH=/opt/sfw/bin:/usr/ucb:/usr/bin:/usr/local/bin:/bin:
 
 RSYNC="rsync -b -p -t -r --exclude='*.b,CVS,SEC,*.pid' --suffix=.bck"
 USER=named
+# SSH (not open ssh) - enforce ssh2 (it does not work with ssh)
+# For openssh, use "ssh -x" instead.
 SSH="ssh2 -x"
 
-echo rsync.local $*
-#set -x
+echo rsync.remote $*
+# set -x
+if [ "$1" = "-v" ]
+then
+	V=-v
+	shift
+fi
+
 if [ "$1" = "-PUSH" ]
 then
 	PUSH=1
@@ -42,14 +50,19 @@ fi
 HOST=$1
 dir=$2
 
-if [ "$HOST" = "" -or "$dir" = "" ]
+if [ "$HOST" = "" -o "$dir" = "" ]
 then
-    echo $0 [-PUSH] [-CONF] [-l USER] dest-host remote-dir
+    echo $0 "[-PUSH] [-CONF] [-l USER] dest-host remote-dir"
 	exit 1
 fi
 
 if [ "$PUSH" = "1" ]
 then
+ if [ "$V" != "" ]
+ then
+  echo Try ssh who first to verify how it works
+  $SSH -v $USER@$HOST who
+ fi
  echo $RSYNC -v -e "$SSH"  . "$USER@$HOST:$dir" < /dev/null
  $RSYNC -v -e "$SSH"  . "$USER@$HOST:$dir" < /dev/null
  ko=$?

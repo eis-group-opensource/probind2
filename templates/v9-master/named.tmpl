@@ -6,16 +6,7 @@
 options {
 	directory "$ZONE_DIR";
 	pid-file "named.pid";
-	max-transfer-time-in 15;
-#	forwarders {
-#		192.168.9.2;
-#		192.168.9.4;
-#	};
-	allow-transfer {
-	       10.0.0.0/8;
-	       192.168.0.0/16;
-	       172.16.0.0/12;
-	};
+	$OPTIONS
 };
 
 logging {
