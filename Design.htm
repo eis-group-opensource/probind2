@@ -1,0 +1,347 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+  <meta name="ProgId" content="Word.Document">
+  <title>ProBIND Installation Manual</title>
+  <link rel="Stylesheet" type="text/css" media="all" href="style.css">
+  <meta name="author" content="Alexei Roudnev">
+</head>
+<body bgcolor="#cccc99"
+ background="..\probind2\images\BG-shadowleft.gif" lang="EN-US"
+ link="blue" vlink="purple" style="">
+<div class="Section1">
+<table border="0" cellspacing="3" cellpadding="0" width="100%"
+ style="width: 100%;">
+  <tbody>
+    <tr>
+      <td valign="bottom" style="padding: 0.75pt;">
+      <h1><a name="mozTocId668164" class="mozTocH1"></a><a
+ name="_Toc30857429"></a><a name="_Toc30859816"></a><a
+ name="_Toc35367224">ProBIND2 Design document</a><o:p></o:p></h1>
+      </td>
+      <td valign="top" style="padding: 0.75pt;">
+      <p class="MsoNormal" align="right" style="text-align: right;"><a
+ href="http://probind.sourceforge.net" target="_top"><img border="0"
+ width="124" height="45" src="./Design_files/image001.gif"
+ alt="ProBIND home page" v:shapes="_x0000_i1025"></a><o:p></o:p></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 40%; margin-left: auto; margin-right: 0px;">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">Document author:</td>
+      <td style="vertical-align: top;">Alexei Roudnev<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Date:<br>
+      </td>
+      <td style="vertical-align: top;">22 Mart 2003<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Version:<br>
+      </td>
+      <td style="vertical-align: top;">2.0<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Status:<br>
+      </td>
+      <td style="vertical-align: top;">Release<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div class="MsoNormal" align="center" style="text-align: center;">
+<hr size="3" width="100%" align="center"> </div>
+<h1><a name="mozTocId884247" class="mozTocH1"></a><a name="_Toc30857430"></a><a
+ name="_Toc30859817"></a><a name="_Toc35367225">Table of content</a></h1>
+<p class="MsoNormal">&nbsp;</p>
+<ol id="mozToc">
+  <li><a href="#mozTocId531103">System components and interaction</a></li>
+  <li><a href="#mozTocId328992">Detailed description:</a></li>
+  <li><a href="#mozTocId535522">Access control</a></li>
+  <li><a href="#mozTocId730482">Benefits</a></li>
+  <li><a href="#mozTocId322364">Additional documents.</a></li>
+  <li><a href="#mozTocId893830">Required software.</a></li>
+</ol>
+<p class="MsoNormal"><o:p></o:p></p>
+<p class="MsoNormal"><span style=""></span><span style="">&nbsp;</span><a
+ href="#_Toc35367224"></a><o:p></o:p></p>
+<br clear="all" style="page-break-before: always;">
+<h1><a name="mozTocId531103" class="mozTocH1"></a><a name="_Toc30857431"></a><a
+ name="_Toc30859818"></a><a name="_Toc35367226">System components and
+interaction</a></h1>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">ProBIND2 DNS management system allows control few
+DNS servers (usually consisting a single domain name space, or a few
+different name spaces, for example &#8211; external name space and intranet
+name space) from the central management system. This system consists of
+the central database repository (one for every namespace), ProBIND
+scripts, web interface, and network of Name Servers (different for every
+namespace) configured from this central database. </p>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">Picture 1 explains how system works. There is
+central management server, which maintains database. System
+administrators can manage this system thru the web. ProBIND system
+(which is a set of PhP scripts for Apache web server) allows operators
+to change data, configure name servers, add and remove zones, disable
+and enable them, disable RR records in zones without deleting them, and
+much more.</p>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">&nbsp;When updates in the database are completed
+(and verified), it generates configuration and zone files for all name
+servers in this namespace, push this files onto the servers, check
+configuration and reconfigure the servers.</p>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">Picture 1 shows how system components interacts
+one with other (on example of the data center):</p>
+<p class="MsoNormal"><v:shape id="_x0000_i1027" type="#_x0000_t75"
+ style="width: 6in; height: 622.8pt;"> <v:imagedata
+ src="./Design_files/image002.gif" o:title="image002"> </v:imagedata><img
+ border="0" width="576" height="830" src="./Design_files/image002.gif"
+ v:shapes="_x0000_i1027"></v:shape></p>
+<div style="border: 0.5pt solid windowtext; padding: 0in 4pt 0in 0in;">
+<p class="MsoNormal" style="border: medium none ; padding: 0in;">&nbsp;<o:p></o:p></p>
+</div>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<h1><a name="mozTocId328992" class="mozTocH1"></a><a name="_Toc30857432"></a><a
+ name="_Toc30859819"></a><a name="_Toc35367227">Detailed description:</a></h1>
+<h2><a name="_Toc30857433"></a><a name="_Toc30859820"></a><a
+ name="_Toc35367228">System components</a></h2>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">DNS system consists of the Internal and External
+Name spaces, and all components are replicated for both name spaces.
+There is starting menu, which allows to switch between external and
+internal name spaces, and (optionally) to go to the test name space
+(which can be used for the training, testing and verification). Every
+component exists in both name spaces:</p>
+<ol style="margin-top: 0in;" start="1" type="1">
+  <li class="MsoNormal" style="">Central      ProBIND system:</li>
+  <ol style="margin-top: 0in;" start="1" type="a">
+    <li class="MsoNormal" style="">Web       server (Apache, port 8100,
+shared by all name spaces and all management       systems), with basic
+authentication, php and mysql support;</li>
+    <li class="MsoNormal" style="">MySQL       databases (&#8216;intdns&#8217; for
+internal DNS and &#8216;extdns&#8217; for external DNS). </li>
+    <li class="MsoNormal" style="">ProBIND       scripts running by the
+web server and implementing access to the system;</li>
+    <li class="MsoNormal" style="">Template       directories which are
+used to generate configuration files for the name       servers;</li>
+    <li class="MsoNormal" style="">push       scripts that push data to
+the servers and reconfigure servers; standard       scripts uses &#8216;rsync&#8217;
+through the &#8216;ssh&#8217;.</li>
+    <li class="MsoNormal" style="">Test       and import scripts, which
+allow to test name servers (from the web       interface) and to import
+standard named.conf configurations (and zone       files) into the
+system.</li>
+  </ol>
+  <li class="MsoNormal" style="">Set of master name servers, which
+maintains full set of master zones and      keep secondary zones.
+ProBIND allows to have a few master servers, and      maintains exactly
+the same zones (including serial numbers) for all of      them&#8217;. For
+internal name space. This servers are fully configured by      ProBIND
+system &#8211; it generate named.conf file, zone files and all additional
+configuration files (from the template);</li>
+  <li class="MsoNormal" style="">Set of slave name servers, which
+maintains &#8216;slave&#8217; zones for the zones      owned by ProBIND. Internal
+name servers maintain (due to some resolving      problems in the
+splitted name space) all zones (including secondary).</li>
+</ol>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">Probind works with the standard bind version 9
+(preferred) and can work with bind version 8 (without configuration
+checking because &#8216;ndc&#8217; does not supports it). Scripts uses standard
+&#8216;ssh&#8217; feature by the &#8216;password-less&#8217; remote access. No any components
+(excluding very first named starting which is done by the system rc.*
+files) is running as a root, which increases security.</p>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<h2>&nbsp;<o:p></o:p></h2>
+<h2><a name="_Toc30857434"></a><a name="_Toc30859821"></a><a
+ name="_Toc35367229">Component interaction.</a></h2>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<ol style="margin-top: 0in;" start="1" type="1">
+  <li class="MsoNormal" style="">Name      servers, MySQL and apache
+are started by the operation systems;</li>
+  <li class="MsoNormal" style="">Operator      can browse, add, delete
+and edit zones, using web interface (see Picture1      as an example);</li>
+  <li class="MsoNormal" style="">When      everything is completed,
+&#8216;Update&#8217; operation is called. ProBIND makes &#8216;Update&#8217;      in the few
+steps, applied to all servers (operator can make this steps at once or
+do them one by one and check logs and files after every step):</li>
+  <ol style="margin-top: 0in;" start="1" type="a">
+    <li class="MsoNormal" style="">Generates       all configuration
+files for all name servers, using template directories       and
+database information; files are stored in the local directories;</li>
+    <li class="MsoNormal" style="">Run       &#8216;Push&#8217; scripts which
+synchronizes content of configuration directories on       the local and
+remote system;</li>
+    <li class="MsoNormal" style="">Run       &#8216;reconfigure&#8217; scripts
+(they uses &#8216;rndc&#8217; program for bind9 and &#8216;ndc&#8217; for       bind8) which
+verifies configuration and reconfigure the servers;</li>
+    <li class="MsoNormal" style="">Run       (manually) tests which
+allows to send request and verify an answers;</li>
+    <li class="MsoNormal" style="">Save       changes into the CVS (if
+configured) to allow simple rollback of the       zones.</li>
+  </ol>
+  <li class="MsoNormal" style="">To      minimize possible risk of
+failure, system applies changes onto the servers      that need it (for
+example, if zone content changed, no any changes will be      applied to
+the slave servers).</li>
+</ol>
+<p class="MsoNormal" style="margin-left: 0.25in;">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal" style="margin-left: 0.25in;">&nbsp;<o:p></o:p></p>
+<h2><a name="_Toc30857435"></a><a name="_Toc30859822"></a><a
+ name="_Toc35367230">Additional features:</a></h2>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">ProBIND system supports a set of additional
+services:</p>
+<ol style="margin-top: 0in;" start="1" type="1">
+  <li class="MsoNormal" style="">Automatic      generation of the &#8216;PTR&#8217;
+records by the &#8216;A&#8217; records (controlled by the      checkbox); it
+generate this record during zone generation and has not a      problem
+of dead PTR records (after A record was removed);</li>
+  <li class="MsoNormal" style="">Duplicate      A and PTR records
+detection &#8211; verify data base and shows all multiple A      and PTR
+records;</li>
+  <li class="MsoNormal" style="">IP      address allocation &#8211; allow to
+find unused IP addresses, shows duplicate      names on the same
+address, and so on;</li>
+  <li class="MsoNormal" style="">Lame      delegation and MX violation
+check &#8211; useful for the external zones;</li>
+  <li class="MsoNormal" style="">Bulk      update &#8211; allows to
+regenerate all files (with the new serial numbers);</li>
+  <li class="MsoNormal" style="">Log      and configuration access &#8211;
+allows to view configuration files and logs      from the web (so
+eliminates local logins to the remote systems and      increases overall
+security);</li>
+  <li class="MsoNormal" style="">Server      tests &#8211; sends requests and
+show answers to the DNS system.</li>
+  <li class="MsoNormal" style="">Serial      numbers include date,
+allowing to restore database from dump and to apply      them&nbsp; to
+the servers without manual      removing of the sticked secondary zones
+(which happens if convenient file      backup is restored and zones got
+old Serial numbers &#8211; it often results      into the desynchronization.</li>
+  <li class="MsoNormal" style="">Configuration      directories
+(named.conf and zones) are saved into the CVS, which allow to restore
+old version or to compare configuration files. (Saving database  into
+the cvs can be easily added to the system, it allows to rollback any   
+changes without any manual manipulations with the serial numbers).</li>
+</ol>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">ProBIND system supports a convenient control over
+the zones and records &#8211; it allows disabling zones and records temporary
+(without removing information from the data base), and supports comments
+to the zones and records. First feature is very important because it
+makes zone cleaning much safer &#8211; it is always possible to disable a
+record, and remove it only after a few days of running without the
+problems (or enable it back if it cause any problems).</p>
+<h1><a name="mozTocId535522" class="mozTocH1"></a><a name="_Toc30859823"></a><a
+ name="_Toc35367231">Access control</a></h1>
+<p class="MsoNormal">ProBIND version 2 uses standard apache security
+and access control. Two gropups are used:</p>
+<ol style="margin-top: 0in;" start="1" type="1">
+  <li class="MsoNormal" style="">dns&nbsp; - allows to browser, view
+and edit      zones, update servers (without cleaning sticked locks),
+and use any      additional operations. Do not allow &#8211; to change system
+setting, add/delete      servers, add/delete zones, make bulk
+updates,&nbsp;clean locks.</li>
+  <li class="MsoNormal" style="">dnsadm      &#8211; allows all operations.</li>
+</ol>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">Security level is intranet rank &#8211; this means that
+system should not be opened to the outer world without extra level of
+protection; and no dns group can be granted to the un-trusted&nbsp;
+persons. This group protects against errors but do not protect against
+serious hacking.</p>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">Web access system includes web interface to the
+user and group list and replicates information for all web servers
+involved into the monitoring (SFO management system, log files access,
+and so on).</p>
+<h1><a name="mozTocId730482" class="mozTocH1"></a><a name="_Toc30859824"></a><a
+ name="_Toc35367232">Benefits</a></h1>
+<ol style="margin-top: 0in;" start="1" type="1">
+  <li class="MsoNormal" style="">Very      simple web based user
+interface, combined with the power and reliability      of the standard
+classical name server for Unix (bind 9);</li>
+  <li class="MsoNormal" style="">No      any manual operations, remote
+logins, file editions required for:</li>
+  <ol style="margin-top: 0in;" start="1" type="a">
+    <li class="MsoNormal" style="">Zone       adding and deleting;</li>
+    <li class="MsoNormal" style="">Zone       option change (such as
+zone access list);</li>
+    <li class="MsoNormal" style="">Server       option change (such as
+notify list);</li>
+    <li class="MsoNormal" style="">Zone       viewing and editing;</li>
+    <li class="MsoNormal" style="">Serial       number change;</li>
+    <li class="MsoNormal" style="">Configuration       verification and
+applying.</li>
+  </ol>
+  <li class="MsoNormal" style="">Embedded      name server testing,
+file view and log access (no need for the local      access once again);</li>
+  <li class="MsoNormal" style="">Automatic      serial synchronization
+in case of a few master servers (it is important      for production
+because name server must work even if zones expired or      master
+server die, so few masters increase reliability);</li>
+  <li class="MsoNormal" style="">Automatic      PTR generation on the
+fly (no chance to stick PTR after A record was      deleted);</li>
+  <li class="MsoNormal" style="">Disabling      records and zones
+without deleting them decrease a risk of mistake during      zone
+cleaning and allow introducing temporary changes.</li>
+  <li class="MsoNormal" style="">IP      range control makes IP
+allocation easy and safe;</li>
+  <li class="MsoNormal" style="">Central      data base allow to deploy
+new name server (in addition or instead      of existing one) instantly;</li>
+  <li class="MsoNormal" style="">Separating      data base and
+configuration files allows to work without any interruption      in case
+of the data base failure, and MySQL database allows to deploy new
+management station in a few days on a new platform.</li>
+  <li class="MsoNormal" style="">Web      access allows easy
+integration with the authentication systems and into      the network
+management system (which must always be WEB based).</li>
+</ol>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<h1><a name="mozTocId322364" class="mozTocH1"></a><a name="_Toc30859827"></a><a
+ name="_Toc35367233">Additional documents.</a></h1>
+<ol style="margin-top: 0in;" start="1" type="1">
+  <li class="MsoNormal" style=""><a href="manual.html">ProBIND
+operational guide </a>, version 2.0.</li>
+  <li class="MsoNormal" style=""><a href="Install.html">ProBIND2
+Instatllation guide</a>.</li>
+</ol>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<h1><a name="mozTocId893830" class="mozTocH1"></a>Required software.</h1>
+<ol style="margin-top: 0in;" start="1" type="1">
+  <li class="MsoNormal" style="">Management      system:</li>
+  <ol style="margin-top: 0in;" start="1" type="a">
+    <li class="MsoNormal" style="">Apache       1.37;</li>
+    <li class="MsoNormal" style="">MySQL       database system;</li>
+    <li class="MsoNormal" style="">PhP4       scripting (apache module
+and standalone interpreter);</li>
+    <li class="MsoNormal" style="">Perl5       and some modules for it
+(for DNS testing and verification).</li>
+    <li class="MsoNormal" style="">(optionally)       cvs.</li>
+  </ol>
+  <li class="MsoNormal" style="">DNS      servers:</li>
+  <ol style="margin-top: 0in;" start="1" type="a">
+    <li class="MsoNormal" style="">bind9       or bind8 name server;</li>
+    <li class="MsoNormal" style="">ssh       and rsync,</li>
+  </ol>
+</ol>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+</div>
+</body>
+</html>

@@ -1,627 +1,615 @@
-<HTML>
-<HEAD>
-<TITLE>ProBIND Users Manual</TITLE>
-<LINK rel="stylesheet" href="style.css" type="text/css">
-</HEAD>
-<BODY bgcolor="#cccc99" background="images/BG-shadowleft.gif">
-
-<TABLE width="100%">
-<TR>
-  <TD align=left valign=bottom><H1>ProBIND Users Manual</H1></TD>
-  <TD align=right valign=top>
-    <A HREF="http://probind.sourceforge.net" target="_top">
-    <IMG SRC="images/probind.gif" alt="ProBIND home page" BORDER=0>
-    </A>
-  </TD>
-</TR>
-</TABLE>
-<P>
-This is the manual for ProBIND, release 2.0. ProBIND is an application 
-for managing DNS servers. The present release is probably not suitable
-for users who are not knowledgeable about DNS in general. If you want
-to learn about DNS in general, or BIND in particular, then I highly
-recommend <A HREF="http://www.oreilly.com/catalog/dns3">DNS and BIND</A>.
-
-<H2>Index</H2>
-<P>
-The following sections describe each page of the ProBIND application, 
-sorted by their place in the menu bar across the top of the page. This
-bar is always visible. The start page is identical to the "Browse zones"
-page.
-<P>
-<UL>
-<LI><A HREF="#about">About ProBIND</A>
-<LI><A HREF="#add">Adding a zone</A>
-<LI><A HREF="#del">Deleting a zone</A>
-<LI><A HREF="#zones">Browsing zones (start page)</A>
-<LI><A HREF="#records">Browsing Records</A>
-<LI><A HREF="#misc">Miscellaneous tools</A>
-<UL>
-<LI><A HREF="#stats">Statistics</A>
-<LI><A HREF="#ext">External consistency</A>
-<LI><A HREF="#int">Internal consistency</A>
-<LI><A HREF="#list">Domain report</A>
-<LI><A HREF="#ip">IP ranges</A>
-<LI><A HREF="#bulk">Bulk update</A>
-<LI><A HREF="#settings">Settings</A>
-<LI><A HREF="#servers">Servers</A>
-</UL>
-<LI><A HREF="#push">Pushing updates</A>
-<LI><A HREF="#import">Import</A>
-<LI><A HREF="#license">License</A>
-</UL>
-
-<H2><A NAME="about">About ProBIND</A></H2>
-<P>
-ProBIND is a web application for administrating one or more BIND servers.
-It is intended for small to medium sized ISPs, but there is no reason
-why it couldn't be used wherever many zones must be managed across
-a set of master and slave servers. Version 2.0 was adapted for the middle size 
-corporative network.
-<P>
-ProBIND is written in PHP4, and uses a MySQL database for storing all
-information about the DNS servers managed. The database contents are
-pushed onto the DNS servers only when a ProBIND user explicitly requests
-it (it is also possible to execute the update from a cron job). The
-update is done by generating configuration- and zone files based on the
-information in the database. The files are then uploaded to the DNS servers.
-<P>
-The strengths of ProBIND are:
-<UL>
-<LI>You can easily search zones, either by domain name or a free-text
-search on zone annotations.
-
-<LI> You can search for records across all zones, e.g. to find all WWW
-records that are CNAMES, and which point to a host with the string
-"foo" in its name.
-
-<LI> For those who often create zones which have a lot of standard fluff, 
-e.g. standard TXT and MX records, the TEMPLATE pseudo-zone will help.
-When creating a new zone, the contents of the TEMPLATE pseudo-zone
-are copied into the new zone.
-
-<LI> You can add comments to the records, zones and servers.
-
-<LI> NS records are automatically generated for all your zones. You
-may never have to add a single NS record to your database.
-
-<LI> If you let ProBIND handle your reverse zones (the in-addr.arpa zones),
-it will automatically generate PTR records for all A records in the database.
-You may never have to add a single PTR record to your database.
-</UL>
-
-<H2><A NAME="add">Adding a zone</A></H2>
-<P>
-This page has two sections, separated by a horizontal bar. You 
-create either a new master zone or a slave zone, by filling out 
-the fields and clicking the "Add" button in the appropriate section.
-The domain name you enter is checked for
-basic syntax, i.e. it must contain at least one dot, and it may not
-already exist in the database.
-<P>
-A master domain is one that has been delegated to the DNS servers
-you manage with ProBIND, by an outside domain registry, e.g. NSI. 
-When you create a master zone, the zone is initialized with a
-copy of the records in the TEMPLATE pseudo-zone.
-<P>
-A slave zone is one that is managed elsewhere, but which your server
-is a backup for. The zone data will be fetched from the master
-server you specify. You can specify either an IP number or a hostname
-as the master server, but if you specify a hostname, that hostname
-must be resolvable.
-
-<P>Each zone can contain options, which will be added into the zone description 
-in the named.conf file on master servers (options are not applied to the zones on slave servers).
-By default, options are inherited from the TEMPLATE zone and can be edited in 'details' section.
-
-<H2><A NAME="del">Deleting a zone</A></H2>
-<P>
-Enter the full name of the zone you wish to delete, and click on the
-"Delete" button. You will be prompted for a confirmation before the deletion
-takes place. 
-<P>
-If you would rather point and click to identify the zone to be deleted,
-then locate the zone on the <A HREF="#zones">Browse zones</A> page, and 
-click on the "Delete" button on the zone page.
-<P>
-NB: There is no "undelete" feature in ProBIND. So watch your clicks. When you delete a zone,
-you will be requested to confirm operation one more time, but after it, zone can not be 'undeleted'.
-
-<H2><A NAME="zones">Browsing zones</A></H2>
-<P>
-This is the main page in ProBIND. The area below the main menu bar is 
-split into two frames. The left frame is used to search and list zones 
-from the database. The right frame is used to display the contents of
-individual zones selected in the left frame.
-<P>
-In the left frame, you select what to search in: All zones, all master
-zones, all slave zones, or the annotations on the zones. This is
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>ProBIND Users Manual</title>
+  <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="#cccc99" background="images/BG-shadowleft.gif">
+<table width="100%">
+  <tbody>
+    <tr>
+      <td align="left" valign="bottom">
+      <h1>ProBIND Users Manual</h1>
+      </td>
+      <td align="right" valign="top"> <a
+ href="http://probind.sourceforge.net" target="_top"> <img
+ src="images/probind.gif" alt="ProBIND home page" border="0"> </a> </td>
+    </tr>
+  </tbody>
+</table>
+<p><o:p></o:p> </p>
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 40%; margin-left: auto; margin-right: 0px;">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">Document author:</td>
+      <td style="vertical-align: top;">Alexei Roudnev<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Date:<br>
+      </td>
+      <td style="vertical-align: top;">22 Mart 2003<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Version:<br>
+      </td>
+      <td style="vertical-align: top;">2.0<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Status:<br>
+      </td>
+      <td style="vertical-align: top;">Release<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div class="MsoNormal" align="center" style="text-align: center;">
+<hr size="3" width="100%" align="center"> </div>
+<p> This is the manual for ProBIND, release 2.0. ProBIND is an
+application for managing DNS servers. The present release is probably
+not suitable for users who are not knowledgeable about DNS in general.
+If you want to learn about DNS in general, or BIND in particular, then I
+highly recommend <a href="http://www.oreilly.com/catalog/dns3">DNS and
+BIND</a>. </p>
+<h2>Index</h2>
+<p> The following sections describe each page of the ProBIND
+application, sorted by their place in the menu bar across the top of the
+page. This bar is always visible. The start page is identical to the
+"Browse zones" page. </p>
+<p> </p>
+<ul>
+  <li><a href="#about">About ProBIND</a> </li>
+  <li><a href="#add">Adding a zone</a> </li>
+  <li><a href="#del">Deleting a zone</a> </li>
+  <li><a href="#zones">Browsing zones (start page)</a> </li>
+  <li><a href="#records">Browsing Records</a> </li>
+  <li><a href="#misc">Miscellaneous tools</a>
+    <ul>
+      <li><a href="#stats">Statistics</a> </li>
+      <li><a href="#ext">External consistency</a> </li>
+      <li><a href="#int">Internal consistency</a> </li>
+      <li><a href="#list">Domain report</a> </li>
+      <li><a href="#ip">IP ranges</a> </li>
+      <li><a href="#bulk">Bulk update</a> </li>
+      <li><a href="#settings">Settings</a> </li>
+      <li><a href="#servers">Servers</a> </li>
+    </ul>
+  </li>
+  <li><a href="#push">Pushing updates</a> </li>
+  <li><a href="#import">Import</a> </li>
+  <li><a href="#license">License</a> </li>
+</ul>
+<h2><a name="about">About ProBIND</a></h2>
+<p> ProBIND is a web application for administrating one or more BIND
+servers. It is intended for small to medium sized ISPs, but there is no
+reason why it couldn't be used wherever many zones must be managed
+across a set of master and slave servers. Version 2.0 was adapted for
+the middle size corporative network. </p>
+<p> ProBIND is written in PHP4, and uses a MySQL database for storing
+all information about the DNS servers managed. The database contents are
+pushed onto the DNS servers only when a ProBIND user explicitly
+requests it (it is also possible to execute the update from a cron job).
+The update is done by generating configuration- and zone files based on
+the information in the database. The files are then uploaded to the DNS
+servers. </p>
+<p> The strengths of ProBIND are: </p>
+<ul>
+  <li>You can easily search zones, either by domain name or a free-text
+search on zone annotations. </li>
+  <li> You can search for records across all zones, e.g. to find all WWW
+records that are CNAMES, and which point to a host with the string "foo"
+in its name. </li>
+  <li> For those who often create zones which have a lot of standard
+fluff, e.g. standard TXT and MX records, the TEMPLATE pseudo-zone will
+help. When creating a new zone, the contents of the TEMPLATE pseudo-zone
+are copied into the new zone. </li>
+  <li> You can add comments to the records, zones and servers. </li>
+  <li> NS records are automatically generated for all your zones. You
+may never have to add a single NS record to your database. </li>
+  <li> If you let ProBIND handle your reverse zones (the in-addr.arpa
+zones), it will automatically generate PTR records for all A records in
+the database. You may never have to add a single PTR record to your
+database. </li>
+</ul>
+<h2><a name="add">Adding a zone</a></h2>
+<p> This page has two sections, separated by a horizontal bar. You
+create either a new master zone or a slave zone, by filling out the
+fields and clicking the "Add" button in the appropriate section. The
+domain name you enter is checked for basic syntax, i.e. it must contain
+at least one dot, and it may not already exist in the database. </p>
+<p> A master domain is one that has been delegated to the DNS servers
+you manage with ProBIND, by an outside domain registry, e.g. NSI. When
+you create a master zone, the zone is initialized with a copy of the
+records in the TEMPLATE pseudo-zone. </p>
+<p> A slave zone is one that is managed elsewhere, but which your server
+is a backup for. The zone data will be fetched from the master server
+you specify. You can specify either an IP number or a hostname as the
+master server, but if you specify a hostname, that hostname must be
+resolvable. </p>
+<p>Each zone can contain options, which will be added into the zone
+description in the named.conf file on master servers (options are not
+applied to the zones on slave servers). By default, options are
+inherited from the TEMPLATE zone and can be edited in 'details' section. </p>
+<h2><a name="del">Deleting a zone</a></h2>
+<p> Enter the full name of the zone you wish to delete, and click on the
+"Delete" button. You will be prompted for a confirmation before the
+deletion takes place. </p>
+<p> If you would rather point and click to identify the zone to be
+deleted, then locate the zone on the <a href="#zones">Browse zones</a>
+page, and click on the "Delete" button on the zone page. </p>
+<p> NB: There is no "undelete" feature in ProBIND. So watch your clicks.
+When you delete a zone, you will be requested to confirm operation one
+more time, but after it, zone can not be 'undeleted'. </p>
+<h2><a name="zones">Browsing zones</a></h2>
+<p> This is the main page in ProBIND. The area below the main menu bar
+is split into two frames. The left frame is used to search and list
+zones from the database. The right frame is used to display the contents
+of individual zones selected in the left frame. </p>
+<p> In the left frame, you select what to search in: All zones, all
+master zones, all slave zones, or the annotations on the zones. This is
 combined with the text in the "For" field, to extract a list of matching
 zones from the database. The search is of the case-insensitive substring
-variety. Some examples:
-<UL>
-<LI>To list all zones in the database, select "All zones", clear the
-text field and click on "Search".
-<LI>To list all .com zones you have authoritative information for, select
-"Master zones", enter ".com" (without the quotes) in the text field and
-click on Search.
-<LI>To find all zones where the annotations have been modified in October,
-select "Annotations" and enter "oct" in the text field. Then click "Search".
-This assumes that the people who maintain the annotations date their entries.
-<LI>To find all slave zones in the database, select "Slave zones" and
-clear the text field. Then click on "Search".
-</UL>
-<P>
-The display in the right frame consists of three distinct types of information:
-Zone parameters, explicit resource records and automatically generated 
-(implicit) resource records.
-<P>The zone parameter block on top begins with the name of the zone
-being displayed, and contain two buttons: "Details", and  "Update".
-In between there are 6 fields, 5 of which can be modified:
-<UL>
-<LI>The Zonefile is the filename of the zonefile on the DNS servers. This
-name is automatically generated when you create a zone, or it is 
-inherited from the original zone file that was <A HREF="#import">imported</A> 
-into the database. Normally, you would have no need to change this.
-<LI>The Serial no. field contains the last serial number used to update
-the zonefile on the DNS servers. This field is automatically updated
-each time you perform the <A HREF="#push">Push updates</A> operation.
-Normally, you would have no need to change this.
-<LI>Refresh interval. This is how often a secondary (slave) DNS server
-shall check with the master for updates. When the zone is created, 
-this value is inherited from the TEMPLATE zone. NB: Refresh and retry
-values are less important with modern (BIND8) DNS serves, as they implement
-the NOTIFY scheme described in RFC1996.
-<LI>Retry period. If a secondary DNS server cannot reach a master server, 
-this is the period it will wait before retrying.
-<LI>Expire period. This is how long a secondary DNS server will remember
-zone data from a master server it cannot reach. At the end of this interval,
-all data for a zone are discarded.
-<LI>Updated. This flag displays the status of the zone in the database. "No"
-means that the zone data have not been updated since the last time the 
-database was synchronized with the DNS servers. "Yes" means that is has.
-</UL>
+variety. Some examples: </p>
+<ul>
+  <li>To list all zones in the database, select "All zones", clear the
+text field and click on "Search". </li>
+  <li>To list all .com zones you have authoritative information for,
+select "Master zones", enter ".com" (without the quotes) in the text
+field and click on Search. </li>
+  <li>To find all zones where the annotations have been modified in
+October, select "Annotations" and enter "oct" in the text field. Then
+click "Search". This assumes that the people who maintain the
+annotations date their entries. </li>
+  <li>To find all slave zones in the database, select "Slave zones" and
+clear the text field. Then click on "Search". </li>
+</ul>
+<p> The display in the right frame consists of three distinct types of
+information: Zone parameters, explicit resource records and
+automatically generated (implicit) resource records. </p>
+<p>The zone parameter block on top begins with the name of the zone
+being displayed, and contain two buttons: "Details", and  "Update". In
+between there are 6 fields, 5 of which can be modified: </p>
+<ul>
+  <li>The Zonefile is the filename of the zonefile on the DNS servers.
+This name is automatically generated when you create a zone, or it is
+inherited from the original zone file that was <a href="#import">imported</a>
+into the database. Normally, you would have no need to change this. </li>
+  <li>The Serial no. field contains the last serial number used to
+update the zonefile on the DNS servers. This field is automatically
+updated each time you perform the <a href="#push">Push updates</a>
+operation. Normally, you would have no need to change this. </li>
+  <li>Refresh interval. This is how often a secondary (slave) DNS
+server shall check with the master for updates. When the zone is
+created, this value is inherited from the TEMPLATE zone. NB: Refresh and
+retry values are less important with modern (BIND8) DNS serves, as they
+implement the NOTIFY scheme described in RFC1996. </li>
+  <li>Retry period. If a secondary DNS server cannot reach a master
+server, this is the period it will wait before retrying. </li>
+  <li>Expire period. This is how long a secondary DNS server will
+remember zone data from a master server it cannot reach. At the end of
+this interval, all data for a zone are discarded. </li>
+  <li>Updated. This flag displays the status of the zone in the
+database. "No" means that the zone data have not been updated since the
+last time the database was synchronized with the DNS servers. "Yes"
+means that is has. </li>
+</ul>
 For a discussion of these parameters, and recommendations for their
-values, see the <A HREF="http://www.ripe.net/ripe/docs/ripe-203.html">
-RIPE recommendations</A>.
-<P>
-The buttons have the following uses:
-<UL>
-<LI>"Details" takes you to a sub-page that contains zone configuration options (which should be
-changed by experts only) and information about when
-the zone was created in the database, when it was last changed and a text
-annotation. The annotation is useful both as a place to document e.g.
-contact information about a zone, and as a log book where the DNS
-maintainers can describe what they did, and when.
-<LI>"Update". Click on this button after updating any of the text fields
-above, or if you just want this zone to be in the next upload of the
-database to the DNS servers.
-</UL>
-<P>Next section begins with "Add RR" button, and can be in one of two forms - "view" form when
-it shows the whole zone and allow to edit single RR only, and "edit" form when all records can 
-be edited on this page. The reason is simple - "edit" mode does not allow to use "find on the page"
-feature of the browthers, and is slow in case of a very long (thousand records) zone.
-This section will contain a set of buttons:
-<UL>
-<LI>"Add RR" takes you to a sub-page where you can add Resource Records
-to the zone.
-<LI>"Edit zone (total)" (view mode only) - switch to edit mode;
-<LI>"edit" - allow to edit a single RR record;
-<LI>"Delete Zone?" does just that - it takes you to a form where you must confirm
-your intention to delete the displayed zone.
-</UL>
-<P>
-After the button row follows the explicit resource records. These are just
-the records which have been entered in the database, either manually, or
-<A HREF="#import">imported</A>. There will always be an SOA record, which
-cannot be deleted, and where you can only change the TTL (Time To Live)
-value. NB: If you change the TTL for the SOA record, you will also change
-the TTL for all implicit resource records, and for all those explicit
-resource records that had the same TTL as the SOA record. The TTL in the
-SOA record also becomes the default TTL for new resource records.
-<P>
-There is an "Upd" (for update) and "Del" (for delete) button for each
-resource record. These buttons updates the RR in the database, or deletes
-it, respectively. NB: The "Upd" button affects all resource record
-changed on the screen. When you change a record, the button for it changes it's color, 
-but you can continue with other records and press any of this butons in the very end.
-So if you want to update a lot of records, you
-have to change this records, and then press any "Upd" button. In "view" mode, you
-have to press "edit" button next to the record to edit this record, or you can 
-press "Edit zone (total)" button and edit as much records as you need.
-<P>Button "Delete zone" in the end of edit zone send you to the "Delete zone" page where
-you will be requested to confirm deletion once more time.
-<P>
-The last part of the zone display is the implicit resource records. These
-records do not exist in the database, and you cannot manipulate them
-directly. They will exist in the zone files uploaded to the DNS servers.
-For most zones, this will just be the NS records implied by the DNS
-server descriptions you enter on the <A HREF="#servers">DNS servers</A>
+values, see the <a href="http://www.ripe.net/ripe/docs/ripe-203.html">
+RIPE recommendations</a>.
+<p> The buttons have the following uses: </p>
+<ul>
+  <li>"Details" takes you to a sub-page that contains zone
+configuration options (which should be changed by experts only) and
+information about when the zone was created in the database, when it was
+last changed and a text annotation. The annotation is useful both as a
+place to document e.g. contact information about a zone, and as a log
+book where the DNS maintainers can describe what they did, and when. </li>
+  <li>"Update". Click on this button after updating any of the text
+fields above, or if you just want this zone to be in the next upload of
+the database to the DNS servers. </li>
+</ul>
+<p>Next section begins with "Add RR" button, and can be in one of two
+forms - "view" form when it shows the whole zone and allow to edit
+single RR only, and "edit" form when all records can be edited on this
+page. The reason is simple - "edit" mode does not allow to use "find on
+the page" feature of the browthers, and is slow in case of a very long
+(thousand records) zone. This section will contain a set of buttons: </p>
+<ul>
+  <li>"Add RR" takes you to a sub-page where you can add Resource
+Records to the zone. </li>
+  <li>"Edit zone (total)" (view mode only) - switch to edit mode; </li>
+  <li>"edit" - allow to edit a single RR record; </li>
+  <li>"Delete Zone?" does just that - it takes you to a form where you
+must confirm your intention to delete the displayed zone. </li>
+</ul>
+<p> After the button row follows the explicit resource records. These
+are just the records which have been entered in the database, either
+manually, or <a href="#import">imported</a>. There will always be an
+SOA record, which cannot be deleted, and where you can only change the
+TTL (Time To Live) value. NB: If you change the TTL for the SOA record,
+you will also change the TTL for all implicit resource records, and for
+all those explicit resource records that had the same TTL as the SOA
+record. The TTL in the SOA record also becomes the default TTL for new
+resource records. </p>
+<p> There is an "Upd" (for update) and "Del" (for delete) button for
+each resource record. These buttons updates the RR in the database, or
+deletes it, respectively. NB: The "Upd" button affects all resource
+record changed on the screen. When you change a record, the button for
+it changes it's color, but you can continue with other records and press
+any of this butons in the very end. So if you want to update a lot of
+records, you have to change this records, and then press any "Upd"
+button. In "view" mode, you have to press "edit" button next to the
+record to edit this record, or you can press "Edit zone (total)" button
+and edit as much records as you need. </p>
+<p>Button "Delete zone" in the end of edit zone send you to the "Delete
+zone" page where you will be requested to confirm deletion once more
+time. </p>
+<p> The last part of the zone display is the implicit resource records.
+These records do not exist in the database, and you cannot manipulate
+them directly. They will exist in the zone files uploaded to the DNS
+servers. For most zones, this will just be the NS records implied by the
+DNS server descriptions you enter on the <a href="#servers">DNS servers</a>
 page. For in-addr.arpa zones, PTR records implied by A records in the
-database will also appear.
-
-<H2><A NAME="records">Browsing records</A></H2>
-<P>
-On this page you can browse the resource records in the database. NB:
-you can only browse explicit records, not the implicit ones you can see 
-in the bottom of the zone display when you <A HREF="#zones">browse
-zones</A>. 
-<P>
-This page consists of 5 entry fields and a "Search" button. You can
-leave any field blank, in which case it wont influence the search.
-If you fill out more than one field, only resource records which match
-all your criteria will be returned.  The fields are:
-<UL>
-<LI>Zone. This is the domain name of the zone containing records, e.g.
-example.com
-<LI>Domain. This is the domain name of the record you are looking for, e.g.
-www.
-<LI>Type. This is the resource record type, e.g. A.
-<LI>Pref. This is the preference value for MX records.
-<LI>Data. This is the RDATA field of the resource record, e.g. an IP number.
-</UL>
+database will also appear. </p>
+<h2><a name="records">Browsing records</a></h2>
+<p> On this page you can browse the resource records in the database.
+NB: you can only browse explicit records, not the implicit ones you can
+see in the bottom of the zone display when you <a href="#zones">browse
+zones</a>. </p>
+<p> This page consists of 5 entry fields and a "Search" button. You can
+leave any field blank, in which case it wont influence the search. If
+you fill out more than one field, only resource records which match all
+your criteria will be returned.  The fields are: </p>
+<ul>
+  <li>Zone. This is the domain name of the zone containing records,
+e.g. example.com </li>
+  <li>Domain. This is the domain name of the record you are looking
+for, e.g. www. </li>
+  <li>Type. This is the resource record type, e.g. A. </li>
+  <li>Pref. This is the preference value for MX records. </li>
+  <li>Data. This is the RDATA field of the resource record, e.g. an IP
+number. </li>
+</ul>
 In all fields, except the type field, you can specify a substring match
-by applying the '%' as a wildcard. E.g., if you want to find all 'www' 
-records in .net domains, you would enter '%.net' in the Zone field, and 
+by applying the '%' as a wildcard. E.g., if you want to find all 'www'
+records in .net domains, you would enter '%.net' in the Zone field, and
 'www' in the Domain field.
-<P>
-When you click on the "Search" button, you get a page back with the 
-search form at the top, in case you want to refine your search
-criteria. Below this, you get a list of the records which match your
-search criteria. If more than 50 records were found, use the Next and
-Previous buttons to navigate through the list.
-
-<H2><A NAME="misc">Miscellaneous tools</A></H2>
-<P>
-When you click on "Misc. tools" in the main menu bar, you get a second
-menu bar with 7 choices:
-
-<H3><A NAME="stats">Statistics</A></H3>
-<P>
-The statistics display is the default display of the "tools" pages. It
-contains a count of all zones and (explicit) resource records in the 
-database, and a summary of the DNS server descriptions.
-<P>
-If the database contains updates which have not yet been uploaded to the
-DNS servers, this page will also have a list of zones which have been added,
-updated or deleted since the last time the DNS servers were brought up
-to date.
-<P>
-NB: Sometimes you may see that one or more in-addr.arpa zones in the
-list of changed zones, even if no one have touched them. The explanation 
+<p> When you click on the "Search" button, you get a page back with the
+search form at the top, in case you want to refine your search criteria.
+Below this, you get a list of the records which match your search
+criteria. If more than 50 records were found, use the Next and Previous
+buttons to navigate through the list. </p>
+<h2><a name="misc">Miscellaneous tools</a></h2>
+<p> When you click on "Misc. tools" in the main menu bar, you get a
+second menu bar with 7 choices: </p>
+<h3><a name="stats">Statistics</a></h3>
+<p> The statistics display is the default display of the "tools" pages.
+It contains a count of all zones and (explicit) resource records in the
+database, and a summary of the DNS server descriptions. </p>
+<p> If the database contains updates which have not yet been uploaded to
+the DNS servers, this page will also have a list of zones which have
+been added, updated or deleted since the last time the DNS servers were
+brought up to date. </p>
+<p> NB: Sometimes you may see that one or more in-addr.arpa zones in the
+list of changed zones, even if no one have touched them. The explanation
 is that changes to other zones have touched one or more A records, with
-IP numbers which correspond to those in-addr.arpa zones. This insures that
-changes to A records will also result in changes to the automatically
-generated PTR records on the DNS servers.
-
-<H3><A NAME="ext">External consistency checks</A></H3>
-<P>
-There are two different kinds of external consistency checks: One that
-finds all lame delegations, and one that finds all delegations which are
-not quite lame, but which do not quite match the NS servers known to the
-database either.
-<P>
-Both types of consistency checks require the hostname or IP number of a
-DNS server <B>NOT</B> managed by this ProBIND installation. The whole
-idea of having an external consistency check is to check that you are
-in agreement with the outside world, and you can only do that by asking
-a name server controlled by someone else. 
-<P>
-The name server field will contain a default external DNS server. This
-default value is controlled by the DEFAULT EXTERNAL DNS value in the
-<A HREF="#settings">settings</A>.
-
-<H3><A NAME="int">Internal consistency checks</A></H3>
-<P>
-Currently, there are four kinds of internal consistency checks. Actually,
-it would be more accurate to call them checks for well-formedness of the
-database. Except for the "Find resource records with invalid data" check,
-none of the records found by these checks are necessarily errors.
-<P>
-<UL>
-<LI>Find PTR records with no matching A records. This can be useful if 
-you have <A HREF="#import">imported></A> a lot of data, and now have 
-doubts about whether they are all current.
-<LI>Find multiple A records for the same IP address. Having many A records
-which point to the same IP number is common practice today. But sometimes
-it is nice to get a list of all the places it is done. 
-<LI>Find zones with too few MX records. There is nothing wrong with
-not having any MX records for a zone, it can be a deliberate decision. But
-if you have <A HREF="#import">imported</A> a lot of zones, it can be nice
-to verify that they all have the expected minimum of two MX'es.
-<LI>Find resource records with invalid data. Any records returned by this
-check <B>are</B> errors. All MX records are checked for a preference value.
-All A records are checked to make sure that they point to an IP number.
-</UL>
-
-<H3><A NAME="list">Annotated domain list</A></H3>
-<P>
-This page can be very long. It is a list of all domains contained in the
-database, as well as any existing annotations for those domains.
-
-<H3><A NAME="ip">IP range display</A></H3>
-<P>
-This page is utterly useless if you have no reverse (in-addr.arpa) zones
-in your database. It gives you a condensed view of which IP numbers have
-been allocated.
-
-<H3><A NAME="bulk">Bulk update</A></H3>
-<P>
-Sometimes, the mechanism for deciding which zones needs to be updated on
-the DNS servers is just not good enough. E.g. if you have added a new
-DNS server, if one of your DNS servers appears to have missed some updates,
-or if you change the RNAME setting. In those situations, you want to make
-sure that all your DNS servers get a complete upload of everything in the
-ProBIND database. 
-<P>
-This is what the bulk update feature is for. When you perform a bulk update,
-all data in the database are marked updated. This makes sure that the next
-<A HREF="#push">push updates</A> operation will upload the entire database
-to the DNS servers.
-<P>
-NB: You must confirm this operation by clicking on an appropriately
+IP numbers which correspond to those in-addr.arpa zones. This insures
+that changes to A records will also result in changes to the
+automatically generated PTR records on the DNS servers. </p>
+<h3><a name="ext">External consistency checks</a></h3>
+<p> There are two different kinds of external consistency checks: One
+that finds all lame delegations, and one that finds all delegations
+which are not quite lame, but which do not quite match the NS servers
+known to the database either. </p>
+<p> Both types of consistency checks require the hostname or IP number
+of a DNS server <b>NOT</b> managed by this ProBIND installation. The
+whole idea of having an external consistency check is to check that you
+are in agreement with the outside world, and you can only do that by
+asking a name server controlled by someone else. </p>
+<p> The name server field will contain a default external DNS server.
+This default value is controlled by the DEFAULT EXTERNAL DNS value in
+the <a href="#settings">settings</a>. </p>
+<h3><a name="int">Internal consistency checks</a></h3>
+<p> Currently, there are four kinds of internal consistency checks.
+Actually, it would be more accurate to call them checks for
+well-formedness of the database. Except for the "Find resource records
+with invalid data" check, none of the records found by these checks are
+necessarily errors. </p>
+<p> </p>
+<ul>
+  <li>Find PTR records with no matching A records. This can be useful
+if you have <a href="#import">imported&gt;</a> a lot of data, and now
+have doubts about whether they are all current. </li>
+  <li>Find multiple A records for the same IP address. Having many A
+records which point to the same IP number is common practice today. But
+sometimes it is nice to get a list of all the places it is done. </li>
+  <li>Find zones with too few MX records. There is nothing wrong with
+not having any MX records for a zone, it can be a deliberate decision.
+But if you have <a href="#import">imported</a> a lot of zones, it can be
+nice to verify that they all have the expected minimum of two MX'es. </li>
+  <li>Find resource records with invalid data. Any records returned by
+this check <b>are</b> errors. All MX records are checked for a
+preference value. All A records are checked to make sure that they point
+to an IP number. </li>
+</ul>
+<h3><a name="list">Annotated domain list</a></h3>
+<p> This page can be very long. It is a list of all domains contained in
+the database, as well as any existing annotations for those domains. </p>
+<h3><a name="ip">IP range display</a></h3>
+<p> This page is utterly useless if you have no reverse (in-addr.arpa)
+zones in your database. It gives you a condensed view of which IP
+numbers have been allocated. </p>
+<h3><a name="bulk">Bulk update</a></h3>
+<p> Sometimes, the mechanism for deciding which zones needs to be
+updated on the DNS servers is just not good enough. E.g. if you have
+added a new DNS server, if one of your DNS servers appears to have
+missed some updates, or if you change the RNAME setting. In those
+situations, you want to make sure that all your DNS servers get a
+complete upload of everything in the ProBIND database. </p>
+<p> This is what the bulk update feature is for. When you perform a bulk
+update, all data in the database are marked updated. This makes sure
+that the next <a href="#push">push updates</a> operation will upload the
+entire database to the DNS servers. </p>
+<p> NB: You must confirm this operation by clicking on an appropriately
 scary-looking button, since this can make the next DNS server update a
-very slow operation.
-
-<H3><A NAME="settings">Settings</A></H3>
-<P>
-On this page you control 4 ProBIND parameters which don't really fit anywhere
-else. This is also where you break hanging database locks. The parameters
-are:
-<UL>
-<LI>DEFAULT EXTERNAL DNS. This is the default DNS server suggested for the
-external consistency checks. This would normally be a DNS server operated
-by your upstream provider. 
-<LI>DEFAULT PTR DOMAIN. When generating the zone file for an in-addr.arpa
-zone, ProBIND automatically generates PTR records implied by A records
-elsewhere in the database. And, since some DNS administrators don't like
-to run with their arpa zones empty, it also generates PTR records for all
-IP numbers not explicitly allocated in the database. Those PTR records
-point to a host named "host-aaa-bbb-ccc-ddd" in the default PTR domain.
-E.g: if you enter "unassigned.mydomain.net" here, PTR records for your
-unassigned IP numbers will point to "host-aaa-bbb-ccc-ddd.unassigned.mydomain.net".
-<LI>Default MNAME. This is the MNAME parameter in the SOA records generated
-for your zones. The MNAME is the origin of your zones. This field should
-contain the name of your master DNS server.
-<LI>Default RNAME. This is the RNAME parameter in the SOA records generated
-for your zones. The RNAME is the email address for your DNS administrator.
-Traditionally, this would be root@yourdomain.net or hostmaster.mydomain.net.
-NB: It doesn't matter if you enter a '@' or a '.' here - ProBIND automatically
-converts it to the proper all-dots form.
-</UL>
-<P>
-Sometimes you will see an additional field, below the "Update settings"
-button. This will only happen when someone has started an operation that
-locks parts of the database, usually to make sure that the uploads to the
-DNS servers get a proper snapshot of the database. If this operation hangs,
-or does not complete for one reason or another, the database lock is
-not released. Before you use the provided button to break the lock, please
-wait a few minutes and reload this page.
-
-<H3><A NAME="servers">DNS servers</A></H3>
-<P>
-In order to function properly, ProBIND must have some information about the
-DNS servers it is supposed to manage. This is where you supply that 
-information. The page consists of a list of DNS servers already defined,
-and an "Add another server" button. Clicking on the button (or on one
-of the existing servers) takes you to a detailed DNS server description, 
-which must be correctly filled out:
-<UL>
-<LI>The name of the DNS server. This must be the fully qualified hostname.
-If your DNS server has multiple hostnames, take some care in selecting the
-proper one here.
-<LI>The IP number corresponding to the hostname must also be supplied.
-<LI>You must specify whether the server is a master or a slave. Only master
-servers receive full named.conf and zone files. Slave servers receive just
-enough information to request data from the masters. There are no restrictions
-on the number of masters and slaves you define, but it would be usual to 
-define at least one master.
-<LI>You must specify whether ProBIND should push updates to the DNS server
-or not. Why on earth would anyone define a DNS server here, but not want
-to update it? One reason could be a multi-homed DNS server that receives
-updates through one network interface (lets call it "inside"), but is 
-reachable by the general public only on another network interface (lets
-call it "outside"). In that situation you would define two DNS servers 
-here, one for each interface. The outside interface would be published
-in an NS record, but not updated, and the inside interface would be updated,
-but not published.
-<LI>You must also specify whether ProBIND should publish the existence
-of the DNS server in the NS records it generates. See the note above.
-<LI>ProBIND also needs to know which directory on the DNS server contains
-the named.conf and zone files.
-<LI>A great many DNS administrators wants or needs to add some global
+very slow operation. </p>
+<h3><a name="settings">Settings</a></h3>
+<p> On this page you control 4 ProBIND parameters which don't really fit
+anywhere else. This is also where you break hanging database locks. The
+parameters are: </p>
+<ul>
+  <li>DEFAULT EXTERNAL DNS. This is the default DNS server suggested
+for the external consistency checks. This would normally be a DNS server
+operated by your upstream provider. </li>
+  <li>DEFAULT PTR DOMAIN. When generating the zone file for an
+in-addr.arpa zone, ProBIND automatically generates PTR records implied
+by A records elsewhere in the database. And, since some DNS
+administrators don't like to run with their arpa zones empty, it also
+generates PTR records for all IP numbers not explicitly allocated in the
+database. Those PTR records point to a host named
+"host-aaa-bbb-ccc-ddd" in the default PTR domain. E.g: if you enter
+"unassigned.mydomain.net" here, PTR records for your unassigned IP
+numbers will point to "host-aaa-bbb-ccc-ddd.unassigned.mydomain.net".
+Special name, <span style="font-weight: bold;">NONE</span>, is used to
+turn off this feature.<br>
+  </li>
+  <li>Default MNAME. This is the MNAME parameter in the SOA records
+generated for your zones. The MNAME is the origin of your zones. This
+field should contain the name of your master DNS server. </li>
+  <li>Default RNAME. This is the RNAME parameter in the SOA records
+generated for your zones. The RNAME is the email address for your DNS
+administrator. Traditionally, this would be root@yourdomain.net or
+hostmaster.mydomain.net. NB: It doesn't matter if you enter a '@' or a
+'.' here - ProBIND automatically converts it to the proper all-dots
+form. </li>
+  <li>Two Step Update - if checked, turn on 2 step update mode, which
+allows to verify update logs before applying update to the remote name
+server (so increasing reliability).</li>
+  <li>Slave On Slaves -- in this mode, ProBIND allocate slave ones on
+all name servers. By default, slave zones are allocated on the master
+servers only.<br>
+  </li>
+</ul>
+<p> Sometimes you will see an additional field, below the "Update
+settings" button. This will only happen when someone has started an
+operation that locks parts of the database, usually to make sure that
+the uploads to the DNS servers get a proper snapshot of the database. If
+this operation hangs, or does not complete for one reason or another,
+the database lock is not released. Before you use the provided button
+to break the lock, please wait a few minutes and reload this page. </p>
+<h3><a name="servers">DNS servers</a></h3>
+<p> In order to function properly, ProBIND must have some information
+about the DNS servers it is supposed to manage. This is where you supply
+that information. The page consists of a list of DNS servers already
+defined, and an "Add another server" button. Clicking on the button (or
+on one of the existing servers) takes you to a detailed DNS server
+description, which must be correctly filled out: </p>
+<ul>
+  <li>The name of the DNS server. This must be the fully qualified
+hostname. If your DNS server has multiple hostnames, take some care in
+selecting the proper one here. </li>
+  <li>The IP number corresponding to the hostname must also be
+supplied. </li>
+  <li>You must specify whether the server is a master or a slave. Only
+master servers receive full named.conf and zone files. Slave servers
+receive just enough information to request data from the masters. There
+are no restrictions on the number of masters and slaves you define, but
+it would be usual to define at least one master. </li>
+  <li>You must specify whether ProBIND should push updates to the DNS
+server or not. Why on earth would anyone define a DNS server here, but
+not want to update it? One reason could be a multi-homed DNS server that
+receives updates through one network interface (lets call it "inside"),
+but is reachable by the general public only on another network
+interface (lets call it "outside"). In that situation you would define
+two DNS servers here, one for each interface. The outside interface
+would be published in an NS record, but not updated, and the inside
+interface would be updated, but not published. </li>
+  <li>You must also specify whether ProBIND should publish the
+existence of the DNS server in the NS records it generates. See the note
+above. </li>
+  <li>ProBIND also needs to know which directory on the DNS server
+contains the named.conf and zone files. </li>
+  <li>A great many DNS administrators wants or needs to add some global
 options to the named.conf file. This is indirectly supported in ProBIND
-through the use of templates, and directly by the server options.
-Every server is configured using a template directory, which is located in the 'templates' directory.
-Each template directory must contain  (at least) named.tmpl file, and contains (usially) 
-reconfig.sh script (which is called when configuration changed) and 
-such files and root.hint, localhost.rev zone and so on.
-Files from template directory are just copied to the server, except named.tmpl file which is used
-to generate real named.conf file. The template named.tmpl is essentially
-the entire named.conf file, except for the actual zone definitions. When 
-the named.conf file is prepared for upload to the DNS server, the template
-is read, and 4 macros are expanded: $ZONE_DIR, $OPTIONS, $ACL and   $ZONE_DEFINITIONS. They
-expand to the directory containing zone files, server options, list of secondary servers (for the access lists)
-and the actual zone definitions (whith zone options from the zone definitions),
-respectively. A minimal named.tmpl template would look like this (this template mean that you need 
-to create / import 0.0.127.in-addr.arpa zone)::
-<PRE>
-options {
-	directory "$ZONE_DIR";
-	$OPTIONS
-};
-
-$ZONE_DEFINITIONS
-
-zone "." {
-	type hint;
-	file "db.cache";
-};
-</PRE>
-<LI>ProBIND also needs to know how to upload the file to the DNS server. The
-script must exist in the sbin directory of the ProBIND installation. The
-script is called from a working directory containing the generated named.conf
-and all the zone files that must be uploaded. The script gets a list of operations - 
-'-PUSH' to push a files, and '-CONF' to run reconfiguration (it is ./reconmfig.sh file
-from the template directory), and two parameters:
-the hostname of the DNS server to update, and the directory on the server
-to upload to. Additionally, the working directory may contain a file named
-"deadlist". It will contain a list of zones which have been deleted from
-the database, and which should also be deleted from the DNS server. It is
-the responsibility of this script to restart the DNS server process after
-a successful upload. See the "push.local", "push.remote" and "nop" scripts for examples.
-<LI>Finally, you can add a bit of text to describe the server.
-</UL>
-
-<H2><A NAME="push">Push updates</A></H2>
-<P>
-The final operation in ProBIND is the step where the contents of the database
-is used top generate (update) configuration files for the name servers (this are named.conf, zone files
-and other files found in the template directory), push this files to the server, and reconfig the server.
-<P>
-"push" window contain checkboxes for all 3 operations:
-<UL>
-<LI>Generate files - system will generate files from data base if necessary;
-<LI>Push files - system will push files to the server if necessary;
-<LI>Reconfig server - system will ask a server to reconfigure if necessary;
-</UL>
-<P>Next raw contain main button, which name is 
- "START UPDATE" or "COMPLETE UPDATE" (if files was generated and pushed already),
-and table of the servers with the columns:
-<UL>
-<LI>state - can be green "OK" (no any operations necessary), yellow "need update", "need push" or "need reconfig"
-(update is necessary for this server), or red "error" (error had place during last update).
-<LI>Do not apply - thic checkbox blocks operation for this server; it is checked up itself if
-last update caused an error, to prevent more damage to the server;
-<LI>Test - calls test program for this server, which allow to send request and see results;
-<LI>View - allow to see named.conf file and server directory (with all files generated for
-the server);
-</UL>
-
-<P>
-If some servers has a yellow status, they need to be reconfigured.
-To reconfigure servers, just click on "START UPDATE" button. 
-Window below will show you update process, with a reference to the log file which
-contain output of all scripts which runned during this process. If two step (default) update is
-configured, system will show you 'yellow' status 'need reconfig' once again, and will check out 
-'Reconfig server' checkbox; just click on the 'COMPLETE UPDATE' once again.
-<P>
-It is a good idea to verify logs on the window below (just click on the 'LOG' message) before
-doing next step of reconfiguration.
-
-<P>
-In case of error, server will show you red 'error' message, and future update will be blocked;
-you need to determine (reading 'logs' and looking into the named.conf file) the reason of
-the error and correct it, then repeat 'PUSH' operation again. By default, updates to such
-server are blocked (see checkbox) and if you just repeat "PUSH" (for example, error was caused by the
-network problem and you want to repeat an attempt without any changes in the data base),
-you need to uncheck this checkbox to apply update to the server.
-<P>
-You have "Misc. tools -&gt; Bulk update" button to make a full update of all files,
-it takes a very long time.
-<P>
-It is possible that update was cancelled by the web server, or freeze forever, or 
-die by some reason. In this case, operation will be locked until you go to the 
-"Misc. tools" and remove this lock manually. Be careful doing this, it is "last resort" 
-tool.
-
-<P>
-The mechanics of the upload process is controlled by the DNS 
-<A HREF="#servers">server descriptions</A>.
-<P>
-NB: This operation can take a very long time.
-
-<H2><A NAME="import">Import</A></H2>
-<P>
-You probably already manage a lot of zones if you are looking at this
-program. This means that you are also not interested in manually entering
-all your existing zones through the web interface. This is where the
-import script enters the picture.
-<P>
-To import your existing configuration, copy named.conf and all of your zone
-files into a directory on your ProBIND host.
-<P>
-Then execute this command (assuming that you installed ProBIND in 
-/www/htdocs/probind and all named.conf stuff in /tmp/namedb):
-<P>
-cd /www/htdocs/probind; etc/import -v /tmp/namedb/named.conf | tee import.log
-<P>
-Be sure that you enter <B>full</B> name of the named.conf file - php script do not understand relative names.
-<P>
-Review the import log and the database carefully. You do not want to
+through the use of templates, and directly by the server options. Every
+server is configured using a template directory, which is located in the
+'templates' directory. Each template directory must contain  (at least)
+named.tmpl file, and contains (usially) reconfig.sh script (which is
+called when configuration changed) and such files and root.hint,
+localhost.rev zone and so on. Files from template directory are just
+copied to the server, except named.tmpl file which is used to generate
+real named.conf file. The template named.tmpl is essentially the entire
+named.conf file, except for the actual zone definitions. When the
+named.conf file is prepared for upload to the DNS server, the template
+is read, and 4 macros are expanded: $ZONE_DIR, $OPTIONS, $ACL and  
+$ZONE_DEFINITIONS. They expand to the directory containing zone files,
+server options, list of secondary servers (for the access lists) and
+the actual zone definitions (whith zone options from the zone
+definitions), respectively. A minimal named.tmpl template would look
+like this (this template mean that you need to create / import
+0.0.127.in-addr.arpa zone)::
+    <pre>options {<br>	directory "$ZONE_DIR";<br>	$OPTIONS<br>};<br><br>$ZONE_DEFINITIONS<br><br>zone "." {<br>	type hint;<br>	file "db.cache";<br>};<br></pre>
+  </li>
+  <li>ProBIND also needs to know how to upload the file to the DNS
+server. The script must exist in the sbin directory of the ProBIND
+installation. The script is called from a working directory containing
+the generated named.conf and all the zone files that must be uploaded.
+The script gets a list of operations - '-PUSH' to push a files, and
+'-CONF' to run reconfiguration (it is ./reconmfig.sh file from the
+template directory), and two parameters: the hostname of the DNS server
+to update, and the directory on the server to upload to. Additionally,
+the working directory may contain a file named "deadlist". It will
+contain a list of zones which have been deleted from the database, and
+which should also be deleted from the DNS server. It is the
+responsibility of this script to restart the DNS server process after a
+successful upload. See the "push.local", "push.remote" and "nop" scripts
+for examples. </li>
+  <li>Finally, you can add a bit of text to describe the server. </li>
+</ul>
+<h2><a name="push">Push updates</a></h2>
+<p> The final operation in ProBIND is the step where the contents of the
+database is used top generate (update) configuration files for the name
+servers (this are named.conf, zone files and other files found in the
+template directory), push this files to the server, and reconfig the
+server. </p>
+<p> "push" window contain checkboxes for all 3 operations: </p>
+<ul>
+  <li>Generate files - system will generate files from data base if
+necessary; </li>
+  <li>Push files - system will push files to the server if necessary; </li>
+  <li>Reconfig server - system will ask a server to reconfigure if
+necessary; </li>
+</ul>
+<p>Next raw contain main button, which name is  "START UPDATE" or
+"COMPLETE UPDATE" (if files was generated and pushed already), and table
+of the servers with the columns: </p>
+<ul>
+  <li>state - can be green "OK" (no any operations necessary), yellow
+"need update", "need push" or "need reconfig" (update is necessary for
+this server), or red "error" (error had place during last update). </li>
+  <li>Do not apply - thic checkbox blocks operation for this server; it
+is checked up itself if last update caused an error, to prevent more
+damage to the server; </li>
+  <li>Test - calls test program for this server, which allow to send
+request and see results; </li>
+  <li>View - allow to see named.conf file and server directory (with
+all files generated for the server); </li>
+</ul>
+<p> If some servers has a yellow status, they need to be reconfigured.
+To reconfigure servers, just click on "START UPDATE" button. Window
+below will show you update process, with a reference to the log file
+which contain output of all scripts which runned during this process. If
+two step (default) update is configured, system will show you 'yellow'
+status 'need reconfig' once again, and will check out 'Reconfig server'
+checkbox; just click on the 'COMPLETE UPDATE' once again. </p>
+<p> It is a good idea to verify logs on the window below (just click on
+the 'LOG' message) before doing next step of reconfiguration. </p>
+<p> In case of error, server will show you red 'error' message, and
+future update will be blocked; you need to determine (reading 'logs' and
+looking into the named.conf file) the reason of the error and correct
+it, then repeat 'PUSH' operation again. By default, updates to such
+server are blocked (see checkbox) and if you just repeat "PUSH" (for
+example, error was caused by the network problem and you want to repeat
+an attempt without any changes in the data base), you need to uncheck
+this checkbox to apply update to the server. </p>
+<p> You have "Misc. tools -&gt; Bulk update" button to make a full
+update of all files, it takes a very long time. </p>
+<p> It is possible that update was cancelled by the web server, or
+freeze forever, or die by some reason. In this case, operation will be
+locked until you go to the "Misc. tools" and remove this lock manually.
+Be careful doing this, it is "last resort" tool. </p>
+<p> The mechanics of the upload process is controlled by the DNS <a
+ href="#servers">server descriptions</a>. </p>
+<p> NB: This operation can take a very long time. </p>
+<h2><a name="import">Import</a></h2>
+<p> You probably already manage a lot of zones if you are looking at
+this program. This means that you are also not interested in manually
+entering all your existing zones through the web interface. This is
+where the import script enters the picture. </p>
+<p> To import your existing configuration, copy named.conf and all of
+your zone files into a directory on your ProBIND host. </p>
+<p> Then execute this command (assuming that you installed ProBIND in
+/www/htdocs/probind and all named.conf stuff in /tmp/namedb): </p>
+<p> cd /www/htdocs/probind; etc/import -v /tmp/namedb/named.conf | tee
+import.log </p>
+<p> Be sure that you enter <b>full</b> name of the named.conf file - php
+script do not understand relative names. </p>
+<p> Review the import log and the database carefully. You do not want to
 update your BIND servers until your are confident that the database
-accurately represents your DNS data.
-<P>If you want to import file names from the zones, add '-F' option. It is not recommended because
-if you had a subdirectories, then must be created in the HOSTS/server_name directory before you
-generate a files, and pusth script must support this mode.
-<P>
-If you want to replace existing domains by the new ones, use '-d' option - if zone already exists, it will
-be deleted first.
-<P>
-Import understand zone options and can create 'option' field in the imported zones;
-verify this options before pushing any updates to the server. By default, zones must have 
-option
-<PRE>
- allow-transfer { $ACL };
-</PRE>
-which allows all secondary servers to 'xfer' zone. In some cases, you should prefer to change TEMPLATE options
-BEFORE any 'import' (for example, if you do not want to maintain 'allow-transfer{}' options in the zones).
-
-<P>
-If you have a lot of comments in your zone files, run import with the -a
-flag too (i.e. import -av named.conf). That way the unaltered text of a
-zone file is put into the ProBIND database as a comment text for the zone.
-<P>
-If you have a very complex named configuration, you need to configure named.conf options. Generally you have a
-two methods to do it:
-<UL>
-<LI>
-Create separate template directory for every bind you want to manage; copy all configuration files into it;
-import zones. After it, remove all zone files and directories from new template directory, and edit convert
-named.conf into named.tmpl by replacing all zone information onto the macro $ZONE_DEFINITIONS and 
-add $OPTIONS macro into the options section. Do not forget to copy (and edit if necessary) script 'reconfig.sh'
-into the template directory.
-
-If you change template for the existing server and want to update server directory, check a box 'Update host
-from template?' in the server menu and 'update' server description (<B>Misc Tools -&lt; Servers -&lt;
-<I>server</I></B>).
-
-<LI>use a standard template, and 
-add all necessary options into the 'options' section of the server.
-</UL>
-Always verify generated files (by clicking on them in '<B>Update</B>' menu).
-<P>
-<TABLE  align="CENTER" bgcolor=YELLOW border=1><TR><TD>
-<SMALL><B>import</B> does not supports <B>$INCLUDE</B> operators in zone files.</SMALL><BR>
-<SMALL>if zone name contains <B>'/'</B>, you <B>must</B> edit file name after zone has been imported to remove <B>'/'</B>
-from it.</SMALL>
-</TD></TR></TABLE>
-<H2><A NAME="license">License</A></H2>
-<P>
-ProBIND version 2  was developed by Alexei Roudnev, <Alexei_Roudnev@exigengroup.com>,
-as part of our effort to set up convenient management for the internal and external DNS.
-See <A HREF="http://www.exigengroup.com/">http://www.exigengroup.com/</A> to get more information about
-our company. The copyright status of the version 2 is the same as for the version 1.
-<P>
-ProBIND version 1 was developed by Flemming S. Johansen &lt;fjohansen@proventum.net&gt;
-as part of his duties as resident DNS manager at Proventum. The software
-is copyrighted &copy 2000 by 
-<A HREF="http://www.proventum.net">Proventum</A>.
-<P>
-This program is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
+accurately represents your DNS data. </p>
+<p>If you want to import file names from the zones, add '-F' option. It
+is not recommended because if you had a subdirectories, then must be
+created in the HOSTS/server_name directory before you generate a files,
+and pusth script must support this mode. </p>
+<p> If you want to replace existing domains by the new ones, use '-d'
+option - if zone already exists, it will be deleted first. </p>
+<p> Import understand zone options and can create 'option' field in the
+imported zones; verify this options before pushing any updates to the
+server. By default, zones must have option </p>
+<pre> allow-transfer { $ACL };<br></pre>
+which allows all secondary servers to 'xfer' zone. In some cases, you
+should prefer to change TEMPLATE options BEFORE any 'import' (for
+example, if you do not want to maintain 'allow-transfer{}' options in
+the zones).
+<p> If you have a lot of comments in your zone files, run import with
+the -a flag too (i.e. import -av named.conf). That way the unaltered
+text of a zone file is put into the ProBIND database as a comment text
+for the zone. </p>
+<p> If you have a very complex named configuration, you need to
+configure named.conf options. Generally you have a two methods to do it: </p>
+<ul>
+  <li> Create separate template directory for every bind you want to
+manage; copy all configuration files into it; import zones. After it,
+remove all zone files and directories from new template directory, and
+edit convert named.conf into named.tmpl by replacing all zone
+information onto the macro $ZONE_DEFINITIONS and add $OPTIONS macro into
+the options section. Do not forget to copy (and edit if necessary)
+script 'reconfig.sh' into the template directory. If you change template
+for the existing server and want to update server directory, check a
+box 'Update host from template?' in the server menu and 'update' server
+description (<b>Misc Tools -&lt; Servers -&lt; <i>server</i></b>).</li>
+  <li>use a standard template, and add all necessary options into the
+'options' section of the server. </li>
+</ul>
+Always verify generated files (by clicking on them in '<b>Update</b>'
+menu).
+<p>
+<table align="center" bgcolor="YELLOW" border="1">
+  <tbody>
+    <tr>
+      <td> <small><b>import</b> does not supports <b>$INCLUDE</b>
+operators in zone files.</small><br>
+      <small>if zone name contains <b>'/'</b>, you <b>must</b> edit
+file name after zone has been imported to remove <b>'/'</b> from it.</small> </td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<h2><a name="license">License</a></h2>
+<p> ProBIND version 2  was developed by Alexei Roudnev, <alexei_roudnev
+ @exigengroup.com="">, as part of our effort to set up convenient
+management for the internal and external DNS. See <a
+ href="http://www.exigengroup.com/">http://www.exigengroup.com/</a> to
+get more information about our company. The copyright status of the
+version 2 is the same as for the version 1. </alexei_roudnev></p>
+<p> ProBIND version 1 was developed by Flemming S. Johansen
+&lt;fjohansen@proventum.net&gt; as part of his duties as resident DNS
+manager at Proventum. The software is copyrighted &copy; 2000 by <a
+ href="http://www.proventum.net">Proventum</a>. </p>
+<p> This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by the
 Free Software Foundation; either version 2 of the License, or (at your
-option) any later version.
-<P>
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-<P>
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-<P>
-
-</BODY>
-</HTML>
+option) any later version. </p>
+<p> This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details. </p>
+<p> You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. </p>
+<p> </p>
+</body>
+</html>
