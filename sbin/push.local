@@ -2,9 +2,32 @@
 #
 # Push new versions of zone and name.conf files to a BIND server, and
 # restart the server.
+# 
+# push.local  [-PUSH] [-CONF] [-u USER] HOST REMOTE-DIRECTORY {op ...]
+#
 PATH=/usr/bin:/bin:/usr/local/bin:/opt/sfw/bin:/usr/ucb
 
 RSYNC="rsync -b -p -t -r --exclude='*.b,CVS,SEC,*.pid' --suffix=.bck"
+
+echo rsync.local $*
+
+if [ "$1" = "-PUSH" ]
+then
+	PUSH=1
+	shift
+fi
+
+if [ "$1" = "-CONF" ]
+then
+	RECONF=1
+	shift
+fi
+
+if [ "$RECONF" = "" -a "$PUSH" = "" ]
+then
+	RECONF=1
+	PUSH=1
+fi
 
 host=$1
 dir=$2
@@ -15,24 +38,29 @@ then
 	exit 1
 fi
 
-echo rsync.local script...
 
-$RSYNC  . $dir
-ko=$?
-echo $ko
-if [ $ko != 0 ]
+if [ "$PUSH" = "1" ]
 then
-	echo RSYNC FAILURE
-	exit 1
+ $RSYNC  . $dir
+ ko=$?
+ echo $ko
+ if [ $ko != 0 ]
+ then
+  	 echo RSYNC FAILURE
+	 exit 1
+ fi
+
 fi
 
-cd $dir || exit 1
-if [ -f reconfig.sh ]
+if [ "$RECONF" = 1 ]
 then
+ cd $dir || exit 1
+ if [ -f reconfig.sh ]
+ then
     echo Now restarting named
 	sh reconfig.sh
 	exit $?
-else
+ else
     set -x
 	if [ -f deleted_files ]
 	then
@@ -45,4 +73,6 @@ else
 		exit 1
 	fi
     exit 0
+ fi
 fi
+exit 0

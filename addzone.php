@@ -41,7 +41,7 @@ $start_form = "
 <INPUT type=hidden name=\"type\" value=\"master\">
 <TABLE width=\"100%\">
 <TR><TD>Domain name</TD>
-    <TD><TEXTAREA name=\"newdomain\" rows=20 cols=44></TEXTAREA></TD>
+    <TD><TEXTAREA name=\"newdomain\" rows=8 cols=44></TEXTAREA></TD>
     <TD>Enter one or more names of domains to add to the database, each on
     a separate line</TD></TR>
 <TR><TD colspan=2 align=center><INPUT type=submit value=\"Add Master Domain(s)\"></TD>

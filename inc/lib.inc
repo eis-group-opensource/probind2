@@ -201,7 +201,7 @@ function get_named_zone($name)
 	return $info;
 }
 
-# return true iff the $domain string is at least syntactically
+# return true if the $domain string is at least syntactically
 # correct as a domain name, and does not already appear in the database
 function valid_domain($domain)
 {
@@ -260,7 +260,10 @@ function add_domain($domain, $master)
 	sql_query("UPDATE zones SET ctime = mtime WHERE id = $newzone");
 	# Just in case a domain of the same name was recently deleted...
 	sql_query("DELETE FROM deleted_domains WHERE domain = '$domain'");
+
+
 	if ($master != "''") {
+		sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M'");
 		leave_crit('DOMAIN');
 		return $newzone;
 	}
@@ -270,6 +273,10 @@ function add_domain($domain, $master)
 	}
 	mysql_free_result($rid);
 	sql_query("UPDATE records SET ctime = mtime WHERE zone = $newzone");
+	if ($master != "''")
+		sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M'");
+	else
+	    sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M' OR type = 'S'");
 	leave_crit('DOMAIN');
 	return $newzone;
 }
@@ -367,7 +374,7 @@ function tag_zone_updated($recordid)
 }
 
 # Set the 'updated' tag on a domain, ensuring that the next update will
-# push it to the BIND servers. 
+# push it to the BIND servers. If zone is master zone, all servers will be setted into OUT state
 function tag_zoneid_updated($zone)
 {
 	$rid = sql_query("UPDATE zones SET updated = 1 WHERE id = $zone");
@@ -609,12 +616,7 @@ function get_serial($id)
 		$newserial = $now;
 	sql_query("UPDATE zones SET updated = 2, serial = $newserial WHERE id = $id");
 	
-	if ($master) {
-		sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M' AND state != 'OUT'");
-	}
-	else {
-		sql_query("UPDATE servers SET state = 'OUT' WHERE state != 'OUT'");
-	}	
+	sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M' AND state != 'OUT'");
 	
 	return $newserial;
 }
@@ -623,7 +625,7 @@ function get_serial($id)
 # adjust all serials (and mark servers if they are OUT OF DATE)
 function adjust_serials()
 {
-	$rid = sql_query("SELECT id FROM zones WHERE updated");
+	$rid = sql_query("SELECT id FROM zones WHERE updated = 1");
 	while ( list($id) = mysql_fetch_row($rid)) {
 	    get_serial($id);
 	}
@@ -636,12 +638,8 @@ function adjust_serials()
 # Must be in 'DOMAIN' crit section
 function updates_completed()
 {
-	$rid = sql_query("SELECT id FROM zones WHERE updated");
-	while ( list($id) = mysql_fetch_row($rid)) {
-	    get_serial($id);
-	}
-	mysql_free_result($rid);
-	$rid = "UPDATE zones SET updated = 0 WHERE updated = 2";
+ 	adjust_serials();
+	$rid = sql_query("UPDATE zones SET updated = 0 WHERE updated = 2");
 }
 	
 #
@@ -843,6 +841,10 @@ function fill_in_domain($id, $print_only)
 	return $result;	
 }
 
+function close_database()
+{
+	mysql_close();
+}
 
 #
 # MAIN

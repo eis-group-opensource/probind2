@@ -41,8 +41,9 @@ if ($INPUT_VARS['iamserious'] != 'true') {
 	print $stern_warning;
 	exit();
 }
-$query = "UPDATE zones SET updated = 1 WHERE NOT master AND domain != 'TEMPLATE'";
-$rid = sql_query($query);
+
+sql_query("UPDATE zones SET updated = 1 WHERE NOT master AND domain != 'TEMPLATE'");
+sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M' OR type = 'S'");
 
 print "<P>Done. Now you need to push the updates.<P><HR>\n";
 print "</BODY></HTML>\n";

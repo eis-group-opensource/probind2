@@ -303,7 +303,7 @@ function record_view($record)
 	if ($record['type'] == 'SOA') {
 		$result .= sprintf("<INPUT type=\"hidden\" name=\"rrid\">");
 		$result .= sprintf("<TR>\n\t<TD></TD>\n");
-		$result .= sprintf("<TD><INPUT type=\"submit\" name=\"mode\" value=\"edit zone\" class=\"button\" onmouseover=\"this.className='buttonhover'\" onmouseout=\"this.className='button'\"></TD>\n");
+		$result .= sprintf("<TD><INPUT type=\"submit\" name=\"mode\" value=\"edit zone (total)\" class=\"button\" onmouseover=\"this.className='buttonhover'\" onmouseout=\"this.className='button'\"></TD>\n");
 		$result .= sprintf("\t<TD>%s</TD>\n", seconds_to_ttl($record['ttl']));
 		$result .= "\t<TD>SOA</TD>\n\t<TD></TD>\n\t<TD colspan=2></TD>\n\t<TD colspan=2></TD>\n</TR>\n";
 	} else {
@@ -330,7 +330,7 @@ function right_frame($vars)
 {
 	global $html_top, $default_right_frame, $master_zone_detail_form;
 	global $slave_zone_detail_form, $nodomain_right_frame;
-	global $rr_form_top, $rr_form_bot, $static_head, $static_bottom;
+	global $rr_form_top, $rr_form_bot, $static_head, $static_bottom, $rr_form_hr;
 	$result = $html_top;
 	$search = '';
 	if (($dom = $vars['domain']) && !$vars['zone']) {
@@ -380,13 +380,13 @@ function right_frame($vars)
 		$result .= sprintf($rr_form_top, $zone);
 		$result1 = "";
 		while ($record = mysql_fetch_array($rid)) {
-			if ( $vars['mode'] == 'edit' || $vars['mode'] == 'edit zone') {
+			if ( $vars['mode'] == 'edit' || $vars['mode'] == 'edit zone (total)') {
 				$result .= record_form($record);
 			} else {
 				$result1 .= record_view($record);
 				if ($rrid && $record['id'] == $rrid) {
 					$result .= record_form($record);
-					$result .= $rr_hr;
+					$result .= $rr_form_hr;
 				}
 			} 
 			if ($record['type'] == 'PTR')

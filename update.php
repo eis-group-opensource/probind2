@@ -16,6 +16,7 @@ $start_frame = '
 $html_top = '
 <HTML><HEAD>
 <TITLE>Proventum Push DNS Updates</TITLE>
+<META http-equiv="Pragma" content="no-cache">
 <LINK rel="stylesheet" href="style.css" type="text/css">
 </HEAD><BODY bgcolor="cccc99" background="images/BG-shadowleft.gif">
 <TABLE width="100%">
@@ -30,6 +31,7 @@ $html_top = '
 $html_top1 = '
 <HTML><HEAD>
 <TITLE>Update LOGS</TITLE>
+<META http-equiv="Pragma" content="no-cache">
 <LINK rel="stylesheet" href="style.css" type="text/css">
 </HEAD><BODY bgcolor="dddd99" background="images/BG-shadowtop.gif">
 ';
@@ -39,29 +41,29 @@ $html_bottom = '
 </HTML>
 ';
 
-$stern_warning = "
+$html_in_progress = '
+<HTML><HEAD>
+<TITLE>Push in progress</TITLE>
+<META http-equiv="Pragma" content="no-cache">
+<LINK rel="stylesheet" href="style.css" type="text/css">
+</HEAD><BODY bgcolor="dddd99" background="images/BG-shadowtop.gif">
+<TABLE width="100%">
+<TR>
+ <TD align=left><H3>Pushing DNS updates to the servers</H3></TD>
+ <TH align=right><A HREF="manual.html#push">Help</A></TH>
+</TR>
+</TABLE>
 <HR>
-<B>WARNING:</B> You are about to copy modified data 
-from this database to the actual DNS servers. The DNS servers
-are what makes this company and our customers accesible to users 
-everywhere on the Internet.
-<P>
-If you have screwed up the contents of the database, the end result
-may be the partial or complete disruption of Internet services for
-us and/or our customers. Real money may be lost, and real people
-may get real upset.
-<P>
-By clicking on this button, you accept full legal, financial and
-moral responsibility for the consequences of your action:
-<P>
 <CENTER>
-<A HREF=\"update.php?frame=update&iamserious=true\">
-<IMG SRC=\"images/wasp-warning.gif\" alt=\"Go ahead - do it!\">
-</A>
-</CENTER>
-<P><HR><P>
+<TABLE width="40%" bgcolor=RED border=10>
+<TR><TD><IMAGE src="images/u0.gif" width=400 height=30></TD></TR>
+<TR>
+<TD ALIGN=CENTER><FONT SIZE=+2 COLOR=WHITE><BLINK><B>Push in progress. Do not cancell.</B></BLINK></FONT></TD>
+</TR>
+<TR><TD><IMAGE src="images/u0.gif" width=400 height=30></TD></TR>
+</TABLE>
 </BODY></HTML>
-"; 
+';
 
 $push_in_progress = "
 <UL>
@@ -119,12 +121,14 @@ function main_update_menu($input)
 			case 'CFG': 
 				$T = "<B>need reconfig</B>"; 
 				$B = " bgcolor=yellow";
-				$cfg_c = "CHECKED";
+				$conf_c = "CHECKED";
 				break;
 			case 'ERR': 
 				$T = "<FONT COLOR=WHITE><BLINK>Update error</BLINK></FONT>";
 				$B = " bgcolor=red";
 				$skip_c = "CHECKED";
+				$gen_c = "CHECKED";
+				$push_c = "CHECKED";
 				break;
 			default:  break;
 		}
@@ -174,7 +178,10 @@ function generate_files($input)
 	global $HOST_DIR;
 	global $TOP;
 	global $BIN;
-	$query = "SELECT id, hostname, type, pushupdates, zonedir FROM servers WHERE state = 'OUT' OR state = 'ERR'";
+	
+	$skipped = 0;
+	
+	$query = "SELECT id, hostname, type, zonedir FROM servers WHERE (state = 'OUT' OR state = 'ERR') AND pushupdates";
 	$rid = sql_query($query);
 
 	$query = "SELECT id, domain, master, zonefile FROM zones WHERE updated AND domain != 'TEMPLATE' ORDER BY domain";
@@ -183,7 +190,13 @@ function generate_files($input)
 	$query = "SELECT domain, zonefile FROM deleted_domains";
 	$rid2 = sql_query($query);
 
-	while (list($servid, $server, $type, $update, $zonedir) = mysql_fetch_row($rid)) {
+	while (list($servid, $server, $type,  $zonedir) = mysql_fetch_row($rid)) {
+		if ($input["skip_$servid"]) {
+			print "<FONT COLOR=BROWN>Skipping $server</FONT><BR>\n";
+			$skipped = 1;
+			continue;
+		}
+			
 		print "<H4>Updating $server ";
 		if ($type == 'M')
 			print "(as master)</H4>\n";
@@ -217,34 +230,48 @@ function generate_files($input)
 			    }
 			}
 			
+			$out= "";
+			$list = "";
 			if (mysql_num_rows($rid1)) {
 			//----------------------------------------------------//
 			    mysql_data_seek($rid1, 0) || die("Something wrong, data seek 1");
 			    while ($zone = mysql_fetch_array($rid1)) {
-				$domain = $zone['domain'];
-				if ($zone['master'])
-					adjust_serial($zone['id']); # We don't make zone files for slaves
-				else 
+				 $domain = $zone['domain'];
+				 if (!$zone['master'])
 					$domains[] = $zone['domain'];
-				$zonefile = $zone['zonefile'];
-				if (count($domains) >= 64) {
+
+				 $zonefile = $zone['zonefile'];
+
+				 if (count($domains) >= 64) {
 					$cmd =  "TOP=$TOP $BIN/mkzonefile -d $HOST_DIR/$server -u ".join(" ", $domains);
 					passthru("$cmd 2>&1 >>$UPDATE_LOG", $ret);					
 					$domains = array();
-					if ($ret) {
+					if ($ret != 99) {
 				    	    $error = 1;
-				    	    print "<LI><FONT color=RED>Error in mkzonefile, see $A_LOG</FONT>\n";
-			    	    	}
+				    		print "</UL><H3><FONT color=RED>Error in mkzonefile, see $A_LOG</FONT></H3><UL>\n";
+			    	    	print $err;
+							}
+					else
+						print $out;
+					$out = "";
+					$err = "";
+					
+				 }
+				 $out .=  "<LI><A TARGET=\"VIEW\" href=\"view.php?file=$server/$zonefile\">$domain</A> updated\n";
+			     $err .= "<LI><A TARGET=\"VIEW\" href=\"view.php?file=$server/$zonefile\">$domain</A> <FONT color=RED>error</FONT>\n";
 				}
-				print "<LI><A TARGET=\"VIEW\" href=\"view.php?file=$server/$zonefile\">$domain</A> updated\n";
-			    }
 			    if (count($domains)) {
-				$cmd =  "TOP=$TOP $BIN/mkzonefile -d $HOST_DIR/$server -u ".join(" ", $domains);
-				passthru("$cmd 2>&1 >>$UPDATE_LOG", $ret);
-				if ($ret) {
+				 $cmd =  "TOP=$TOP $BIN/mkzonefile -d $HOST_DIR/$server -u ".join(" ", $domains);
+				 // print "<I>$cmd</I><BR>\n";
+				 passthru("$cmd 2>&1 >>$UPDATE_LOG", $ret);
+				 $domains = array();
+				 if ($ret != 99) {
 				    $error = 1;
-				    print "<H3><FONT color=RED>Error in mkzonefile, see $A_LOG</FONT></H3>\n";
-			    	}
+				    print "</UL><H3><FONT color=RED>Error in mkzonefile, see $A_LOG</FONT></H3><UL>\n";
+			    	print $err;
+				 }
+				 else
+					print $out;					
 			    }
 			}
 			print "</UL>\n";
@@ -277,7 +304,8 @@ function generate_files($input)
 
 	if (!$error) {
 		patient_enter_crit('INTERNAL1', 'DOMAIN');
-		updates_completed();
+		if (!$skipped)
+			updates_completed();
 		$query = "DELETE FROM deleted_domains";
 		$rid = sql_query($query);
 		leave_crit('DOMAIN');
@@ -285,16 +313,84 @@ function generate_files($input)
 
     if  ($error)
 	    $err_text="&error=1";
-	else
+	else {
 	    $err_text="";
-		
-	print "<H3>Log file: <A TARGET=\"VIEW\" href=\"view.php?base=LOGS&file=$UPDATE_LOG_NAME$err_text\">$UPDATE_LOG</A></H3>\n";
+	}
+			
 }
 
 function run_scripts($input, $push, $conf)
 {
-	print "run scripts push = $push conf=$conf\n";
-	return "";
+		
+	global $UPDATE_LOG;
+	global $A_LOG;
+	global $A_LOGE;
+	global $HOST_DIR;
+	global $TOP;
+	global $SBIN;
+	if (!$push && !$conf)
+		return;
+
+	$query = "SELECT id, hostname, ipno, type, zonedir, script, state FROM servers WHERE pushupdates != 0";
+	$rid = sql_query($query);
+
+	while (list($servid, $server, $ipno, $type, $zonedir, $script, $state ) = mysql_fetch_row($rid)) {
+		
+		
+		$cmd = "";
+		if ( ($state == 'CHG' || $state == 'ERR') && $push ) {
+			$cmd = " -PUSH";
+			if ($conf) {
+				$cmd .= " -CONF";
+				$new = 'OK';
+			}
+			else
+				$new = 'CFG';
+		} 
+		else if ( ($state == 'CFG' || $state == 'ERR') && $conf ) {
+			$cmd = "-CONF";
+			$new = 'OK';
+		}
+		
+		if ($input["skip_$servid"] || $cmd == "" ) {
+			continue;
+		}
+				
+		$cmd = "TOP=$TOP $SBIN/$script $cmd $ipno $zonedir";
+
+		print "<BR>$server:\n";
+		
+		# This server need real file update
+		chdir("$HOST_DIR/$server") || die("$!: $HOST_DIR/$server<P>\n");
+
+		passthru("$cmd >> $UPDATE_LOG 2>& 1", $ret);
+
+		if ($ret != 0) {
+		    print "<FONT color=RED><B>script failure, see $A_LOGE.</B></FONT>Command: <FONT size=-2>$cmd</FONT><BR>\n";
+		    $error = 1;
+			
+		}
+		else {
+		    print "script completed, see $A_LOG. Command: <FONT size=-2>$cmd</FONT><BR>\n";
+		}
+							
+		if ($error) {
+			sql_query("UPDATE servers SET state='ERR' WHERE id = $servid");
+			break;
+		}
+		else {
+			sql_query("UPDATE servers SET state='$new' WHERE id = $servid");
+		}
+	};
+
+	mysql_free_result($rid);	
+
+    if  ($error)
+	    $err_text="&error=1";
+	else
+	    $err_text="";
+		
+	print "<H4>Log file: <A TARGET=\"VIEW\" href=\"view.php?base=LOGS&file=$UPDATE_LOG_NAME$err_text\">$UPDATE_LOG</A></H4>\n";
 }
 
 #
@@ -331,6 +427,11 @@ if ($frame == 'MAIN' ) {
 	exit;
 }
 
+if ($frame == 'PROGRESS' ) {
+	print $html_in_progress;
+	exit;
+}
+
 print $html_top1;
 if ($frame == 'BLANK') {
     print $html_bottom;
@@ -346,6 +447,7 @@ $UPDATE_LOG = "$LOG_DIR/$UPDATE_LOG_NAME";
 $A_LOG="<A TARGET=\"VIEW\" href=\"view.php?base=LOGS&file=$UPDATE_LOG_NAME\">LOG</A>";
 $A_LOGE="<A TARGET=\"VIEW\" href=\"view.php?base=LOGS&file=$UPDATE_LOG_NAME&error=1\">LOG</A>";
 
+print "<SCRIPT>open('update.php?frame=PROGRESS','MAIN');</SCRIPT><HR>\n";
 # !!!
 if ($user = patient_enter_crit($REMOTE_USER, 'PUSH')) {
 	print sprintf($push_in_progress, ucfirst($user));
@@ -360,7 +462,7 @@ if ($gen) {
 	}
 }
 
-if ( !$err && $push) {
+if ( !$err && ($push || $conf)) {
 	$err = run_scripts($INPUT_VARS, $push, $conf);
 	if ($err) {
 		print "<H3><FONT color=RED>Update interrupted due to the error</FONT></H3>\n";
@@ -379,6 +481,8 @@ else {
 
 };
 leave_crit('PUSH');
+
+close_database();
 print "<SCRIPT>open('update.php?frame=MAIN','MAIN');</SCRIPT><HR>\n";
 print $html_bottom;
 ?>

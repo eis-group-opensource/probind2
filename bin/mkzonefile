@@ -18,7 +18,7 @@ function write_zone_file($zone, $hostmaster, $origin, $servers, $update)
 	($zf = fopen($zone['zonefile'], "w")) || abort($zone['zonefile']."\n");
 	$soattl = seconds_to_ttl($zone['ttl']);
 	if ($update) 
-		$serial = adjust_serial($zone['zoneid']);
+		$serial = get_serial($zone['zoneid']);
 	else {
 		$query = "SELECT serial FROM zones WHERE id = ".$zone['zoneid'];
 		$rid = sql_query($query);
@@ -101,6 +101,6 @@ while ($zone = mysql_fetch_array($rid)) {
 mysql_free_result($rid);
 
 # Done, shutdown & exit
-exit();
+exit(99);
 
 ?>
