@@ -21,16 +21,16 @@ fi
 #
 echo /usr/local/sbin/rndc -c rndc.conf reload
 /usr/local/sbin/rndc -c rndc.conf reload
-if [ $? = 0 ]
+ko=$?
+if [ $ko = 0 ]
 then
  echo Server reconfigured
- sleep 2
- test -f /var/adm/messages && tail /var/adm/messages
- test -f /var/log/messages && tail /var/log/messages
- exit 0
 else
  echo Reconfigure failed
- test -f /var/adm/messages && tail /var/adm/messages
- test -f /var/log/messages && tail /var/log/messages
- exit 1
 fi
+sleep 2
+test -f /LOGS/WWW/links/errors  && tail -50 /LOGS/WWW/links/errors | grep named
+test -f /var/adm/messages && tail -50 /var/adm/messages            | grep named
+test -f /var/log/messages && tail -50 /var/log/messages            | grep named
+test -f /var/log/syslog   && tail -50 /var/log/syslog              | grep named
+exit $ko

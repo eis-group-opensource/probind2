@@ -19,6 +19,7 @@ else
 fi
 
 echo rsync.remote $*
+V=-v
 # set -x
 if [ "$1" = "-v" ]
 then
@@ -65,8 +66,9 @@ if [ "$PUSH" = "1" ]
 then
  if [ "$V" != "" ]
  then
+  id
   echo Try ssh who first to verify how it works
-  $SSH -v $USER@$HOST who
+  $SSH $USER@$HOST who
  fi
  echo $RSYNC -v -e "$SSH"  . "$USER@$HOST:$dir" < /dev/null
  $RSYNC -v -e "$SSH"  . "$USER@$HOST:$dir" < /dev/null
