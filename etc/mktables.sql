@@ -72,6 +72,8 @@ CREATE TABLE records (
 	pref	CHAR(5),
 # RR Data
 	data	CHAR(255) DEFAULT '' NOT NULL,
+# Comment
+	comment  CHAR(32);
 # Last modification time for this RR
 	mtime	TIMESTAMP(14) NOT NULL,
 # Creation time for this RR
@@ -81,10 +83,31 @@ CREATE TABLE records (
 	PRIMARY KEY (id)
 );
 
+# Unique Resource Record ID
+	id	INT(11) DEFAULT '1' NOT NULL AUTO_INCREMENT,
+# foreign key to the zones table
+	zone	INT(11) NOT NULL,
+#
+# This table contains additional zone info (access list, primary / secondary servers, and so on)
+# It is for the future use (so that we will not change data base if we need to add new attribute into  the system)
+#
+CREATE TABLE attributes (
+# Unique Resource Record ID
+	id	INT(11) DEFAULT '1' NOT NULL AUTO_INCREMENT,
+# Zone id
+	zone	INT(11) NOT NULL,
+# Attribute type
+	atype	CHAR(10) NOT NULL,
+# Attribute value
+	value	CHAR(100) DEFAULT '',
+	PRIMARY KEY (id)
+	
+);
+
 #
 # This table contains long annotations for zones or records. It is
 # basically eyecandy for the web interface, and an aid for forgetful
-# DNS admins, should any such exist (I don't remember meeting any).
+# DNS admins, should any such exist (I don't remember meeting any').
 #
 CREATE TABLE annotations (
 # Unique ID for a chunk of text
