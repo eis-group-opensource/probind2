@@ -1,5 +1,21 @@
+This is ProBIND version 2.
+
+Read Design.htm document and manual.html document.
+Read Install.html document about installation.
+
+
+=================================================================================
+
 Copyright & Licensing
 =====================
+
+ProBIND2 was developed as a hard modification for ProBind (see below)
+by Alexei P. Roudnev, alex@relcom.net, as part of his duty as a senior
+network/software engineer, in Exigengroup LTD , wwww.exigengroup.com .
+
+All copyrights have been incorporated from ProBIND.
+
+======================
 
 ProBIND was developed by Flemming S. Johansen <fjohansen@proventum.net>
 as part of his duties as resident DNS manager at Proventum. The software
