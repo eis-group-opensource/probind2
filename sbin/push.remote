@@ -80,6 +80,13 @@ then
 	 exit 1
  fi
  rm -f deleted_files
+ # If this directory is saved into the CVS, save it after a successfull reconfiguration
+ if [ -d CVS ]
+ then
+	CVSROOT=
+	export CVSROOT
+	cvs diff
+ fi
 fi
 
 if [ "$RECONF" = 1 ]
@@ -103,7 +110,8 @@ then
  # If this directory is saved into the CVS, save it after a successfull reconfiguration
  if [ -d CVS ]
  then
-	export CVSROOT=
+	CVSROOT=
+	export CVSROOT
 	# id
 	# set -x
 	cvs -q remove -l .                 < /dev/null
