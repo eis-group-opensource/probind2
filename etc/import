@@ -112,11 +112,20 @@ function load_zone($zname, $file, $zid, $zone, $master, $opts)
 			break;
 	}
 	$mname = $soa[3];
-	$serial = $soa[6];
-	$refresh = ttl_to_seconds($soa[7]);
-	$retry = ttl_to_seconds($soa[8]);
-	$expire = ttl_to_seconds($soa[9]);
-	$ttl = ttl_to_seconds($soa[10]);
+	if ( $soa[6] != '(' ) {
+	    $serial = $soa[6];
+	    $refresh = ttl_to_seconds($soa[7]);
+	    $retry = ttl_to_seconds($soa[8]);
+	    $expire = ttl_to_seconds($soa[9]);
+	    $ttl = ttl_to_seconds($soa[10]);
+	}
+	else {
+	    $serial = $soa[7];
+	    $refresh = ttl_to_seconds($soa[8]);
+	    $retry = ttl_to_seconds($soa[9]);
+	    $expire = ttl_to_seconds($soa[10]);
+	    $ttl = ttl_to_seconds($soa[11]);
+	}
 	if ($soa[0] == '@') {
 		$lastdomain = $origin;
 	} else {
