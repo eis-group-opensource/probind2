@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/sh
 #
 # Push new versions of zone and name.conf files to a BIND server, and
 # restart the server.
