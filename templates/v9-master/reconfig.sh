@@ -8,6 +8,17 @@ then
 	done
 	rm -f deleted_files
 fi
+named-checkconf named.conf
+if [ $? = 0 ]
+then
+ echo "Checkinmg named.conf - OK, named.conf.good renewed"
+ cp named.conf named.conf.good
+else
+ echo "named-checkconf failed; restoring named.conf from named.conf.good"
+ test -f named.conf.good && cp named.conf.good named.conf
+ exit 1
+fi
+#
 echo /usr/local/sbin/rndc -c rndc.conf reload
 /usr/local/sbin/rndc -c rndc.conf reload
 if [ $? = 0 ]
