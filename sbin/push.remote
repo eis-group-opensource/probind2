@@ -11,7 +11,12 @@ RSYNC="rsync -b -p -t -r --exclude='*.b,CVS,SEC,*.pid' --suffix=.bck"
 USER=named
 # SSH (not open ssh) - enforce ssh2 (it does not work with ssh)
 # For openssh, use "ssh -x" instead.
-SSH="ssh2 -x"
+if [ -d /etc/ssh2 ]
+then
+  SSH="ssh2 -x"
+else
+  SSH="ssh -x"
+fi
 
 echo rsync.remote $*
 # set -x

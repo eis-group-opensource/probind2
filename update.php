@@ -87,7 +87,7 @@ function main_update_menu($input)
 	global $HOST_URL;
 	
 	adjust_serials();
-	$rid = sql_query("SELECT id FROM zones WHERE updated");
+	$rid = sql_query("SELECT id FROM zones WHERE updated ");
 	$zones = mysql_num_rows($rid);
 	mysql_free_result($rid);
 	
@@ -142,7 +142,7 @@ function main_update_menu($input)
 		$res .= "\t<TD align=center><INPUT TYPE=\"CHECKBOX\" $skip_c name=\"skip_$id\"></TD>\n";
 		$res .= "\t<TD align=center>";
 		    $res .= "<A TARGET=\"VIEW\" href=\"view.php?file=$hostname/named.conf\">named.conf</A>,";
-			$res .= "<A TARGET=\"VIEW\" href=\"$HOST_URL/$hostname\">files</A>";
+			$res .= "<A TARGET=\"VIEW\" href=\"$HOST_URL/$hostname/\">files</A>";
 			$res .= "</TD>\n";
 		$res .= "\t<TD align=center><A TARGET=\"VIEW\" href=\"test.php?id=$id\"><img src=\"images/greenbutton.gif\" border=0 high=16 width=24></A></TD>\n";
 		$res .= "</TR>\n";
@@ -211,6 +211,7 @@ function generate_files($input)
 		# This server need real file update
 		chdir("$HOST_DIR/$server") || die("$!: $HOST_DIR/$server<P>\n");
 		$cmd = "TOP=$TOP $BIN/mknamed.conf $server named.conf ";
+		print $cmd;
 		passthru("$cmd >> $UPDATE_LOG 2>& 1", $ret);
 		if ($ret != 0) {
 		    print "<A  TARGET=\"VIEW\" href=\"view.php?file=$server/named.conf\"><FONT color=RED>mknamed.conf</FONT></A> failure, see $A_LOGE<BR>\n";
@@ -263,7 +264,7 @@ function generate_files($input)
 					
 				 }
 				 $out .=  "<LI><A TARGET=\"VIEW\" href=\"view.php?file=$server/$zonefile\">$domain</A> updated\n";
-			     $err .= "<LI><A TARGET=\"VIEW\" href=\"view.php?file=$server/$zonefile\">$domain</A> <FONT color=RED>error</FONT>\n";
+				 $err .= "<LI><A TARGET=\"VIEW\" href=\"view.php?file=$server/$zonefile\">$domain</A> <FONT color=RED>error</FONT>\n";
 				}
 			    if (count($domains)) {
 				 $cmd =  "TOP=$TOP $BIN/mkzonefile -d $HOST_DIR/$server -u ".join(" ", $domains);
@@ -273,7 +274,7 @@ function generate_files($input)
 				 if ($ret != 99) {
 				    $error = 1;
 				    print "</UL><H3><FONT color=RED>Error in mkzonefile, see $A_LOG</FONT></H3><UL>\n";
-			    	print $err;
+				    print $err;
 				 }
 				 else
 					print $out;					
@@ -321,7 +322,7 @@ function generate_files($input)
 	else {
 	    $err_text="";
 	}
-			
+    return ($error? "file update failure" : "");
 }
 
 function run_scripts($input, $push, $conf)
@@ -396,6 +397,7 @@ function run_scripts($input, $push, $conf)
 	    $err_text="";
 		
 	// print "<H4>Log file: <A TARGET=\"VIEW\" href=\"view.php?base=LOGS&file=$UPDATE_LOG_NAME$err_text\">$UPDATE_LOG</A></H4>\n";
+	return ($error? "script failure" : "");
 }
 
 #

@@ -245,12 +245,12 @@ function add_domain($domain, $master, $eoptions = "")
 		or die("TEMPLATE zone not found in database<P>\n");
 	mysql_free_result($rid);
 	if (!$master) {
-		$zonefile = "db.$domain";
+		$zonefile = "$domain.dns";
 		$master = "''";
 		if ($eoptions)
 			$options = $eoptions; // If options are specified, set up them instead of template options
 	} else {
-		$zonefile = "SEC/db.$domain";
+		$zonefile = "SEC/$domain.dns";
 		$master = "'$master'";
 		$options = ""; // No options from TEMPLATE for the secondary zones
 	}
@@ -333,7 +333,7 @@ function del_zone($zoneid)
 function domain_list($lookfor, $type, $format)
 {
 	$result = "";
-	$query = "SELECT id, domain, master FROM zones";
+	$query = "SELECT id, domain, master, disabled FROM zones";
 	switch ($type) {
 	case '*': 
 		$query .= " WHERE domain LIKE '$lookfor'"; 
@@ -352,13 +352,17 @@ function domain_list($lookfor, $type, $format)
 	$rid = sql_query($query);
 	$typestr = "";
 	$result1 = "";
-	while (list($id, $domain, $master) = mysql_fetch_row($rid)) {
+	while (list($id, $domain, $master, $disabled) = mysql_fetch_row($rid)) {
+		if ($disabled)
+			$d = "!";
+		else
+		        $d = "";
 		if ($type == "*")
 			$typestr = ($master ? " (slave)" : "");
 		if (preg_match("/\.in-addr\.arpa(\.)?$/", $domain))
-			$result1 .= sprintf($format, $id, $domain, $typestr);
+			$result1 .= sprintf($format, $id, $d.$domain , $typestr);
 		else
-			$result .= sprintf($format, $id, $domain, $typestr);
+			$result .= sprintf($format, $id, $d.$domain, $typestr);
 	}
 	$result .= $result1;
 	mysql_free_result($rid);
@@ -418,7 +422,7 @@ function del_record($id)
 # appropriate domain(s) as being updated. NB: This function should NOT
 # be used for MX or SOA records, use upd_mx_record and upd_soa_record 
 # for those
-function upd_record($id, $domain, $ttlspec, $type, $data, $genptr, $comment = '')
+function upd_record($id, $domain, $ttlspec, $type, $data, $genptr, $comment = '', $disabled = 0)
 {
 	$data    = strtr($data,"'",'.');
 	$comment = strtr($comment, "'",'.');
@@ -442,7 +446,7 @@ function upd_record($id, $domain, $ttlspec, $type, $data, $genptr, $comment = ''
 	if ($otype == 'A' &&  ($data != $odata || $type != $otype || $domain != $odomain || $genptr != $ogenptr )) {
 		affect_reverses($odata);
 	}
-	$query = "UPDATE records SET domain = '$domain', ttl = $ttl, type = '$type', data = '$data', genptr = $genptr, comment='$comment' WHERE id = $id";
+	$query = "UPDATE records SET domain = '$domain', ttl = $ttl, type = '$type', data = '$data', genptr = $genptr, comment='$comment', disabled=$disabled WHERE id = $id";
 	$rid = sql_query($query);
 	tag_zone_updated($id);
 	if ($type == 'A')
@@ -484,12 +488,12 @@ function upd_soa_record($id, $ttlspec)
 }
 
 # Update the information about an existing domain
-function update_zone($id, $serial, $refresh, $retry, $expire, $master, $zonefile)
+function update_zone($id, $serial, $refresh, $retry, $expire, $master, $zonefile, $disabled = 0)
 {
 	if (!strlen($master)) {
-		$query = "UPDATE zones SET serial = $serial, refresh = $refresh, retry = $retry, expire = $expire, zonefile = '$zonefile', updated = 1 WHERE id = $id";
+		$query = "UPDATE zones SET serial = $serial, refresh = $refresh, retry = $retry, expire = $expire, zonefile = '$zonefile', updated = 1, disabled=$disabled WHERE id = $id";
 	} else {
-		$query = "UPDATE zones SET master = '$master', zonefile = '$zonefile', updated = 1 WHERE id = $id";
+		$query = "UPDATE zones SET master = '$master', zonefile = '$zonefile', updated = 1, disabled = $disabled WHERE id = $id";
 	}
 	$rid = sql_query($query);
 }
@@ -629,7 +633,7 @@ function get_serial($id)
 # adjust all serials (and mark servers if they are OUT OF DATE)
 function adjust_serials()
 {
-	$rid = sql_query("SELECT id FROM zones WHERE updated = 1");
+	$rid = sql_query("SELECT id FROM zones WHERE updated = 1 ");
 	while ( list($id) = mysql_fetch_row($rid)) {
 	    get_serial($id);
 	}
@@ -643,7 +647,7 @@ function adjust_serials()
 function updates_completed()
 {
  	adjust_serials();
-	$rid = sql_query("UPDATE zones SET updated = 0 WHERE updated = 2");
+	$rid = sql_query("UPDATE zones SET updated = 0 WHERE updated = 2 ");
 }
 	
 #

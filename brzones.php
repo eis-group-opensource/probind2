@@ -78,15 +78,14 @@ $master_zone_detail_form = '
   <TH align=left colspan="5">Zonefile</TH>
   <TH align=left>Serial no.</TH>
   <TH align=left>Updated</TH>
+  <TH align=left>Disabled</TH>
 </TR>
 <TR>
   <TD></TD>
   <TD colspan="5"><INPUT type=text name="zonefile" value="%s" size=32></TD>
   <TD><INPUT type=text value="%d" name="serial" size=10></TD>
   <TD>%s</TD>
-</TR>
-<TR>
-  <TD colspan="9"><HR noshade width="100%%" size="1" color="#000000"></TD>
+  <TD><INPUT type=CHECKBOX name="disabled" value=1 %s></TD>
 </TR>
 
 <TR>
@@ -113,11 +112,11 @@ $slave_zone_detail_form = '
 <TR>
 	<TD>%s</TD>
 	<TD><INPUT type=text value="%s" name="master" size=15></TD></TR>
-<TR><TH align=left>Zonefile</TH><TH align=left>Updated</TH></TR>
+<TR><TH align=left>Zonefile</TH><TH align=left>Updated</TH><TH>Disabled</TH></TR>
 <TR>
 	<TD><INPUT type=text value="%s" name="zonefile" size=50></TD>
 	<TD>%s</TD>
-	<TD></TD></TR>
+	<TD><INPUT type=CHECKBOX name="disabled" value=1 %s></TD></TR>
 </TABLE>
 <TABLE border width=60%%><TR>
 	<TD align=center><INPUT type="submit" value="Options" name="formname"></TD>
@@ -359,16 +358,22 @@ function right_frame($vars)
 			$updtext = "Yes";
 		else
 			$updtext = "No";
+			
+		if ($record['disabled'])
+			$distext = " CHECKED";
+		else
+			$distext = "";
+			
 		if ($record['master']) 
 			$result .= sprintf($slave_zone_detail_form, 
 				$record['id'], $domain, 
 				$record['master'], $record['zonefile'], 
-				$updtext);
+				$updtext, $distext);
 		else 
 			$result .= sprintf($master_zone_detail_form, 
 				$domstr, $record['id'], 
 				$record['zonefile'], $record['serial'], 
-				$updtext,
+				$updtext, $distext, 
 				seconds_to_ttl($record['refresh']), 
 				seconds_to_ttl($record['retry']),
 				seconds_to_ttl($record['expire']));
@@ -489,7 +494,8 @@ function perform_zone_update($INPUT_VARS)
 	$expire = ttl_to_seconds($INPUT_VARS['expire']);
 	$master = $INPUT_VARS['master'];
 	$zonefile = $INPUT_VARS['zonefile'];
-	update_zone($id, $serial, $refresh, $retry, $expire, $master, $zonefile);
+	$disabled = $INPUT_VARS['disabled'];
+	update_zone($id, $serial, $refresh, $retry, $expire, $master, $zonefile, $disabled ? 1 : 0);
 }
 
 function add_record($INPUT_VARS)

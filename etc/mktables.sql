@@ -4,7 +4,8 @@
 # When     Who What
 # ======================================================================
 # 20000622 FSJ First version
-#
+# 20021215 alex Version 2.0
+# 20030110 alex Version 2.1
 
 DROP TABLE IF EXISTS zones, zoneattr, records, annotations, servers, deleted_domains, typesort, blackboard;
 
@@ -43,6 +44,8 @@ CREATE TABLE zones (
 	ctime	TIMESTAMP(14),
 # Zone has been updated => increment serial on next dump-to-file
 	updated	INT(1) DEFAULT '0',
+# disabled bit
+	disabled INT(1) DEFAULT '0',
 	PRIMARY KEY (id)
 );
 
@@ -83,6 +86,8 @@ CREATE TABLE records (
 	ctime	TIMESTAMP(14),
 # Should PTR be generated for this record
 	genptr  INT(1),
+# disabled?
+	disabled INT(1) DEFAULT '0';
 	PRIMARY KEY (id)
 );
 

@@ -43,6 +43,19 @@ Then execute these commands:
 make
 make install
 
+1.2 Configure PHP
+================
+
+Configure php, for the configuration, verify /usr/local/etc/php.ini,
+/usr/local/etc/php.standalone/php.ini files (names depends of your php version),
+and set up variables if it is version is 4.2.3 or bigger:
+
+   register_globals = On
+   register_argc_argv = On
+
+Modern php have differnt php.ini for the php module and standalone php
+interpreter, so be careful to configure both module and interpreter.
+
 2 Install the ProBIND software
 ===============================
 
@@ -101,6 +114,33 @@ Enter password:
 This concludes basic installation, you should now be able to open the
 web interface in a browser. The database is still empty though. In the
 next phase, you create the settings for further operations.
+
+2.4 Creade work directories
+===========================
+
+Create two work directories (or symlinks to the existing directories);
+they must be writable by the 'http' server which run PROBIND:
+   - HOSTS - place for the host directories
+   - LOGS - log directory
+http server must  support Indexing in this directories. If you are not sure how to
+do it, create .htaccess file in HOME directiry:
+ 
+ echo > HOSTS/.htaccess
+ Options Indexes
+ FancyIndexing on
+ ^D
+ 
+
+2.5 Check and edit if necessary program names in scripts
+========================================================
+
+Run
+  grep perl */*
+  grep bash */*
+
+and verify if your system has perl and bash on the proper place; edit scripts
+or set up symlink if necessary.
+
 
 3 Configure the ProBIND software
 =================================
