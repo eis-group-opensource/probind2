@@ -496,9 +496,15 @@ function upd_soa_record($id, $ttlspec)
 }
 
 # Update the information about an existing domain
-function update_zone($id, $serial, $refresh, $retry, $expire, $master, $zonefile, $disabled = 0)
+function update_zone($id, $serial, $refresh, $retry, $expire, $master, $zonefile = 0, $disabled = 0)
 {
 	global $SLAVE_ON_SLAVES;
+	if (!$zonefile) {
+		$rid = sql_query("SELECT zonefile FROM zones WHERE id=$id");
+		list($zonefile) = mysql_fetch_row($rid);
+		mysql_free_result($rid);
+	}
+			
 	if (!strlen($master)) {
 		$query = "UPDATE zones SET serial = $serial, refresh = $refresh, retry = $retry, expire = $expire, zonefile = '$zonefile', updated = 1, disabled=$disabled WHERE id = $id";
 	} else {

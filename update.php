@@ -159,7 +159,7 @@ function main_update_menu($input)
 	}
 	
 	if ($TWO_STEP_UPDATE && $conf_c)
-		$up_text = "COMPLETE UPDATE";
+		$up_text = "FINISH UPDATE";
 		
 	print "<TABLE width=\"70%\"  border=\"1\">\n";
 	print "\t<TD>Generate files ($zones): <INPUT type=CHECKBOX name=\"gen\" $gen_c></TD>\n";

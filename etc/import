@@ -7,7 +7,7 @@ require '../inc/getopt.inc';
 function usage() 
 {
 	die("
-Usage: import [-v] [-a] [file]
+Usage: import [-v] [-a] [-d] [-N] [file]
 
 The input file or standard input is assumed to be a BIND8 named.conf file.
 
@@ -15,6 +15,8 @@ Options:
 	-a	Put a copy of the zone file into the annotation for each
 		zone loaded.
 	-v	Verbose operation.
+	-d 	delete zone if it already exists
+	-F	import file name from named.conf (do not use subdirectories in the file names!)
 	-h	Print this text.
 ");
 }
@@ -59,8 +61,8 @@ function next_conf_token($input)
 	global $conf_input_buffer;
 	global $opts;
 	$TRE = '/([-\/\w\.]+|"[^"]*"|\{|\}|;)/';
-	$srch = array("/#.*$/", "/'/");
-	$repl = array('', '"');
+	$srch = array("/#.*$/", "/\/\/.*$/", "/'/");
+	$repl = array('', '', '"');
 	while (!preg_match($TRE, $conf_input_buffer, $matches)) {
 		if (feof($input))
 			return 0;
@@ -132,7 +134,10 @@ function load_zone($zname, $file, $zid, $zone, $master, $opts)
 	if (strtoupper($lastdomain) == strtoupper("$zone."))
 		$lastdomain = "@";
 	insert_record($zid, $lastdomain, $ttl, 'SOA', '', '', 0);
-	update_zone($zid, $serial, $refresh, $retry, $expire, $master, $file);
+	if ( $opt['F'])
+		update_zone($zid, $serial, $refresh, $retry, $expire, $master);	
+	else
+		update_zone($zid, $serial, $refresh, $retry, $expire, $master);
 	# Get the rest
 	while (!feof($zonefile) && !$break) {
 		$raw = fgets($zonefile, 1024);
@@ -328,9 +333,12 @@ function parse_zone($input, $opts)
 		print "Warning: Cannot parse '$zone'\n";
 		return;
 	}
-	if (get_named_zone($zone)) {
+	if ($info = get_named_zone($zone)) {
 		print "Warning: '$zone' already exists in the database. options = $options\n";
-		return;
+		if (!$opts['d'])
+			return;
+		$id = $info['id'];
+		del_zone($id);				        
 	}
 	if ( $zone == "0.0.127.in-addr.arpa" ) {
 		print "******************************************************************************************************\n";
@@ -354,7 +362,7 @@ function parse_zone($input, $opts)
 # Parse command line and initialize
 
 set_time_limit(0);
-$opts = getopts($argv, "ahv");
+$opts = getopts($argv, "ahvF");
 if ($opts['h'])
 	usage();
 

@@ -542,13 +542,21 @@ To import your existing configuration, copy named.conf and all of your zone
 files into a directory on your ProBIND host.
 <P>
 Then execute this command (assuming that you installed ProBIND in 
-/www/htdocs/probind):
+/www/htdocs/probind and all named.conf stuff in /tmp/namedb):
 <P>
-/www/htdocs/probind/etc/import -v named.conf | tee import.log
+cd /www/htdocs/probind; etc/import -v /tmp/namedb/named.conf | tee import.log
+<P>
+Be sure that you enter <B>full</B> name of the named.conf file - php script do not understand relative names.
 <P>
 Review the import log and the database carefully. You do not want to
 update your BIND servers until your are confident that the database
 accurately represents your DNS data.
+<P>If you want to import file names from the zones, add '-F' option. It is not recommended because
+if you had a subdirectories, then must be created in the HOSTS/server_name directory before you
+generate a files, and pusth script must support this mode.
+<P>
+If you want to replace existing domains by the new ones, use '-d' option - if zone already exists, it will
+be deleted first.
 <P>
 Import understand zone options and can create 'option' field in the imported zones;
 verify this options before pushing any updates to the server. By default, zones must have 
@@ -556,13 +564,36 @@ option
 <PRE>
  allow-transfer { $ACL };
 </PRE>
-which allow all secondary servers to 'xfer' zone.
+which allows all secondary servers to 'xfer' zone. In some cases, you should prefer to change TEMPLATE options
+BEFORE any 'import' (for example, if you do not want to maintain 'allow-transfer{}' options in the zones).
 
 <P>
 If you have a lot of comments in your zone files, run import with the -a
 flag too (i.e. import -av named.conf). That way the unaltered text of a
 zone file is put into the ProBIND database as a comment text for the zone.
+<P>
+If you have a very complex named configuration, you need to configure named.conf options. Generally you have a
+two methods to do it:
+<UL>
+<LI>
+Create separate template directory for every bind you want to manage; copy all configuration files into it;
+import zones. After it, remove all zone files and directories from new template directory, and edit convert
+named.conf into named.tmpl by replacing all zone information onto the macro $ZONE_DEFINITIONS and 
+add $OPTIONS macro into the options section. Do not forget to copy (and edit if necessary) script 'reconfig.sh'
+into the template directory.
 
+If you change template for the existing server and want to update server directory, check a box 'Update host
+from template?' in the server menu and 'update' server description (<B>Misc Tools -&lt; Servers -&lt;
+<I>server</I></B>).
+
+<LI>use a standard template, and 
+add all necessary options into the 'options' section of the server.
+</UL>
+Always verify generated files (by clicking on them in '<B>Update</B>' menu).
+<P>
+<TABLE  align="CENTER" bgcolor=YELLOW border=1><TR><TD>
+<STRONG>import <I>does not support <B>$INCLUDE</B> operators in zone files.</STRONG>.
+</TD></TR></TABLE>
 <H2><A NAME="license">License</A></H2>
 <P>
 ProBIND version 2  was developed by Alexei Roudnev, <Alexei_Roudnev@exigengroup.com>,
