@@ -1,54 +1,87 @@
-#!/usr/bin/perl
+#!/usr/bin/bash
 #
 # Push new versions of zone and name.conf files to a BIND server, and
 # restart the server.
-
-sub usage()
-{
-	print "$0 dest-host remote-dir\n";
-	exit(1);
-}
-
+# 
+# push.local  [-PUSH] [-CONF] [-u USER] HOST REMOTE-DIRECTORY
 #
-# MAIN
-#
-print STDERR "PUSH\n";
-$< = $>;
-$( = $);
-usage() if (scalar(@ARGV) < 2);
-$ARGV[0] =~ /([\w.\-_]+)/;
-$HOST = $1;
-$ARGV[1] =~ /([\w.\-_\/+]+)/;
-$BIND_DIR = $1;
-%ENV = (
-	'PATH', '/bin:/usr/bin',
-	'HOME', '/root',
-);
-$| = 1;
+PATH=/opt/sfw/bin:/usr/ucb:/usr/bin:/usr/local/bin:/bin:
 
-print STDERR "dir = $BIND_DIR\n";
-print STDERR "host = $HOST\n";
-opendir(SRC, ".") || die("$!: opendir('.')\n");
-@files = grep { -f && -r } readdir(SRC);
-closedir(SRC);
+RSYNC="rsync -b -p -t -r --exclude='*.b,CVS,SEC,*.pid' --suffix=.bck"
+USER=named
+SSH="ssh2 -x"
 
-foreach $file (@files) {
-	$file =~ /(.*)/;
-	push @safefiles, $1;
-	$deadlist++ if ($file eq "deadlist");
-}
+echo rsync.local $*
+#set -x
+if [ "$1" = "-PUSH" ]
+then
+	PUSH=1
+	shift
+fi
 
-print STDERR "files = ".join(', ', @safefiles)."\n";
-if (scalar(@safefiles) && !fork()) {
-	# Child process
-	$cmd = "/usr/bin/scp ".join(" ", @safefiles)." $HOST:$BIND_DIR";
-print STDERR "$cmd\n";
-  	exec($cmd);
-	exit(0);
-}
-wait();
-$cmd = "/usr/bin/ssh $HOST '/usr/sbin/ndc restart";
-$cmd .= "; cd $BIND_DIR; mkdir DELETED 2>/dev/null; cat deadlist | xargs -i mv {} DELETED" if ($deadlist);
-$cmd .= "'";
-print STDERR "$cmd\n";
-exec($cmd);
+if [ "$1" = "-CONF" ]
+then
+	RECONF=1
+	shift
+fi
+
+if [ "$1" = "-u" ]
+then
+	shift
+	USER=$1
+	shift
+fi
+
+
+if [ "$RECONF" = "" -a "$PUSH" = "" ]
+then
+	RECONF=1
+	PUSH=1
+fi
+
+HOST=$1
+dir=$2
+
+if [ "$HOST" = "" -or "$dir" = "" ]
+then
+    echo $0 [-PUSH] [-CONF] [-l USER] dest-host remote-dir
+	exit 1
+fi
+
+if [ "$PUSH" = "1" ]
+then
+ echo $RSYNC -v -e "$SSH"  . "$USER@$HOST:$dir" < /dev/null
+ $RSYNC -v -e "$SSH"  . "$USER@$HOST:$dir" < /dev/null
+ ko=$?
+ echo $ko
+ if [ $ko != 0 ]
+ then
+  	 echo RSYNC FAILURE
+	 exit 1
+ fi
+ rm -f deleted_files
+fi
+
+if [ "$RECONF" = 1 ]
+then
+ if [ -f reconfig.sh ]
+ then
+    echo Now restarting named
+	$SSH -n -l $USER $HOST "cd $dir && sh reconfig.sh"
+	exit $?
+ else
+	if [ -f deleted_files ]
+	then
+	    $SSH -n -l $USER $HOST "cd $dir && rm -f `cat deleted_files`"
+	fi	
+	$SSH -n -l $USER $HOST "/usr/local/bin/rndc reconfig"
+	if [ $? != 0 ]
+	then
+	    echo rndc failure
+		exit 1
+	fi
+    exit 0
+ fi
+fi
+
+exit 0

@@ -203,7 +203,7 @@ function add_servers($input)
 	mysql_free_result($rid);
 	if ($count)
 		return "$name already exists in the database.<BR>\n";
-	$query = "INSERT INTO servers (hostname, ipno, type, pushupdates, mknsrec, zonedir, template, script, descr) VALUES ('$name', '$ipno', '$type', $push, $mkrec, '$zonedir', '$template', '$script', '$descr')";
+	$query = "INSERT INTO servers (hostname, ipno, type, pushupdates, mknsrec, zonedir, template, script, descr, state) VALUES ('$name', '$ipno', '$type', $push, $mkrec, '$zonedir', '$template', '$script', '$descr', 'CHG')";
 	sql_query($query);
 
 	if (is_file("$TEMPL_DIR/$template/named.tmpl")) {
@@ -325,7 +325,7 @@ function update_servers($input)
 	case 'update':
 		if ($warns = valid_server($name, $ipno, $type, $push, $zonedir, $template, $script))
 			return $warns;
-		$query = "UPDATE servers SET hostname = '$name', ipno = '$ipno', type = '$type', pushupdates = $push, mknsrec = $mkrec, zonedir = '$zonedir', template = '$template', script = '$script', descr = '$descr' WHERE id = $id";
+		$query = "UPDATE servers SET hostname = '$name', ipno = '$ipno', type = '$type', pushupdates = $push, mknsrec = $mkrec, zonedir = '$zonedir', template = '$template', script = '$script', descr = '$descr', state = 'CHG' WHERE id = $id";
 		$rid = sql_query($query);
 		$count = mysql_affected_rows();
 		if ($updatet && is_file("$TEMPL_DIR/$template/named.tmpl")) {

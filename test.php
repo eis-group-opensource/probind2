@@ -50,10 +50,13 @@ function ns_test_form($id, $input) {
 	$result .= "<INPUT type=\"HIDDEN\" name=\"host\" value=\"$host\">\n";
 	$result .= "<INPUT type=\"HIDDEN\" name=\"ip\" value=\"$ip\">\n";
 	$result .= "<TABLE border=4  frame=\"box\">\n<TR>\n";
-    $result .= "<TD><INPUT type=\"submit\" name=\"Test\" value=\"Testing\" class=\"button\" onmouseover=\"this.className='buttonhover'\" onmouseout=\"this.className='button'\" >";
+    $result .= "<TH>\n";
+	$result .= "<INPUT type=\"submit\" name=\"Test\" value=\"Testing\" class=\"button\" onmouseover=\"this.className='buttonhover'\" onmouseout=\"this.className='button'\" >";
+	$result .= "<TH>Host / IP</TH><TH>Zone</TH><TH>Type</TH>\n";
+	$result .= "</TR><TR><TD>\n";
 	$result .= "<B> $host ($ip)</B></TD>\n";
-	$result .= "<TD>Host / IP: <INPUT type=\"TEXT\" length=24 name=\"name\" value=\"$name\"></TD>\n";
-	$result .= "<TD>Zone: ";
+	$result .= "<TD><INPUT type=\"TEXT\" length=24 name=\"name\" value=\"$name\"></TD>\n";
+	$result .= "<TD>";
 	$array = array();
 	$first = 1;
 	while (list($domain) = mysql_fetch_row($rid)) {
@@ -69,6 +72,7 @@ function ns_test_form($id, $input) {
 	$result .= mk_select_a("zone", $array, $zone);
 	
 	$array = array('ANY', 'SOA', 'A', 'PTR', 'CNAME', 'MX', 'NS', 'TXT', 'HINFO', 'SRV');
+	$result .= "</TD><TD>\n";
 	$result .= mk_select_a("type", $array, $rtype);
 
 	$result .= "</TR>\n</TABLE>\n";
