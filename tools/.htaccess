@@ -1,0 +1,11 @@
+<FILES "settings.php">
+       require group dnsadm
+</FILES>
+
+<FILES "servers.php">
+       require group dnsadm
+</FILES>
+
+<FILES "bulkupdate.php">
+       require group dnsadm
+</FILES>
