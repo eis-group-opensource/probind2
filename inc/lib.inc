@@ -22,6 +22,8 @@ $HOURSECS = 60*$MINSECS;
 $DAYSECS = 24*$HOURSECS;
 $WEEKSECS = 7*$DAYSECS;
 
+# Maximum time between user / password requests if no activity take place
+$SESSION_TIMEOUT = 60;
 # We ´use this error message if a domain lock cannot be acquired
 $domain_lock_msg = "
 <UL>

@@ -1,12 +1,12 @@
-    AuthName pribind-OPERATOR
+    AuthName probind-OPERATOR
     require group dns
 <FILES "addzone.php">
-       AuthName pribind-ADMIN
+       AuthName probind-ADMIN
        require group dnsadm
 </FILES>
 
 <FILES "delzone.php">
-       AuthName pribind-ADMIN
+       AuthName probind-ADMIN
        require group dnsadm
 </FILES>
 

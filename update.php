@@ -429,6 +429,7 @@ if (!$frame) {
 	exit();
 }
 
+
 if ($frame == 'MAIN' ) {
 	print $html_top;
 	print main_update_menu($INPUT_VARS);
@@ -440,11 +441,25 @@ if ($frame == 'PROGRESS' ) {
 	exit;
 }
 
-print $html_top1;
 if ($frame == 'BLANK') {
+    print $html_top1;
     print $html_bottom;
 	exit;
 }
+
+session_register("session_counter");
+if ($session_counter < time() - $SESSION_TIMEOUT ) {
+    $session_counter = time();
+    session_start();
+    header('WWW-Authenticate: Basic realm="probind-OPERATOR"');
+    header('HTTP/1.0 401 Unauthorized');
+    print $html_top1;
+    exit;
+}
+$session_counter = time();
+session_start();
+
+print $html_top1;
 
 if ( !$LOG_DIR || !opendir($LOG_DIR) ) {
 	die("<H3><FONT color=\"red\">Can not open log directory: $LOG_DIR</FONT></H3>\n");
@@ -489,7 +504,6 @@ if ($err) {
 else {
 	print "<H3><FONT color=GREEN>Completed, see logs ";
 	print "<A href=\"view.php?base=LOGS&file=$UPDATE_LOG_NAME\">here</A></FONT></H3>\n";
-
 };
 leave_crit('PUSH');
 
