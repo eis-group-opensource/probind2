@@ -1,12 +1,12 @@
-    AuthName pribind-OPERATOR-External
+    AuthName pribind-OPERATOR
     require group dns
 <FILES "addzone.php">
-       AuthName pribind-ADMIN-External
+       AuthName pribind-ADMIN
        require group dnsadm
 </FILES>
 
 <FILES "delzone.php">
-       AuthName pribind-ADMIN-External
+       AuthName pribind-ADMIN
        require group dnsadm
 </FILES>
 
