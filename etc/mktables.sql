@@ -140,9 +140,13 @@ CREATE TABLE servers (
 	script		VARCHAR(255) NOT NULL,
 # Descriptive text
 	descr		TEXT,
-# Current status; can be NULL (UP), 'ERR' (failure during push), 'CHG' (changed but not pushed yet)
+# Current status; can be 'OK', 
+#                        'OUT' (out of date), 
+#                        'CHG' (changed but not pushed yet)
+#                        'CFG' (pushed but not reconfigured yet)
+#                        'ERR' (error during last update)
 #
-	state           CHAR(5),
+	state           CHAR(5) DEFAULT 'OK',
 	PRIMARY KEY (id)
 );
 

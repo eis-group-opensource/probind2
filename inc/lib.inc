@@ -294,8 +294,8 @@ function del_zone($zoneid)
 	}
 	mysql_free_result($rid);
 	# Add this domain to deleted_domains
-	$rid = sql_query("SELECT domain, zonefile FROM zones WHERE id = $zoneid");
-	list($domain, $zonefile) = mysql_fetch_row($rid);
+	$rid = sql_query("SELECT domain, zonefile, master FROM zones WHERE id = $zoneid");
+	list($domain, $zonefile, $master) = mysql_fetch_row($rid);
 	mysql_free_result($rid);
 	sql_query("DELETE FROM deleted_domains WHERE domain = '$domain'");
 	sql_query("INSERT INTO deleted_domains SELECT domain, zonefile FROM zones WHERE id = $zoneid");
@@ -304,6 +304,10 @@ function del_zone($zoneid)
 	$rrcount = mysql_affected_rows();
 	sql_query("DELETE FROM annotations WHERE zone = $zoneid");
 	sql_query("DELETE FROM zones WHERE id = $zoneid");
+	if ($master)
+		sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M'");
+	else
+	    sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M' OR type = 'S'");
 	leave_crit('DOMAIN');
 	return $rrcount;
 }
@@ -591,23 +595,57 @@ function get_input()
 
 # Return the serial number to use for the domain ID. Automatically
 # updates the database as needed.
-function adjust_serial($id)
+function get_serial($id)
 {
-	$query = "SELECT serial, updated FROM zones WHERE id = $id";
+	$query = "SELECT serial, updated, master FROM zones WHERE id = $id";
 	$rid = sql_query($query);
-	list($serial, $updated) = mysql_fetch_row($rid);
+	list($serial, $updated, $master) = mysql_fetch_row($rid);
 	mysql_free_result($rid);
-	if (!$updated) return $serial;
+	if ($updated != 1) return $serial;
 	$now = date("Ymd")."01";
 	if ($serial >= $now) 
 		$newserial = $serial + 1;
 	else 
 		$newserial = $now;
-	$query = "UPDATE zones SET updated = 0, serial = $newserial WHERE updated";
-	$rid = sql_query($query);
+	sql_query("UPDATE zones SET updated = 2, serial = $newserial WHERE id = $id");
+	
+	if ($master) {
+		sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M' AND state != 'OUT'");
+	}
+	else {
+		sql_query("UPDATE servers SET state = 'OUT' WHERE state != 'OUT'");
+	}	
+	
 	return $newserial;
 }
 
+#
+# adjust all serials (and mark servers if they are OUT OF DATE)
+function adjust_serials()
+{
+	$rid = sql_query("SELECT id FROM zones WHERE updated");
+	while ( list($id) = mysql_fetch_row($rid)) {
+	    get_serial($id);
+	}
+	mysql_free_result($rid);
+}
+
+#
+# Confirm all updates - set all updated to 0
+# Should be called ONLY when all zones whith 'updated' are regenerated
+# Must be in 'DOMAIN' crit section
+function updates_completed()
+{
+	$rid = sql_query("SELECT id FROM zones WHERE updated");
+	while ( list($id) = mysql_fetch_row($rid)) {
+	    get_serial($id);
+	}
+	mysql_free_result($rid);
+	$rid = "UPDATE zones SET updated = 0 WHERE updated = 2";
+}
+	
+#
+#		
 function auto_ptrs($domain, $ttl, $reversehosts)
 {
 	global $DEFAULT_PTR_DOMAIN;

@@ -5,14 +5,7 @@ $html_top = '
 <HTML><HEAD>
 <TITLE>File viewer</TITLE>
 <LINK rel="stylesheet" href="style.css" type="text/css">
-</HEAD><BODY bgcolor="ccdd88" background="images/BG-shadowleft.gif">
-<TABLE width="100%">
-<TR>
- <TD align=left><P>
- <TH align=right><A HREF="manual.html#view">Help</A></TH>
-</TR>
-</TABLE>
-<HR><P>
+</HEAD><BODY bgcolor="ccdd88" >
 ';
 
 $html_bottom = '
