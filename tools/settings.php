@@ -95,6 +95,20 @@ function browse_settings()
 		$name = $setting[0];
 		$text = $settings_list[$name];
 		if (!$seen[$name])
+		    $bool = $is_bool[$name];
+		    if ($bool) {
+			if ($value == 1) {
+			    $s1 = " SELECTED";
+			    $s0 = "";
+			}
+			else {
+			    $s0 = " SELECTED";
+			    $s1 = "";
+			}
+			$field = "<SELECT name=\"$name\"><OPTION value=0 $s0>Off</OPTION><OPTION value=1 $s1>On</OPTION></SELECT>";
+		    }
+		    else
+			$field = "<INPUT type=\"text\" name=\"$name\" value=\"$value\" SIZE=40 MAXLENGTH=255>";
 			$result .= "<TR>
  <TD>$text</TD>
  <TD valign=\"top\">$field</TD>
