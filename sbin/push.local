@@ -10,7 +10,7 @@ PATH=/usr/bin:/bin:/usr/local/bin:/opt/sfw/bin:/usr/ucb
 RSYNC="rsync -b -p -t -r --exclude='*.b,CVS,SEC,*.pid' --suffix=.bck"
 
 echo rsync.local $*
-
+set -x
 if [ "$1" = "-PUSH" ]
 then
 	PUSH=1
@@ -32,7 +32,7 @@ fi
 host=$1
 dir=$2
 
-if [ "$host" = "" -or "$dir" = "" ]
+if [ "$host" = "" -o "$dir" = "" ]
 then
     echo $0 dest-host remote-dir
 	exit 1
