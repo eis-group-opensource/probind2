@@ -6,6 +6,7 @@
 # push.local  [-v] [-PUSH] [-CONF] [-u USER] HOST REMOTE-DIRECTORY
 #
 PATH=/opt/sfw/bin:/usr/ucb:/usr/bin:/usr/local/bin:/bin:
+export PATH
 
 RSYNC="rsync -b -p -t -r --exclude='*.b,CVS,SEC,*.pid' --cvs-exclude --suffix=.bck"
 USER=named
