@@ -19,7 +19,7 @@ else
 fi
 
 echo rsync.remote $*
-V=-v
+# V=-v
 # set -x
 if [ "$1" = "-v" ]
 then
@@ -104,8 +104,8 @@ then
  if [ -d CVS ]
  then
 	export CVSROOT=
-	id
-	set -x
+	# id
+	# set -x
 	cvs -q remove -l .                 < /dev/null
 	cvs -q add  -m ""       *.*        < /dev/null 2>& 1 |  grep -v 'already'
 	cvs -q commit -l        -m ""  *.* < /dev/null
