@@ -76,6 +76,7 @@ function next_conf_token($input)
 function load_zone($zname, $file, $zid, $zone, $master, $opts)
 {
 	global $SERVERS, $DEFAULT_PTR_DOMAIN;
+	$origin = "";
 	if ($opts['v'])
 		print "Loading '$file' for zone($zone)\n";
 	if (!($zonefile = fopen($file, "r"))) {
@@ -91,6 +92,17 @@ function load_zone($zname, $file, $zid, $zone, $master, $opts)
 		$fields = preg_split('/\s+/', $cooked, 0, PREG_SPLIT_NO_EMPTY);
 		if (!count($fields))
 			continue;
+		if (strtoupper($fields[0]) == '$TTL') {
+			# Get the default TTL spec
+			$ttl = $fields[1];
+			continue;
+		}		
+		if (strtoupper($fields[0]) == '$ORIGIN') {
+			# Get origin
+			$origin = $fields[1];
+			continue;
+		}		
+		
 		while ($field = each($fields)) {
 			$soa[] = $field[1];
 		}
@@ -98,19 +110,27 @@ function load_zone($zname, $file, $zid, $zone, $master, $opts)
 			break;
 	}
 	$mname = $soa[3];
-	$origin = $soa[4];
 	$serial = $soa[6];
 	$refresh = ttl_to_seconds($soa[7]);
 	$retry = ttl_to_seconds($soa[8]);
 	$expire = ttl_to_seconds($soa[9]);
 	$ttl = ttl_to_seconds($soa[10]);
 	if ($soa[0] == '@') {
-		$lastdomain = $zname.".";
+		$lastdomain = $origin;
 	} else {
-		$lastdomain = $soa[0].".";
+		$lastdomain = $soa[0];
+	}
+	if (!preg_match('/\.$/', $lastdomain) && $origin) {
+		if ($origin == '.') {
+			$lastdomain = $lastdomain.'.';
+		} else {
+			$lastdomain = $lastdomain.'.'.$origin;
+		}
 	}
 	$parsecount++;
 	$insertcount++;
+	if (strtoupper($lastdomain) == strtoupper("$zone."))
+		$lastdomain = "@";
 	insert_record($zid, $lastdomain, $ttl, 'SOA', '', '', 0);
 	update_zone($zid, $serial, $refresh, $retry, $expire, $master, $file);
 	# Get the rest
@@ -127,6 +147,17 @@ function load_zone($zname, $file, $zid, $zone, $master, $opts)
 			$ttl = $fields[1];
 			continue;
 		}
+		if (strtoupper($fields[0]) == '$ORIGIN') {
+			# Get origin
+			$origin = $fields[1];
+			if (strtoupper($origin) == strtoupper("$zone.")) {
+				$origin = "";
+			} else {
+				$origin = preg_replace("/.$zone\.$/i",'', $origin);
+			}
+			continue;
+		}		
+		
 		if (preg_match('/^\s/', $cooked)) {
 			# record starts with a whitespace
 			# more records for the previous domain
@@ -134,9 +165,15 @@ function load_zone($zname, $file, $zid, $zone, $master, $opts)
 			array_shift($fields); # Loose the empty field
 		} else {
 			$domain = array_shift($fields);
-			if ($domain == '@')
-				$domain = $zname.".";
+			if ($domain == '@') {
+				$domain = $origin;
+			}	
+		
+			if (!preg_match('/\.$/', $domain) && $origin) {
+				$domain = $domain.'.'.$origin;
+			}
 		} 
+			
 		# Check for optional per-RR TTL spec
 		$rrttl = ttl_to_seconds($fields[0]);
 		if (!strcasecmp(seconds_to_ttl($rrttl), $fields[0])) {

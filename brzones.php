@@ -122,7 +122,7 @@ $slave_zone_detail_form = '
 <TABLE border width=60%%><TR>
 	<TD align=center><INPUT type="submit" value="Details" name="formname"></TD>
 	<TD align=center><INPUT type="submit" value="Update" name="formname"></TD>
-	<TD align=center><INPUT type="submit" value="Delete Zone?" name="formname" class="button" onmouseover="this.className=\'buttonhover\'" onmouseout="this.className=\'button\'></TD>
+	<TD align=center><INPUT type="submit" value="Delete Zone?" name="formname" class="button" onmouseover="this.className=\'buttonhover\'" onmouseout="this.className=\'button\'"></TD>
 </TR></TABLE>
 ';
 
@@ -263,9 +263,9 @@ function record_form($record)
 	$on = "onchange=\"update_$id.className='buttonwarning'\"";
 	if ($record['type'] == 'SOA') {
 		$result = sprintf("<INPUT type=\"hidden\" name=\"type_%d\" value=\"SOA\">\n", $record['id']);
-		$result .= sprintf("<TR><TD><INPUT type=\"submit\" name=\"update_%s\" value=\"Upd\"></TD>\n", $record['id']);
+		$result .= sprintf("<TR><TD><INPUT type=\"submit\" name=\"update_%s\" value=\"Upd\" class=\"button\"></TD>\n", $record['id']);
 		$result .= sprintf("<TD>%s</TD>\n", $record['domain']);
-		$result .= sprintf("<TD><INPUT type=\"text\" value=\"%s\" name=\"ttl_%d\" size=5></TD>", seconds_to_ttl($record['ttl']), $record['id']);
+		$result .= sprintf("<TD><INPUT type=\"text\" value=\"%s\" name=\"ttl_%d\" size=5 $on></TD>", seconds_to_ttl($record['ttl']), $record['id']);
 		$result .= "<TD>SOA</TD>\n<TD></TD>\n<TD colspan=3></TD></TR>\n";
 	} else {
 		$result = sprintf("<TR><TD><INPUT type=\"submit\" name=\"update_%d\" value=\"Upd\" class=\"button\"> \n", $id);
@@ -468,8 +468,12 @@ get_input();
 
 switch ($INPUT_VARS['frame']) {
 case 'zones':
-	print domain_search_form($INPUT_VARS);
-	exit();
+	if (! $SHOW_ALL ) {
+		print domain_search_form($INPUT_VARS);
+		exit();
+	}
+	$INPUT_VARS['formname'] = 'zonesearch';
+	break;
 case 'records':
 	if ($warns = database_state())
 		print "The database is not in an operational state. The following problems exist:<P><UL>$warns</UL><P>\n";
@@ -479,12 +483,6 @@ case 'records':
 }
 
 switch($INPUT_VARS['formname']) {
-case 'zonesearch':
-	print domain_search_form($INPUT_VARS);
-	$str = $INPUT_VARS['lookfor'];
-	print domain_list("%$str%", $INPUT_VARS['domtype'], "<A HREF=\"brzones.php?frame=records&zone=%s\" target=\"right\">%s%s</A><BR>\n");
-	print $html_close;
-	break;
 case 'masterzone':
 case 'slavezone':
 case 'Update':
@@ -517,6 +515,12 @@ case 'Delete Zone?':
 case 'Details':
 	$info = get_zone($INPUT_VARS['id']);
 	header("Location: zonedetails.php?domain=".$info['domain']);
+	break;
+case 'zonesearch':
+	print domain_search_form($INPUT_VARS);
+	$str = $INPUT_VARS['lookfor'];
+	print domain_list("%$str%", $INPUT_VARS['domtype'], "<A HREF=\"brzones.php?frame=records&zone=%s\" target=\"right\">%s%s</A><BR>\n");
+	print $html_close;
 	break;
 default:
 	print $start_form;

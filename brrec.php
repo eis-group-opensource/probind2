@@ -48,6 +48,7 @@ $query_type = '
 	<OPTION>PTR</OPTION>
 	<OPTION>TXT</OPTION>
 	<OPTION>HINFO</OPTION>
+	<OPTION>SRV</OPTION>
 </SELECT></TD>
 ';
 
@@ -77,7 +78,7 @@ function query_type($type)
 	$result = "<TD><SELECT name=\"type\">\n";
 	$result .= sprintf("<OPTION%s>*</OPTION>\n", 
 		((!$type || ($type == '*')) ? ' selected' : ''));
-	$types = array('A', 'CNAME', 'MX', 'NS', 'PTR', 'TXT', 'HINFO');
+	$types = array('A', 'CNAME', 'MX', 'NS', 'PTR', 'TXT', 'HINFO', 'SRV');
 	while ($tp = each($types)) {
 		$result .= sprintf("<OPTION%s>%s</OPTION>\n", 
 			($type == $tp[1] ? ' selected' : ''),

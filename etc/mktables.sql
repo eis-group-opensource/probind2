@@ -145,6 +145,8 @@ INSERT INTO typesort (type, ord) values ('MX', 5);
 INSERT INTO typesort (type, ord) values ('A', 6);
 INSERT INTO typesort (type, ord) values ('CNAME', 7);
 INSERT INTO typesort (type, ord) values ('PTR', 8);
+INSERT INTO typesort (type, ord) values ('SRV', 9);
+
 
 # This table stores various management info. First (and so far only)
 # use is to help limit the push functionality to one single user at a time.
