@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+
+use Net::DNS;
+use Getopt::Std;
+
+getopts('h:');
+
+my($res) = new Net::DNS::Resolver;
+$res->nameservers($opt_h) if ($opt_h);
+
+while(<>) {
+	chomp;
+	$query = $res->query($_, "NS");
+	print "$_";
+	if ($query) {
+		foreach $rr ($query->answer) {
+			next unless $rr->type eq "NS";
+			print " ", $rr->nsdname;
+	       }
+	}
+	print "\n";
+}

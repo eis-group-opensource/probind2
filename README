@@ -1,0 +1,143 @@
+Copyright & Licensing
+=====================
+
+ProBIND was developed by Flemming S. Johansen <fjohansen@proventum.net>
+as part of his duties as resident DNS manager at Proventum. The software
+is copyrighted (c) 2000 by Proventum (http://www.proventum.net).
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+Disclaimer
+==========
+
+This software is made available to the public in the hope that it will
+be useful. It is guaranteed to consist of 100% hand-written source code.
+No warranties of any kind exist for this software. Do not use it in
+situations where a software glitch may cause financial loss, or endanger
+human life, health or dignity. YMMW!
+
+What is ProBIND
+===============
+
+ProBIND is a web application for administrating one or more BIND servers.
+It is intended for small to medium sized ISPs, but there is no reason
+why it couldn't be used wherever many domains must be managed across
+a set of master and slave servers.
+
+ProBIND is written in PHP4, and uses a MySQL database for storing all
+information about the DNS servers managed. The database contents are
+pushed onto the DNS servers only when a ProBIND user explicitly requests
+it  (it is also possible to execute the update from a cron job). The
+update is done by generating configuration- and zone files based on the
+information in the database. The files are then copied to the DNS servers.
+
+The strengths of ProBIND are:
+
+- You can easily search domains, either by domain name or a free-text
+search on domain annotations.
+
+- You can search for records across all domains, e.g. to find all WWW
+records that are CNAMES, and which point to a host with the string
+"foo" in its name.
+
+- For those who often create domains which have a lot of standard fluff, 
+e.g. standard TXT and MX records, the TEMPLATE pseudo-domain will help.
+Any records you add the TEMPLATE will automatically be added to newly
+created domains.
+
+- NS records are automatically generated for all your domains. You
+may never have to add a single NS records to your database.
+
+- If you let ProBIND handle your reverse domains (the in-addr.arpa zones),
+it will automatically generate PTR records for all A records in the database.
+You may never have to add a single PTR record to your database.
+
+Version 0.2 is currently used for all DNS administration at Proventum.
+We think it is good enough to be useful for other organizations. If
+someone has ideas for making it even better, we would like very much to
+hear about it. Actual patches or working code will even more welcome.
+
+It is my ambition that ProBIND becomes a standard way of managing DNS 
+servers in the Open Source community. Be forewarned: it is good enough for 
+the my needs, but probably not good enough for the world at large - yet. 
+Please help me make this software better! Feel free to email me at 
+fjohansen@proventum.net if you have any suggestions for improvements.
+
+Prerequisites
+=============
+
+MySQL-3.22.32 or later
+php-4.0.2 or later
+apache-1.3.12 or later
+perl-5.005 or later
+openssh (optional)
+
+The Net::DNS perl module must also be installed in order for the
+consistency checkers to work.
+
+The apache server should have the MySQL and PHP modules available. In
+addition to the PHP interpreter embedded in the apache web server, the
+CGI version must also be installed, or ProBIND won't be able to update
+your BIND server(s). 
+
+Installation
+============
+
+The installation procedure is described in the INSTALL file.
+
+At this point, the installation process for ProBIND is a bit convoluted.
+It is my ambition to streamline this process in later versions. In the
+meantime, feel free to send me an email at fjohansen@proventum.net if
+you run into problems.
+
+Security
+========
+
+WARNING: You probably should NOT install this on a web server with access
+for users who should not be able to manipulate your BIND servers. The
+current method for distributing zone files to the servers is easily
+misused by anyone with access to the ProBIND directory.
+
+Limits, bugs and misfeatures
+============================
+
+The import script is not able to deal with zone files larger than 64K
+bytes if the -a option is used.
+
+The import script is somewhat limited in capabilities.
+
+ProBIND sees a BIND server as being in either master or slave configuration.
+This version does not support mixing those roles.
+
+In-addr.arpa zones are currently only supported for 8-bit subnets, e.g.
+17.168.192.in-addr.arpa is supported, but 16.172.in-addr.arpa is not.
+
+Only a subset of RR types is presently supported: A, CNAME, MX, NS, PTR, 
+TXT and HINFO.
+
+No feedback from the BIND log files.
+
+Acknowledgments
+==============
+
+Author: Flemming S. Johansen <fjohansen@proventum.net>
+
+I acknowledge the role of my colleague Lasse L. Johnsen, who has
+contributed a lot of useful suggestions, without which this software
+would almost certainly be utterly useless to anyone other than myself.
+
+Susanne B. Olesen created the logo.
+
+Jeffrey R. McDonald contributed the visual layout.

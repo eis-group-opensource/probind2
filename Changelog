@@ -1,0 +1,25 @@
+Version 1.0.1
+=============
+
+Released 15-feb-2001, mostly a bugfix release
+
+- Updated the INSTALL document with some badly needed troubleshooting tips.
+- Updated the TODO list with a few new ideas
+- Added the tools/full-report.php and bin/domain-report scripts, updated 
+  tools/toolmenu and manual.html to match.
+- Added the sbin/copy-local update script
+- Fixed a bug in tools/ip-ranges which could cause incomplete lists to
+  be displayed.
+- Fixed a missing </BODY></HTML> in addzone.php and update.php
+- Fixed some marginal SQL SELECT syntax in several places
+- Fixed a bad mysql call in inc/lib.php
+- Fixed a bad library call in addzone.php
+- Changed addzone.php to allow bulk zone creation
+- Made bin/mknamed.conf work in the absence of slave servers
+- Fixed bin/mkzonefile to add a missing TTL in zone files
+- Added an IP number check to inc/lib.inc:validate_record
+
+Version 1.0
+===========
+
+Released 19-dec-2000
