@@ -15,6 +15,34 @@
 <?
 require('../inc/lib.inc');
 
+$templ_form="";
+$template_list = "";
+
+$ht = opendir($TEMPL_DIR);
+if ($ht) {
+    while ( $entry = readdir($ht) ) {
+        if ( $ENTRY == "CVS" || $entry == "." || $entry == ".." || !is_dir("$TEMPL_DIR/$entry") || !is_file("$TEMPL_DIR/$entry/named.tmpl") )
+	    continue;
+	$template_list[] = $entry;
+    };
+    closedir($ht);
+    $templ_form = mk_select_a("template", $template_list, $DEFAULT_TMPL);
+}
+else
+    $templ_form = "<FONT COLOR=\"red\">Templates not found in '$TEMPL_DIR'</FONT>\n";
+
+
+$ht = opendir("$TOP/sbin/");
+$script_LIST = "";
+while ( $entry = readdir($ht)) {
+    if (is_dir($entry) || !is_executable("$TOP/sbin/$entry"))
+        continue;
+    $script_list[] = $entry;
+};
+closedir($ht);
+
+$script_form = mk_select_a("script", $script_list, $DEFAULT_PUSH);
+    
 $add_form = '
 <FORM action="servers.php" method="post">
 <INPUT type="hidden" name="action" value="Add">
@@ -41,13 +69,14 @@ $add_form = '
 </TR><TR align=left>
  <TD colspan=3><INPUT type="text" name="zonedir" SIZE=70 MAXLENGTH=255 value="'."$DEFAULT_DIR".'"></TD>
 </TR><TR align=left>
- <TH colspan=3>File on this server containing the named.conf template</TH>
+ <TH colspan=3>Template directory (in '."$TEMPL_DIR".')</TH>
 </TR><TR align=left>
- <TD colspan=3><INPUT type="text" name="template" SIZE=70 MAXLENGTH=255></TD>
+ <TD colspan=3>'."$templ_form".'</TD>
 </TR><TR align=left>
  <TH colspan=3>Script used to push data to the server</TH>
 </TR><TR align=left>
- <TD colspan=3><INPUT type="text" name="script" SIZE=70 MAXLENGTH=255 value="'."$DEFAULT_PUSH".'"></TD>
+ <TD colspan=3>'."$script_form".'</TD>
+</TR><TR align=left>
 </TR><TR align=left>
  <TH>Description</TH>
 </TR><TR>
@@ -70,7 +99,7 @@ $update_form = '
  <TH colspan=2>Name</TH>
  <TH>IP number</TH>
 </TR><TR align=left>
- <TD colspan=2><INPUT type="text" name="name" value="%s" size=24 maxlength=64></TD>
+ <TD colspan=2><INPUT type="hidden" name="name" value="%s">%s</TD>
  <TD><INPUT type="text" name="ipno" value="%s" size=15 maxlength=15></TD>
 </TR><TR align=left>
  <TH>Type</TH>
@@ -85,13 +114,14 @@ $update_form = '
 </TR><TR align=left>
  <TD colspan=3><INPUT type="text" name="zonedir" value="%s" SIZE=70 MAXLENGTH=255></TD>
 </TR><TR align=left>
- <TH colspan=3>File on this server containing the named.conf template</TH>
+ <TH colspan=3>Template directory</TH>
 </TR><TR align=left>
- <TD colspan=3><INPUT type="text" name="template" value="%s" SIZE=70 MAXLENGTH=255></TD>
+ <TD colspan=3>%s</TD>
 </TR><TR align=left>
  <TH colspan=3>Script used to push data to the server</TH>
 </TR><TR align=left>
- <TD colspan=3><INPUT type="text" name="script" value="%s" SIZE=70 MAXLENGTH=255></TD>
+ <TD colspan=2>%s</TD>
+ <TD>Update host from template? <INPUT type="checkbox" name="updatet" value=1></TD>
 </TR><TR align=left>
  <TH>Description</TH>
 </TR><TR>
@@ -116,18 +146,6 @@ Do you really want to delete this DNS server from the database?<P>
 </FORM>
 ';
 
-function mk_select($name, $array, $presel)
-{
-	$result = "<SELECT name=\"$name\">\n";
-	for ($i=0; $i<count($array); $i++) {
-		$result .= "<OPTION";
-		if ($i == $presel)
-			$result .= " SELECTED";
-		$result .= ">$array[$i]</OPTION>\n";
-	}
-	$result .= "</SELECT>\n";
-	return $result;
-}
 
 function valid_path($path)
 {
@@ -138,18 +156,20 @@ function valid_path($path)
 function valid_server($name, $ipno, $type, $push, $zonedir, $template, $script)
 {
 	global $TOP;
-	if (!strlen(ltrim(rtrim($name))))
+	global $TEMPL_DIR;
+	$name = trim($name);
+	if (!strlen($name))
 		$warns .= "You must specify a hostname<BR>\n";
+	if (!preg_match("/^[-\w._]+$/", $name) || preg_match('/\.\./',$name))
+		$warns = "Invalid server name '$name'";
 	if (!valid_ip($ipno))
 		$warns .= "You must specify a valid IP number<BR>\n";
 	if ($type != 'M' && $type != 'S')
 		$warns .= "The server type must be 'M' or 'S'<BR\n";
 	if (strlen($zonedir) && !valid_path($zonedir))
 		$warns .= "The zone directory is not a valid path<BR>\n";
-	if (strlen($template) && !preg_match("/^[\w.-_]+$/", $template))
-		$warns .= "The template is not a valid filename<BR>\n";
-	if (strlen($template) && !file_exists("$TOP/etc/$template"))
-		$warns .= "'$TOP/etc/$template' does not exist<BR>\n";
+	if (strlen($template) && !is_dir("$TEMPL_DIR/$template"))
+		$warns .= "'$TEMPL_DIR/$template' does not exist<BR>\n";
 	if (strlen($script) && !preg_match("/^[-\w._]+$/", $script))
 		$warns .= "The script is not a valid filename<BR>\n";
 	if (strlen($script) && !file_exists("$TOP/sbin/$script"))
@@ -163,6 +183,8 @@ function valid_server($name, $ipno, $type, $push, $zonedir, $template, $script)
 # go into the database, otherwise insert it and return 0.
 function add_servers($input)
 {
+	global $HOST_DIR;
+	global $TEMPL_DIR;
 	$name = chop(ltrim($input['name']));
 	$ipno = $input['ipno'];
 	$type = ($input['type'] == 'Master' ? 'M' : 'S');
@@ -183,13 +205,30 @@ function add_servers($input)
 		return "$name already exists in the database.<BR>\n";
 	$query = "INSERT INTO servers (hostname, ipno, type, pushupdates, mknsrec, zonedir, template, script, descr) VALUES ('$name', '$ipno', '$type', $push, $mkrec, '$zonedir', '$template', '$script', '$descr')";
 	sql_query($query);
-	return 0;
+
+	if (is_file("$TEMPL_DIR/$template/named.tmpl")) {
+	    // Create directory for the host (use script if it exists)
+	    passthru("mkdir -p $HOST_DIR/$name/SEC 2>& 1",$res);
+	    if (!$res)
+	        passthru("cp $TEMPL_DIR/$template/*.* $HOST_DIR/$name/. 2>& 1", $res);
+		
+	    if ($res)
+	        return "<br>Error when creating directory $HOST_DIR/$name/.<br>";
+
+	    if ( is_executable("$HOST_DIR/add_script"))
+	        passthru("$HOST_DIR/add_script $name 2>& 1",  $res);
+
+	    if ($res)
+	        return "<br>Error running script $HOST_DIR/add_script<br>";
+
+	    return 0;
+	}
 }
 
 # Return a HTML form with the current makeup of the server
 function mk_update_form($server)
 {
-	global $update_form;
+	global $update_form, $template_list, $script_list;
 	$query = "SELECT id, hostname, ipno, type, pushupdates, mknsrec, zonedir, template, script, descr FROM servers WHERE id = $server";
 	$rid = sql_query($query);
 	if ($row = mysql_fetch_array($rid)) {
@@ -204,11 +243,14 @@ function mk_update_form($server)
 		$script = $row['script'];
 		$descr = $row['descr'];
 		$result .= sprintf($update_form,
-			$id, $name, $ipno, 
+			$id, $name, $name, $ipno, 
 			mk_select("type", array("Master", "Slave"), $type), 
 			mk_select("push", array("Skip", "Update"), $push), 
 			mk_select("mkrec", array("Skip", "NS record"), $mkrec),
-			$zonedir, $template, $script, $descr);
+			$zonedir, 
+			mk_select_a("template", $template_list, $template),
+			mk_select_a("script", $script_list, $script),
+			$descr);
 	} else {
 		$result = "No such server in the database: $server.<P>\n";
 	}
@@ -253,6 +295,8 @@ function browse_servers()
 function update_servers($input)
 {
 	global $confirm_delete_form;
+	global $HOST_DIR;
+	global $TEMPL_DIR;
 	$id = $input['server'];
 	$name = $input['name'];
 	$ipno = $input['ipno'];
@@ -263,6 +307,7 @@ function update_servers($input)
 	$template = $input['template'];
 	$script = $input['script'];
 	$descr = $input['description'];
+	$updatet=$input['updatet'];
 	switch (strtolower($input['subaction'])) {
 	case 'delete':
 		return sprintf($confirm_delete_form, $id, $name, $name);
@@ -270,6 +315,12 @@ function update_servers($input)
 	case 'realdelete':
 		$query = "DELETE FROM servers WHERE id = $id";
 		$rid = sql_query($query);
+		if (is_file("$HOST_DIR/$name/named.tmpl")) {
+		    if(is_executable("$HOST_DIR/delete_script"))
+		        passthru("$HOST_DIR/delete_script $name 2>& 1");
+		    passthru("rm -rf $HOST_DIR/$name 2>& 1");
+		}
+		
 		return "Deleted the '$name' server.<P>\n";
 	case 'update':
 		if ($warns = valid_server($name, $ipno, $type, $push, $zonedir, $template, $script))
@@ -277,6 +328,12 @@ function update_servers($input)
 		$query = "UPDATE servers SET hostname = '$name', ipno = '$ipno', type = '$type', pushupdates = $push, mknsrec = $mkrec, zonedir = '$zonedir', template = '$template', script = '$script', descr = '$descr' WHERE id = $id";
 		$rid = sql_query($query);
 		$count = mysql_affected_rows();
+		if ($updatet && is_file("$TEMPL_DIR/$template/named.tmpl")) {
+		    passthru("mkdir -p $HOST_DIR/$name/SEC");
+		    passthru("mv -f $HOST_DIR/$name/named.tmpl $HOST_DIR/$name/named.tmpl-old 2>& 1");
+		    passthru("cp $TEMPL_DIR/$template/*.* $HOST_DIR/$name/. 2>& 1");
+		    print "<H3><FONT color=RED>Directory has been updated from new template</FONT></H3>";
+		}
 		break;
 	default:
 		return "INTERNAL ERROR<P>\n";

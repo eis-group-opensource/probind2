@@ -1,12 +1,21 @@
 #!/usr/local/bin/php -q
 <?
 
-require '../inc/lib.inc';
-require '../inc/getopt.inc';
+$base = getenv("TOP");
+if ($base) {   
+	require "$base/inc/config.inc";
+	require "$base/inc/lib.inc";
+	require "$base/inc/getopt.inc";
+}
+else {
+	require "../../inc/config.inc";
+	require "../../inc/lib.inc";
+	require "../../inc/getopt.inc";
+}
 
 function write_zone_file($zone, $hostmaster, $origin, $servers, $update)
 {
-	($zf = fopen($zone['zonefile'], "w")) || die($zone['zonefile']."\n");
+	($zf = fopen($zone['zonefile'], "w")) || abort($zone['zonefile']."\n");
 	$soattl = seconds_to_ttl($zone['ttl']);
 	if ($update) 
 		$serial = adjust_serial($zone['zoneid']);
@@ -45,6 +54,7 @@ function write_zone_file($zone, $hostmaster, $origin, $servers, $update)
 	mysql_free_result($rid);
 	if (preg_match("/\.in-addr.arpa(\.)?$/", $zone['domain'])) 
 		fputs($zf, auto_ptrs($domain, seconds_to_ttl($zone['ttl']), $reversehosts));
+	fputs($zf, "\n;;EOF\n"); // final mark
 	fclose($zf);
 }
 
@@ -55,9 +65,9 @@ function write_zone_file($zone, $hostmaster, $origin, $servers, $update)
 set_time_limit(0);
 $opts = getopts($argv, "d:u");
 if ($opts['d'])
-	chdir($opts['d']);
+	chdir($opts['d']) || abort("Can not Chdir to ".$opts['d']);
 else
-	chdir("$TMP/master");
+	abort("'-d DIR' option is mandatory, and DIR must be _absolute_ path");
 
 # Prepare the $servers list
 $servers = published_servers();
@@ -70,7 +80,7 @@ if (!$DEFAULT_PTR_DOMAIN)
 if (!$DEFAULT_ORIGIN)
 	$err .= "Could not find HOSTMASTER setting in the database<P>\n";
 if ($err)
-	die($err);
+	abort($err);
 
 # Just do it
 $query = "SELECT zones.id AS zoneid, zones.domain AS domain, serial, refresh, retry, expire, master, zonefile, ttl FROM zones, records WHERE zones.id = records.zone AND records.type = 'SOA'";

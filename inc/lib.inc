@@ -6,7 +6,8 @@ elseif (!$TOP && file_exists("inc/config.inc"))
 elseif (!$TOP && file_exists("../inc/config.inc"))
 	include('../inc/config.inc');
 else
-	die("Cannot locate config.inc.<P>\n");
+	if (!$TOP)
+		die("Cannot locate config.inc.<P>\n");
 
 $BIN = "$TOP/bin";
 $SBIN = "$TOP/sbin";
@@ -703,6 +704,47 @@ function database_state()
 	return $warn;
 }
 
+function mk_select($name, $array, $presel)
+{
+	$result = "<SELECT name=\"$name\">\n";
+	for ($i=0; $i<count($array); $i++) {
+		$result .= "<OPTION";
+		if ($i == $presel) {
+			$result .= " SELECTED";
+			$selected = 1;
+		}
+		$result .= ">$array[$i]</OPTION>\n";
+	}
+	
+	$result .= "</SELECT>\n";
+	return $result;
+}
+
+function mk_select_a($name, $array, $presel)
+{
+	$result = "<SELECT name=\"$name\">\n";
+	$selected = 0;
+	for ($i=0; $i<count($array); $i++) {
+		$result .= "<OPTION";
+		if ($array[$i] == $presel) {
+			$result .= " SELECTED";
+			$selected = 1;
+		}
+		$result .= ">$array[$i]</OPTION>\n";
+	}
+	
+	if (!$selected) {
+		$result .= "<OPTION SELECTED value=\"$presel\">$presel</OPTION>";
+	}
+	$result .= "</SELECT>\n";
+	return $result;
+}
+
+function abort($txt)
+{
+    print "$txt\n";
+    exit(1);
+}
 #
 # MAIN
 #

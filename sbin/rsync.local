@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# Push new versions of zone and name.conf files to a BIND server, and
+# restart the server.
+PATH=/usr/bin:/bin:/usr/local/bin:/opt/sfw/bin:/usr/ucb
+
+RSYNC="rsync -b -p -t -r --exclude='*.b,CVS,SEC,*.pid' --suffix=.bck"
+
+host=$1
+dir=$2
+
+if [ "$host" = "" -or "$dir" = "" ]
+then
+    echo $0 dest-host remote-dir
+	exit 1
+fi
+
+echo rsync.local script...
+
+$RSYNC  . $dir
+ko=$?
+echo $ko
+if [ $ko != 0 ]
+then
+	echo RSYNC FAILURE
+	exit 1
+fi
+
+cd $dir || exit 1
+if [ -f reconfig.sh ]
+then
+    echo Now restarting named
+	sh reconfig.sh
+	exit $?
+else
+    set -x
+	if [ -f deleted_files ]
+	then
+	    rm -f `cat deleted_files`
+	fi	
+	/usr/local/bin/rndc reconfig
+	if [ $? != 0 ]
+	then
+	    echo rndc failure
+		exit 1
+	fi
+    exit 0
+fi

@@ -1,0 +1,17 @@
+#
+# Origin: $TEMPLATE_FILE
+# 
+# bind8 template
+# 
+options {
+	directory "$ZONE_DIR";
+};
+
+
+
+zone "." {
+	type hint;
+	file "toot.hint";
+};
+
+$ZONE_DEFINITIONS

@@ -6,7 +6,7 @@
 # 20000622 FSJ First version
 #
 
-DROP TABLE IF EXISTS zones, records, annotations, servers, deleted_domains, typesort, blackboard;
+DROP TABLE IF EXISTS zones, zoneattr, records, annotations, servers, deleted_domains, typesort, blackboard;
 
 #
 # For each domain served by our BIND servers, exactly one record
@@ -30,7 +30,8 @@ CREATE TABLE zones (
 	expire INT(12),
 # If set, an IP number for an auth. master for this zone i.e, if 
 # this column is non-null, then we are secondary for the zone
-	master	CHAR(15) NOT NULL,
+# Two IP delimited by ';' are allowed
+	master	CHAR(32) NOT NULL,
 # If set, the basename of the file containing zone records
 # Either master or zonefile must be set, but not both
 	zonefile	CHAR(80) NOT NULL,
@@ -133,12 +134,15 @@ CREATE TABLE servers (
 	mknsrec		INT(1) NOT NULL,
 # Path to directory on the DNS server containing the zone files
 	zonedir		VARCHAR(255) NOT NULL,
-# Path to named.conf template on this server
+# Template directory; must contain named.conf anc can contain other files as well...
 	template	VARCHAR(255) NOT NULL,
 # Path to script that will push updates to this server
 	script		VARCHAR(255) NOT NULL,
 # Descriptive text
 	descr		TEXT,
+# Current status; can be NULL (UP), 'ERR' (failure during push), 'CHG' (changed but not pushed yet)
+#
+	state           CHAR(5),
 	PRIMARY KEY (id)
 );
 

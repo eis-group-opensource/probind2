@@ -1,0 +1,56 @@
+#
+# Origin: $TEMPLATE_FILE
+# Template for bind9
+#
+options {
+	directory "$ZONE_DIR";
+	pid-file "named.pid";
+	max-transfer-time-in 15;
+#	forwarders {
+#		192.168.9.2;
+#		192.168.9.4;
+#	};
+#        allow-transfer {
+#		10.200.6.0/24;
+#		10.200.5.0/24;
+#		192.168.8.17;
+#		10.21.5.31;
+#		10.21.6.32;
+#		192.168.9.2;
+#		192.168.8.4;
+#        };
+};
+
+logging {
+	category security { default_syslog; };
+	category lame-servers { null; };
+	category cname { null; };
+	category queries { null; };
+
+};
+
+
+# Use with the following in named.conf, adjusting the allow list as needed:
+key "rndc-key" {
+      algorithm hmac-md5;
+      secret "U0gwgPnM6+QNIlS/jCWLXw==";
+};
+
+controls {
+      inet 127.0.0.1 port 953
+	      allow { 127.0.0.1; } keys { "rndc-key"; };
+
+};
+
+zone "." {
+	type hint;
+	file "root.hint";
+};
+
+zone "0.0.127.in-addr.arpa" {
+       type master;
+       file "localhost.rev";
+       notify no;
+};
+
+$ZONE_DEFINITIONS
