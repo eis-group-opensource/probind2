@@ -274,9 +274,17 @@ function record_form($record)
 		$result .= sprintf("<TD><INPUT type=\"text\" value=\"%s\" name=\"ttl_%d\" size=5 $on></TD>", seconds_to_ttl($record['ttl']), $record['id']);
 		$result .= "<TD>SOA</TD>\n<TD></TD>\n<TD colspan=4></TD></TR>\n";
 	} else {
+		if ( $record['disabled'] ) {
+			$ena_s = "";
+			$dis_s = " SELECTED";
+		}
+		else {
+			$ena_s = " SELECTED";
+			$dis_s = "";
+		}
 		$result = sprintf("<TR><TD><INPUT type=\"submit\" name=\"update_%d\" value=\"Upd\" class=\"button\">\n", $id);
 		$result .= "<INPUT type=\"hidden\" name=\"op_$id\" value=\"\">";
-		$result .= sprintf("<INPUT type=\"submit\" name=\"delete_%d\" value=\"Del\" class=\"button\" onmouseover=\"this.className='buttonwarning'\" onmouseout=\"this.className='button'\"></TD>\n", $id);
+		$result .= sprintf("<SELECT type=\"submit\" name=\"status_%d\" $on><OPTION value=\"On\" $ena_s>on</OPTION><OPTION value=\"off\" $dis_s>off</OPTION><OPTION value=\"del\">del</OPTION></SELECT></TD>\n", $id);
 		$result .= sprintf("<TD><INPUT type=\"text\" value=\"%s\" name=\"domain_%d\" size=20 $on></TD>\n", $record['domain'], $id);
 		$result .= sprintf("<TD><INPUT type=\"text\" value=\"%s\" name=\"ttl_%d\" size=5 $on></TD>\n", seconds_to_ttl($record['ttl']), $id);
 		$result .= sprintf("<TD colspan=1>%s</TD>", type_menu(sprintf("type_%d", $id), $record['type'], $on));
@@ -306,7 +314,11 @@ function record_view($record)
 		$result .= sprintf("\t<TD>%s</TD>\n", seconds_to_ttl($record['ttl']));
 		$result .= "\t<TD>SOA</TD>\n\t<TD></TD>\n\t<TD colspan=2></TD>\n\t<TD colspan=2></TD>\n</TR>\n";
 	} else {
-		$result .= sprintf("<TR><TD><INPUT type=\"submit\" name=\"edit\" value=\"edit\" onclick=\"rrid.value='$id'\" class=\"button\" onmouseover=\"this.className='buttonhover'\" onmouseout=\"this.className='button'\"></TD>\n");
+		if ( !$record['disabled'] )
+			$stat = "On";
+		else
+			$stat = "Off";
+		$result .= sprintf("<TR><TD align=CENTER><INPUT type=\"submit\" name=\"edit\" value=\"edit\" onclick=\"rrid.value='$id'\" class=\"button\" onmouseover=\"this.className='buttonhover'\" onmouseout=\"this.className='button'\"> <SELECT><OPTION>$stat</OPTION></SELECT></TD>\n");
 		$result .= sprintf("\t<TD>%s</TD>\n", $record['domain']);
 		$result .= sprintf("\t<TD>%s</TD>\n", seconds_to_ttl($record['ttl']));
 		$result .= sprintf("\t<TD>%s</TD>\n", $record['type']);
@@ -381,7 +393,7 @@ function right_frame($vars)
 			return $result;
 		if ($vars['rrid']) 
 			$rrid = $vars['rrid'];
-		$rid = sql_query("SELECT id, domain, ttl, records.type AS type, pref, data, genptr, comment, lpad(pref, 5, '0') AS sortpref FROM records, typesort WHERE zone = $zone AND records.type = typesort.type ORDER BY typesort.ord, domain, sortpref");
+		$rid = sql_query("SELECT id, domain, ttl, records.type AS type, pref, data, genptr, comment, lpad(pref, 5, '0') AS sortpref, records.disabled AS disabled FROM records, typesort WHERE zone = $zone AND records.type = typesort.type ORDER BY typesort.ord, domain, sortpref");
 		$result .= sprintf($rr_form_top, $zone);
 		$result1 = "";
 		while ($record = mysql_fetch_array($rid)) {
@@ -422,64 +434,67 @@ function perform_rr_action($input)
 {
 	global $REMOTE_USER, $update_in_progress;
 	while ($var = each($input)) {
-		if ($var['value'] == 'Del' || $var['value'] == 'Upd') {	
+		if ($var['value'] == 'Upd') {	
 			$action = $var['value'];
 			list($d, $id) = split("_", $var['key']);
-			if ($d != "op" && $d != "delete" && $d != "update")
+			if ($d != "op" && $d != "update")
 				continue;
 			if ($done[$id] == 1)
 				continue;
 			$done[$id] = 1;
-			switch ($action) {
-			case 'Del':
-				del_record($id);
+			$status = $input["status_$id"];
+			if ( $status == 'del' ) {
+			   del_record($id);
+			   continue;
+			}
+			if ( $status == 'off')
+			    $disabled = 1;
+			else
+			    $disabled = 0;
+			switch ($input["type_$id"]) {
+			case 'SOA':
+				upd_soa_record($id, $input["ttl_$id"]);
 				break;
-			case 'Upd':
-				switch ($input["type_$id"]) {
-				case 'SOA':
-					upd_soa_record($id, $input["ttl_$id"]);
+			case 'MX':
+				if ($user = patient_enter_crit($REMOTE_USER,'DOMAIN')){
+					$result = sprintf($update_in_progress, ucfirst($user));
 					break;
-				case 'MX':
-					if ($user = patient_enter_crit($REMOTE_USER,'DOMAIN')){
-						$result = sprintf($update_in_progress, ucfirst($user));
-						break;
-					}
-					$warn = validate_record($input['zone'], 
-						$input["domain_$id"], $input["ttl_$id"], 
-						$input["type_$id"], $input["pref_$id"], 
-						$input["data_$id"]);
-					if ($warn) {
-						leave_crit('DOMAIN');
-						$result = "<HR><P><UL>$warn</UL>\n";
-						break;
-					}
-					upd_mx_record($id, 
-						$input["domain_$id"], $input["ttl_$id"], 
-						$input["pref_$id"], $input["data_$id"], $input["comment_$id"]);
-					leave_crit('DOMAIN');
-					break;
-				default:
-					if ($user = patient_enter_crit($REMOTE_USER,'DOMAIN')){
-						$result = sprintf($update_in_progress, ucfirst($user));
-						break;
-					}
-					$warn = validate_record($input['zone'], 
-						$input["domain_$id"], $input["ttl_$id"], 
-						$input["type_$id"], $input["pref_$id"], 
-						$input["data_$id"]);
-					if ($warn) {
-						leave_crit('DOMAIN');
-						$result = "<HR><P><UL>$warn</UL>\n";
-						break;
-					}
-					upd_record($id, $input["domain_$id"],
-						$input["ttl_$id"], $input["type_$id"],
-						$input["data_$id"], $input["genptr_$id"], $input["comment_$id"]);
-					leave_crit('DOMAIN');
 				}
+				$warn = validate_record($input['zone'], 
+					$input["domain_$id"], $input["ttl_$id"], 
+					$input["type_$id"], $input["pref_$id"], 
+					$input["data_$id"]);
+				if ($warn) {
+					leave_crit('DOMAIN');
+					$result = "<HR><P><UL>$warn</UL>\n";
+					break;
+				}
+				upd_mx_record($id, 
+					$input["domain_$id"], $input["ttl_$id"], 
+					$input["pref_$id"], $input["data_$id"], $input["comment_$id"], $disabled);
+				leave_crit('DOMAIN');
 				break;
 			default:
+				if ($user = patient_enter_crit($REMOTE_USER,'DOMAIN')){
+					$result = sprintf($update_in_progress, ucfirst($user));
+					break;
+				}
+				$warn = validate_record($input['zone'], 
+					$input["domain_$id"], $input["ttl_$id"], 
+					$input["type_$id"], $input["pref_$id"], 
+					$input["data_$id"]);
+				if ($warn) {
+					leave_crit('DOMAIN');
+					$result = "<HR><P><UL>$warn</UL>\n";
+					break;
+				}
+				
+				upd_record($id, $input["domain_$id"],
+					$input["ttl_$id"], $input["type_$id"],
+					$input["data_$id"], $input["genptr_$id"], $input["comment_$id"], $disabled);
+				leave_crit('DOMAIN');
 			}
+			
 		}
 	}
 	return $result;

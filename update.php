@@ -230,7 +230,7 @@ function generate_files($input)
 			    	$zonefile = $trash['zonefile'];
 				$domain = $trash['domain'];
 				
-				$cmd = "mkdir -p DELETED;mv '$zonefile' DELETED/. && echo '$zonefile' >> deleted_files";
+				$cmd = "mkdir -p DELETED;rm -f DELETED/'$zonefile'; mv '$zonefile' DELETED/. && echo '$zonefile' >> deleted_files";
 				exec($cmd);
 				print "<LI><A TARGET=\"VIEW\" href=\"view.php?file=$server/DELETED/$zonefile\">$domain deleted</A>\n";
 			    }

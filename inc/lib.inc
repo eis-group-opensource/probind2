@@ -430,6 +430,8 @@ function upd_record($id, $domain, $ttlspec, $type, $data, $genptr, $comment = ''
 	    die("Internal error: upd_record($id, $domain, $ttlspec, $type, $data)<P>\n");
 	if (! $genptr )
 		$genptr = 0;
+	if (!$disabled)
+		$disabled = 0;
 	$ttl = ttl_to_seconds($ttlspec);
 	$query = "SELECT domain, type, data, genptr FROM records WHERE id = $id";
 	$rid = sql_query($query);
@@ -457,12 +459,14 @@ function upd_record($id, $domain, $ttlspec, $type, $data, $genptr, $comment = ''
 # Update the contents of an existing MX record, and mark the appropriate 
 # domain as being updated. NB: This function should ONLY be used for 
 # MX records, use upd_record or upd_soa_record for all other record types.
-function upd_mx_record($id, $domain, $ttlspec, $pref, $data, $comment = '')
+function upd_mx_record($id, $domain, $ttlspec, $pref, $data, $comment = '', $disabled = 0)
 {
 	$ttl = ttl_to_seconds($ttlspec);
 	$data = strtr($data,"'",'.');
 	$comment = strtr($comment,"'",'.');
-	$query = "UPDATE records SET domain = '$domain', ttl = $ttl, type = 'MX', pref = $pref, data = '$data', comment='$comment' WHERE id = $id";
+	if (!$disabled)
+		$disabled = 0;
+	$query = "UPDATE records SET domain = '$domain', ttl = $ttl, type = 'MX', pref = $pref, data = '$data', comment='$comment', disabled = $disabled WHERE id = $id";
 	$rid = sql_query($query);
 	tag_zone_updated($id);
 }
