@@ -12,7 +12,7 @@ $start_form = '
   <FRAME src="brzones.php?frame=zones" name="left" noresize scrolling=auto frameborder="0" border="0" framespacing="0" marginheight="0" marginwidth="5">
   <FRAMESET rows="12,*" frameborder="0" border="0" framespacing="0">
   <FRAME src="topshadow.html" name="topshadow" noresize scrolling=no frameborder="0" border="0" framespacing="0" marginheight="0" marginwidth="0">
-  <FRAME src="brzones.php?frame=records" name="right" noresize scrolling=auto frameborder="0" border="0" framespacing="0" marginheight="0" marginwidth="10">
+  <FRAME src="tools/stats.php" name="right" noresize scrolling=auto frameborder="0" border="0" framespacing="0" marginheight="0" marginwidth="10">
   </FRAMESET>
 </FRAMESET>
 </HTML>

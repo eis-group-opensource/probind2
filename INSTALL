@@ -101,14 +101,7 @@ $UPDATE_LOG
 	The path to a log file that will be appended to each time you
 	run an update in ProBIND. This is very useful for debugging
 	the update script. E.g. "/var/log/probind.log", or "/dev/null".
-$SHOW_ALL
-	If 1, allow ProBIND to show all zones on the initial page; set it to 0 if
-	you have too much (few hundred) zones;
-$TWO_STEP_UPDATE
-	If 1, ProBIND split 'PUSH' operation to the 2 phases - generate and push files (phase 1),
-	and reconfigure server (phase 2) which get extra time to check logs. Always use this mode
-	in the production environment.
-$DEFAULT_PUSH
+$DEFAULT_PUSH = "push.remote"
 $DEFAULT_DIR  = "/var/named9";
 $DEFAULT_TMPL = "v9-master";
 	Defaults for the server setting;
@@ -163,6 +156,12 @@ Run
 and verify if your system has perl and bash on the proper place; edit scripts
 or set up symlink if necessary.
 
+2.6 Configure .htaccess amd tools/.htaccess files.
+=================================================
+
+By default, access require group 'dns' and ProBIND configuration (including
+cleaning locks) require dnsadm group; change .htaccess and toosl/.htaccess if
+you need other access rules.
 
 3 Configure the ProBIND software
 =================================

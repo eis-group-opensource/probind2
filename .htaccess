@@ -1,1 +1,9 @@
     require group dns
+<FILES "addzone.php">
+       require group dnsadm
+</FILES>
+
+<FILES "delzone.php">
+       require group dnsadm
+</FILES>
+
