@@ -39,7 +39,7 @@ $add_form = '
 </TR><TR align=left>
  <TH colspan=3>Directory on the server containing the zone files</TH>
 </TR><TR align=left>
- <TD colspan=3><INPUT type="text" name="zonedir" SIZE=70 MAXLENGTH=255></TD>
+ <TD colspan=3><INPUT type="text" name="zonedir" SIZE=70 MAXLENGTH=255 value="'."$DEFAULT_DIR".'"></TD>
 </TR><TR align=left>
  <TH colspan=3>File on this server containing the named.conf template</TH>
 </TR><TR align=left>
@@ -47,7 +47,7 @@ $add_form = '
 </TR><TR align=left>
  <TH colspan=3>Script used to push data to the server</TH>
 </TR><TR align=left>
- <TD colspan=3><INPUT type="text" name="script" SIZE=70 MAXLENGTH=255></TD>
+ <TD colspan=3><INPUT type="text" name="script" SIZE=70 MAXLENGTH=255 value="'."$DEFAULT_PUSH".'"></TD>
 </TR><TR align=left>
  <TH>Description</TH>
 </TR><TR>

@@ -122,7 +122,11 @@ while ($row = mysql_fetch_array($rid)) {
 			exec($cmd);
 			print "<br>$cmd<br>\n";
 			$cmd = "$SBIN/$script $server $zonedir>>$UPDATE_LOG 2>&1";
-			exec($cmd);
+			exec($cmd, $out, $ret);
+			if ($ret != 0) {
+				print "<HR><FONT color=RED>SCRIPT FAILURE,see logs below. Do not forget to make 'Bulk update' when will fix the problem.</FONT><HR>\n";
+				$error = 1;
+			}
 		} else {
 			# This must be a slave server then
 			chdir("$TMP/slave") || die("$!: $TMP/slave\n");
@@ -130,7 +134,11 @@ while ($row = mysql_fetch_array($rid)) {
 			exec($cmd);
 			print "<br>$cmd<br>\n";
 			$cmd = "$SBIN/$script $server $zonedir>>$UPDATE_LOG 2>&1";
-			exec($cmd);
+			exec($cmd, $out, $ret);
+			if ($ret != 0) {
+				print "<HR><FONT color=RED>SCRIPT FAILURE,see logs below. Do not forget to make 'Bulk update' when will fix the problem.</FONT><HR>\n";
+				$error = 1;
+			}
 		}
 		print "Updated $server as a ".($type=='M' ? "master" : "slave")."\n";
 	} else {

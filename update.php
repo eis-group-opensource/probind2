@@ -164,7 +164,11 @@ while ($row = mysql_fetch_array($rid)) {
 			$cmd = "$BIN/mknamed.conf $server >named.conf";
 			exec($cmd);
 			$cmd = "$SBIN/$script $server $zonedir>>$UPDATE_LOG 2>&1";
-			exec($cmd);
+			exec($cmd, $out, $ret);
+			if ($ret != 0) {
+				print "<HR><FONT color=RED>SCRIPT FAILURE,see logs below. Do not forget to make 'Bulk update' when will fix the problem.</FONT><HR>\n";
+				$error = 1;
+			}
 		} else {
 			# This must be a slave server then
 			chdir("$TMP/slave") || die("$!: $TMP/slave<P>\n");
@@ -172,7 +176,11 @@ while ($row = mysql_fetch_array($rid)) {
 			exec($cmd);
 			$cmd = "$SBIN/$script $server $zonedir>>$UPDATE_LOG 2>&1";
 			print "$cmd<br>\n";
-			exec($cmd);
+			exec($cmd, $out, $ret);
+			if ($ret != 0) {
+				print "<HR><FONT color=RED>SCRIPT FAILURE,see logs below. Do not forget to make 'Bulk update' when problem wil be fixed.</FONT><HR>\n";
+				$error = 1;
+			}
 		}
 		print "Updated $server as a ".($type=='M' ? "master" : "slave")."<P>\n";
 	} else {
@@ -185,7 +193,11 @@ mysql_free_result($rid);
 leave_crit('PUSH');
 if ($LOG_DIR) {
 	print "<H3>LOG file: $UPDATE_LOG</H3>\n<HR>\n<PRE>\n";
+	if ($error) 
+	    print "<FONT color=red>\n";
 	passthru("/bin/cat $UPDATE_LOG");
+	if ($error) 
+	    print "</FONT>\n";
 	print "<HR>\n</PRE>\n";
 };
 
