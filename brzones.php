@@ -406,7 +406,7 @@ function right_frame($vars)
 					$result .= $rr_form_hr;
 				}
 			} 
-			if ($record['type'] == 'PTR')
+			if ($record['type'] == 'PTR' && !$record['disabled'])
 				$explicit_ptrs[$record['domain']]++;
 			elseif ($record['type'] == 'SOA')
 				$soa_ttl = $record['ttl'];
