@@ -1,0 +1,27 @@
+<?
+
+$TOP = "/usr/local/bind-web/probind";
+$TMP="/tmp";
+$MYSQL_HOST = "localhost";
+$MYSQL_DB = "named";
+$MYSQL_USER = "root";
+$MYSQL_PASSWD = "*******";
+$NAME_SPACE = "TEST";
+$SHOW_ALL= 1; // show all zones on the first page
+$TWO_STEP_UPDATE = 1; // Do update in 2 steps - 1) Sync and 2) Reconfig
+
+$DEFAULT_PUSH = "push-v9";
+$DEFAULT_DIR  = "/usr/local/named";
+$DEFAULT_TMPL = "v9-master";
+$CVSROOT="";     // no CVS on the current stage
+
+// Directories - templates, HOSTS and LOGS
+$TEMPL_DIR = "$TOP/templates";
+$HOST_DIR =  "$TOP/HOSTS";
+$LOG_DIR  =  "$TOP/LOGS";
+
+// Access to the HOSTS and LOGS directories from the web
+$HOST_URL = "HOSTS/";
+$LOG_URL  = "LOGS/";
+
+?>
