@@ -315,10 +315,10 @@ function record_view($record)
 		$result .= "\t<TD>SOA</TD>\n\t<TD></TD>\n\t<TD colspan=2></TD>\n\t<TD colspan=2></TD>\n</TR>\n";
 	} else {
 		if ( !$record['disabled'] )
-			$stat = "On";
+			$stat_html = "<IMAGE width=\"15\" height=\"15\" SRC=\"images/greenbutton.gif\">";
 		else
-			$stat = "Off";
-		$result .= sprintf("<TR><TD align=CENTER><INPUT type=\"submit\" name=\"edit\" value=\"edit\" onclick=\"rrid.value='$id'\" class=\"button\" onmouseover=\"this.className='buttonhover'\" onmouseout=\"this.className='button'\"> <SELECT><OPTION>$stat</OPTION></SELECT></TD>\n");
+			$stat_html = "<IMAGE width=\"15\" height=\"15\" SRC=\"images/noway.gif\">";
+		$result .= sprintf("<TR><TD align=CENTER><INPUT type=\"submit\" name=\"edit\" value=\"edit\" onclick=\"rrid.value='$id'\" class=\"button\" onmouseover=\"this.className='buttonhover'\" onmouseout=\"this.className='button'\"> $stat_html</TD>\n");
 		$result .= sprintf("\t<TD>%s</TD>\n", $record['domain']);
 		$result .= sprintf("\t<TD>%s</TD>\n", seconds_to_ttl($record['ttl']));
 		$result .= sprintf("\t<TD>%s</TD>\n", $record['type']);
