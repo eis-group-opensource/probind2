@@ -19,7 +19,7 @@ else
   SSH="ssh -x"
 fi
 
-echo rsync.remote $*
+echo push.remote $*
 # V=-v
 # set -x
 if [ "$1" = "-v" ]

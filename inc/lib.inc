@@ -750,8 +750,10 @@ function published_servers()
 function auto_nsrecs($domain, $ttl, $servers)
 {
 	$result = ";\n; NS's implied by server records in the database\n;\n";
-	while ($server = each($servers))
+	if ( count($servers) ) {
+	    while ($server = each($servers))
 		$result .= $domain.".\t$ttl IN\tNS\t$server[1].\n";
+	}
 	return $result;
 }
 
