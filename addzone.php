@@ -96,8 +96,15 @@ function add_master_domain($input)
 		    $result .= "The '$domain' domain was not created, for the following reasons:<P><UL>\n$warnings</UL>\n";
 	    } else {
 		    $id = add_domain($domain, '');
-		    $result .= "<HR><P>Domain '<A HREF=\"brzones.php?frame=records&zone=$id\">$domain</A>' successfully added.<P>\n";
-	    }
+		    $res1   .= fill_in_domain($id, 1);
+			$result .= "<HR><P>Domain '<A HREF=\"brzones.php?frame=records&zone=$id\">$domain</A>' successfully added.<P>\n";
+			if ($res1) {
+				$result .= "<HR>\n<H3>Records found in other domains which should be moved into the new domain</H3>\n";
+			    $result .= "<br><FORM action=\"addzone.php\"><INPUT type=\"HIDDEN\" name=\"id\" value=\"$id\"><INPUT type=\"HIDDEN\" name=\"type\" value=\"fill\">\n";
+				$result .= "<INPUT type=\"submit\" value=\"Move records into the new zone\"> <INPUT type=\"submit\" value=\"Cancel\" name=\"Cancel\"></FORM>\n";
+				$result .= $res1."<HR>\n";
+			}
+		}
     }
     return $result;
 }
@@ -119,11 +126,18 @@ function add_slave_domain($input)
 	return $result;
 }
 
+function fill_master_domain($input)
+{
+	$id = $input['id'];
+	return fill_in_domain($id, 0);
+}
+
 #
 # MAIN
 #
 
 get_input();
+
 switch ($INPUT_VARS['type']) {
 case 'master':
 	print $html_top.add_master_domain($INPUT_VARS).$html_bottom;
@@ -131,6 +145,11 @@ case 'master':
 case 'slave':
 	print $html_top.add_slave_domain($INPUT_VARS).$html_bottom;
 	break;
+case 'fill':
+    if ( !$INPUT_VARS['Cancel']) {
+		print $html_top.fill_master_domain($INPUT_VARS).$html_bottom;
+		break;
+	}
 default:
 	if ($INPUT_VARS['frame'] == 'addzone') {
 		print $html_top.$start_form.$html_bottom;

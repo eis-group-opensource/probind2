@@ -745,6 +745,67 @@ function abort($txt)
     print "$txt\n";
     exit(1);
 }
+
+# Check new domain, and if it is subdomain of the existing one, and it contains
+# records which fit into the new domain, move this records into the new one
+function fill_in_domain($id, $print_only)
+{
+	global $domain_lock_msg, $REMOTE_USER;
+	$result = "";
+	#
+	# 1. Find our $domain name
+	#
+	$rid   = sql_query("SELECT domain, master FROM zones WHERE id = $id");
+	list($domain, $master)  = mysql_fetch_row($rid);
+	mysql_free_result($rid);
+	if (!$domain)
+	    die("Can not find domain zones.id=$id");
+	
+	if ($master)
+		return "";
+	
+	$len = strlen($domain);
+	#
+	# 2. Now run search over all domains and check if subdomains do exists
+	#
+	$subd = $domain;
+	while ( ($subd = strstr($subd, '.')) && ($subd = substr($subd,1)) ) {
+		$rid = sql_query("SELECT records.domain , records.id, records.type, records.data  FROM records, zones WHERE records.zone = zones.id AND zones.domain = '$subd' AND zones.id != $id");
+	    while ( list($name, $recid, $type, $data) = mysql_fetch_row($rid)) {
+			if ($type == 'SOA' || !$name || $name == '@')
+			    continue;
+			if (substr($name, strlen($name)-1) != '.')
+			    $name = "$name.$subd";
+			else
+			    $name = substr($name,0,strlen($name)-1);
+			$nlen = strlen($name);
+			// Now verify
+			if ( $nlen > $len && strcasecmp(".".$domain, substr($name, $nlen - $len - 1)) == 0) {
+				$name = substr($name, 0,$nlen - $len - 1);
+				if ($print_only)  
+		            $result .= "<TR><TD>$name</TD><TD>$type</TD><TD>$data</TD><TD>; FOUND in $subd</TD></TR>\n";
+				else {
+					$rid1 = sql_query("UPDATE records SET domain='$name', zone=$id WHERE id = $recid");
+		            $result .= "<TR><TD>$name</TD><TD>$type</TD><TD>$data</TD><TD>; MOVED from $subd</TD></TR>\n";
+					$updated = 1;
+				}
+					 
+			}
+		}
+		if ($updated == 1) {
+			sql_query("UPDATE zones SET updated=1 WHERE zones.domain = '$subd'");
+			sql_query("UPDATE zones SET updated=1 WHERE id = $id");
+			$updated = 0;
+		}
+		mysql_free_result($rid);
+		
+	}
+	if ($result)
+	    $result = "<TABLE width=\"80%\">\n".$result."</TABLE>\n";
+	return $result;	
+}
+
+
 #
 # MAIN
 #

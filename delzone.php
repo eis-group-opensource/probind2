@@ -53,6 +53,7 @@ if (($domain = $INPUT_VARS['domain']) || !$INPUT_VARS['trashdomain']) {
 } else {
 	print $html_top;
 	$domain = $INPUT_VARS['trashdomain'];
+	
 	#
 	# Input validation (long ...)
 	$warnings = '';
@@ -66,8 +67,22 @@ if (($domain = $INPUT_VARS['domain']) || !$INPUT_VARS['trashdomain']) {
 	if (strlen($warnings)) {
 		print "The domain was not deleted, for the following reasons:<P><UL>\n$warnings</UL>\n";
 	} else {
-		$rrcount = del_zone($domid);
-		print "<HR><P>Domain '$trashdomain' (id = $domid) and $rrcount resource records successfully removed.<P>\n";
+		if (!$INPUT_VARS['iamserious']) {
+			print "
+			<B>WARNING</B>: You are about to delete domain <A href=\"brzones.php?frame=records&mode=view&zone=$domid\">$trashdomain</A> permanently.
+			
+			<P>Zone can be restored manually only (it will be placed into 'DELETED' folder)
+			<P><CENTER>
+			<A HREF=\"delzone.php?trashdomain=$trashdomain&iamserious=true\">
+			<IMG SRC=\"images/wasp-warning.gif\" alt=\"Go ahead - do it!\">
+			</A>
+			";
+			
+		}
+		else {
+			$rrcount = del_zone($domid);
+			print "<HR><P>Domain '$trashdomain' (id = $domid) and $rrcount resource records successfully removed.<P>\n";
+		}
 	}
 	print "<hr><p>\n";
 }
