@@ -113,8 +113,8 @@ if ($user = patient_enter_crit($REMOTE_USER, 'PUSH')) {
 
 print "<UL>\n";
 exec("/bin/rm -rf $TMP/master $TMP/slave");
-mkdir("$TMP/master", 0755);
-mkdir("$TMP/slave", 0755);
+mkdir("$TMP/master", 0755) or die("<FONT COLOR=RED>SOMETHING WRONG! CHECK PERMISSIONS!<BR></FONT>"); 
+mkdir("$TMP/slave", 0755)  or die("<FONT COLOR=RED>SOMETHING WRONG! CHECK PERMISSIONS!<BR></FONT>");
 chdir("$TMP/master") or die("chdir($TMP/master) failed.<P>\n");
 while ($zone = mysql_fetch_row($rid1)) {
 	if ($zone[2])

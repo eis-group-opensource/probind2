@@ -75,33 +75,33 @@ $master_zone_detail_form = '
 <INPUT type="hidden" name="id" value="%d">
 <TR>
   <TD valign=bottom><INPUT type="submit" value="Details" name="formname" class="button" onmouseover="this.className=\'buttonhover\'" onmouseout="this.className=\'button\'"></TD>
-  <TH align=left colspan="4">Zonefile</TH>
+  <TH align=left colspan="5">Zonefile</TH>
   <TH align=left>Serial no.</TH>
   <TH align=left>Updated</TH>
 </TR>
 <TR>
   <TD></TD>
-  <TD colspan="4"><INPUT type=text name="zonefile" value="%s" size=32></TD>
+  <TD colspan="5"><INPUT type=text name="zonefile" value="%s" size=32></TD>
   <TD><INPUT type=text value="%d" name="serial" size=10></TD>
   <TD>%s</TD>
 </TR>
 <TR>
-  <TD colspan="8"><HR noshade width="100%%" size="1" color="#000000"></TD>
+  <TD colspan="9"><HR noshade width="100%%" size="1" color="#000000"></TD>
 </TR>
 
 <TR>
   <TD rowspan="2" valign=bottom><INPUT type="submit" value="Update" name="formname" class="button" onmouseover="this.className=\'buttonhover\'" onmouseout="this.className=\'button\'"></TD>
   <TH align=left colspan="2">Refresh</TH>
-  <TH align=left colspan="2">Retry</TH>
+  <TH align=left colspan="3">Retry</TH>
   <TH align=left colspan="2">Expire</TH>
 </TR>
 <TR>
   <TD colspan="2"><INPUT type=text value="%s" name="refresh" size="5"></TD>
-  <TD colspan="2"><INPUT type=text value="%s" name="retry" size="5"></TD>
+  <TD colspan="3"><INPUT type=text value="%s" name="retry" size="5"></TD>
   <TD colspan="2"><INPUT type=text value="%s" name="expire" size="7"></TD>
 </TR>
 <TR>
-  <TD colspan="8"><HR noshade width="100%%" size="1" color="#000000"></TD>
+  <TD colspan="9"><HR noshade width="100%%" size="1" color="#000000"></TD>
 </TR>
 ';
 
@@ -135,6 +135,7 @@ $rr_form_top = '
 	<TH align=left>Pref</TH>
 	<TH align=left>Ptr?</TH>
 	<TH align=left colspan=2>Data</TH>
+	<TH align=left>Comment</TH>
 	<TH>
 	</TH>
 </TR>
@@ -170,6 +171,8 @@ Adding a record to the %s domain.<P>
 	<TD><INPUT type=\"text\" name=\"data\" size=25></TD></TR>
 <TR><TH align=left>Generate PTR?</TH>
 	<TD><SELECT name=\"genptr\"><OPTION value=\"1\" selected>yes</OPTION><OPTION value=\"0\">no</OPTION></SELECT> (for <B>A</B> rr only)</TD></TR>
+<TR><TH align=left>Comment</TH>
+	<TD><INPUT type=\"text\" name=\"comment\" size=25></TD></TR>
 <TR><TD></TD><TD><INPUT type=\"submit\" value=\"Add this record\"></TD></TR>
 </TABLE></FORM>
 <P>
@@ -182,7 +185,7 @@ MX records, or when fleshing out the TEMPLATE pseudo-domain.
 ";
 
 $static_head = '
-<TR><TD colspan="8"><HR noshade width="100%" size=1 color="#000000"></TD></TR>
+<TR><TD colspan="9"><HR noshade width="100%" size=1 color="#000000"></TD></TR>
 <TR><TD colspan="6"><PRE>
 ';
 
@@ -215,7 +218,7 @@ on the settings menu.
 # dynamically generate a dropdown menu of available RR types. If the
 # select argument is set, preselect that one. Returns finished HTML
 $TYPELIST = array();	# Cache from DB lookup
-function type_menu($tag, $select)
+function type_menu($tag, $select, $on="")
 {
 	global $TYPELIST;
 	if (!$TYPELIST) {
@@ -225,7 +228,7 @@ function type_menu($tag, $select)
 		}
 		mysql_free_result($rid);
 	}
-	$result = "<SELECT name=\"$tag\">\n";
+	$result = "<SELECT name=\"$tag\" $on>\n";
 	for ($i=0; $i<count($TYPELIST); $i++) {
 		$type = $TYPELIST[$i];
 		if ($type == $select)
@@ -260,29 +263,59 @@ function domain_search_form($input)
 function record_form($record)
 {
 	$id = $record['id'];
-	$on = "onchange=\"update_$id.className='buttonwarning'\"";
+	$on = "onchange=\"update_$id.className='buttonwarning';op_$id.value='Upd'\"";
 	if ($record['type'] == 'SOA') {
 		$result = sprintf("<INPUT type=\"hidden\" name=\"type_%d\" value=\"SOA\">\n", $record['id']);
 		$result .= sprintf("<TR><TD><INPUT type=\"submit\" name=\"update_%s\" value=\"Upd\" class=\"button\"></TD>\n", $record['id']);
-		$result .= sprintf("<TD>%s</TD>\n", $record['domain']);
+		$result .= sprintf("<TD><SELECT name=\"mode\"><OPTION value=\"view\">view</OPTION><OPTION value=\"edit\" SELECTED>edit</OPTION></SELECT></TD>\n");
 		$result .= sprintf("<TD><INPUT type=\"text\" value=\"%s\" name=\"ttl_%d\" size=5 $on></TD>", seconds_to_ttl($record['ttl']), $record['id']);
-		$result .= "<TD>SOA</TD>\n<TD></TD>\n<TD colspan=3></TD></TR>\n";
+		$result .= "<TD>SOA</TD>\n<TD></TD>\n<TD colspan=4></TD></TR>\n";
 	} else {
-		$result = sprintf("<TR><TD><INPUT type=\"submit\" name=\"update_%d\" value=\"Upd\" class=\"button\"> \n", $id);
-		$result .= sprintf(" <INPUT type=\"submit\" name=\"delete_%d\" value=\"Del\" class=\"button\" onmouseover=\"this.className='buttonwarning'\" onmouseout=\"this.className='button'\"></TD>\n", $id);
+		$result = sprintf("<TR><TD><INPUT type=\"submit\" name=\"update_%d\" value=\"Upd\" class=\"button\">\n", $id);
+		$result .= "<INPUT type=\"hidden\" name=\"op_$id\" value=\"\">";
+		$result .= sprintf("<INPUT type=\"submit\" name=\"delete_%d\" value=\"Del\" class=\"button\" onmouseover=\"this.className='buttonwarning'\" onmouseout=\"this.className='button'\"></TD>\n", $id);
 		$result .= sprintf("<TD><INPUT type=\"text\" value=\"%s\" name=\"domain_%d\" size=20 $on></TD>\n", $record['domain'], $id);
 		$result .= sprintf("<TD><INPUT type=\"text\" value=\"%s\" name=\"ttl_%d\" size=5 $on></TD>\n", seconds_to_ttl($record['ttl']), $id);
-		$result .= sprintf("<TD colspan=1>%s</TD>", type_menu(sprintf("type_%d", $id), $record['type']));
+		$result .= sprintf("<TD colspan=1>%s</TD>", type_menu(sprintf("type_%d", $id), $record['type'], $on));
 		$result .= sprintf("<TD><INPUT type=\"text\" value=\"%s\" name=\"pref_%d\" size=3 $on></TD>\n", $record['pref'], $id);
 		if ( $record['type'] == 'A' ) {
 			if ($record['genptr'] == 1)
-				$result .= sprintf("<TD><SELECT name=\"genptr_%d\" $on><OPTION value=\"1\" selected>yes</OPTION><OPTION value=\"0\">no</OPTION></SELECT></TD>\n",$id);
+				$result .= sprintf("<TD><INPUT type=\"checkbox\" name=\"genptr_%d\" $on value=\"1\" checked></TD>\n",$id);
 			else			
-				$result .= sprintf("<TD><SELECT name=\"genptr_%d\" $on><OPTION value=\"1\">yes</OPTION><OPTION value=\"0\" selected>no</OPTION></SELECT></TD>\n",$id);
+				$result .= sprintf("<TD><INPUT type=\"checkbox\" name=\"genptr_%d\" $on value=\"1\"></TD>\n",$id);
 		} else {
 			$result .= "<TD></TD>\n";
 		}
-		$result .= sprintf("<TD colspan=2><INPUT type=\"text\" value=\"%s\" name=\"data_%d\" size=25 $on></TD></TR>\n", $record['data'], $id);
+		$result .= sprintf("<TD colspan=2><INPUT type=\"text\" value=\"%s\" name=\"data_%d\" size=25 $on></TD>\n", $record['data'], $id);
+		$result .= sprintf("<TD><INPUT type=\"text\" value=\"%s\" name=\"comment_%d\" size=16 $on></TD></TR>\n", strip_tags($record['comment']), $id);
+	}
+	return $result;
+}
+
+function record_view($record)
+{
+	$result = "";
+	if ($record['type'] == 'SOA') {
+		$result .= sprintf("<TR>\n\t<TD></TD>\n");
+		$result .= sprintf("<TD><INPUT type=\"submit\" name=\"mode\" value=\"edit zone\" class=\"button\" onmouseover=\"this.className='buttonhover'\" onmouseout=\"this.className='button'\"></TD>\n");
+		$result .= sprintf("\t<TD>%s</TD>\n", seconds_to_ttl($record['ttl']));
+		$result .= "\t<TD>SOA</TD>\n\t<TD></TD>\n\t<TD colspan=2></TD>\n\t<TD colspan=2 width=\"70%\"></TD>\n</TR>\n";
+	} else {
+		$result .= sprintf("<TR>\n\t<TD></TD>\n");
+		$result .= sprintf("\t<TD>%s</TD>\n", $record['domain']);
+		$result .= sprintf("\t<TD>%s</TD>\n", seconds_to_ttl($record['ttl']));
+		$result .= sprintf("\t<TD>%s</TD>\n", $record['type']);
+		$result .= sprintf("\t<TD>%s</TD>\n", $record['pref']);
+		if ( $record['type'] == 'A' ) {
+			if ($record['genptr'] == 1)
+				$result .= sprintf("\t<TD>yes</TD>\n");
+			else			
+				$result .= sprintf("\t<TD>no</TD>\n");
+		} else {
+			$result .= "\t<TD></TD>\n";
+		}
+		$result .= sprintf("\t<TD colspan=2>%s</TD>\n", $record['data']);
+		$result .= sprintf("\t<TD>%s</TD>\n</TR>\n", strip_tags($record['comment']));
 	}
 	return $result;
 }
@@ -334,10 +367,15 @@ function right_frame($vars)
 				seconds_to_ttl($record['expire']));
 		if ($record['master'])
 			return $result;
-		$rid = sql_query("SELECT id, domain, ttl, records.type AS type, pref, data, genptr, lpad(pref, 5, '0') AS sortpref FROM records, typesort WHERE zone = $zone AND records.type = typesort.type ORDER BY typesort.ord, domain, sortpref");
+		$rid = sql_query("SELECT id, domain, ttl, records.type AS type, pref, data, genptr, comment, lpad(pref, 5, '0') AS sortpref FROM records, typesort WHERE zone = $zone AND records.type = typesort.type ORDER BY typesort.ord, domain, sortpref");
 		$result .= sprintf($rr_form_top, $zone);
 		while ($record = mysql_fetch_array($rid)) {
-			$result .= record_form($record);
+			if ( $vars['mode'] == "view") {
+				$result .= record_view($record);
+			} 
+			else {
+				$result .= record_form($record);
+			}
 			if ($record['type'] == 'PTR')
 				$explicit_ptrs[$record['domain']]++;
 			elseif ($record['type'] == 'SOA')
@@ -368,58 +406,62 @@ function perform_rr_action($input)
 		if ($var['value'] == 'Del' || $var['value'] == 'Upd') {	
 			$action = $var['value'];
 			list($d, $id) = split("_", $var['key']);
-			last;
+			if ($d != "op" && $d != "delete" && $d != "update")
+				continue;
+			if ($done[$id] == 1)
+				continue;
+			$done[$id] = 1;
+			switch ($action) {
+			case 'Del':
+				del_record($id);
+				break;
+			case 'Upd':
+				switch ($input["type_$id"]) {
+				case 'SOA':
+					upd_soa_record($id, $input["ttl_$id"]);
+					break;
+				case 'MX':
+					if ($user = patient_enter_crit($REMOTE_USER,'DOMAIN')){
+						$result = sprintf($update_in_progress, ucfirst($user));
+						break;
+					}
+					$warn = validate_record($input['zone'], 
+						$input["domain_$id"], $input["ttl_$id"], 
+						$input["type_$id"], $input["pref_$id"], 
+						$input["data_$id"]);
+					if ($warn) {
+						leave_crit('DOMAIN');
+						$result = "<HR><P><UL>$warn</UL>\n";
+						break;
+					}
+					upd_mx_record($id, 
+						$input["domain_$id"], $input["ttl_$id"], 
+						$input["pref_$id"], $input["data_$id"], $input["comment_$id"]);
+					leave_crit('DOMAIN');
+					break;
+				default:
+					if ($user = patient_enter_crit($REMOTE_USER,'DOMAIN')){
+						$result = sprintf($update_in_progress, ucfirst($user));
+						break;
+					}
+					$warn = validate_record($input['zone'], 
+						$input["domain_$id"], $input["ttl_$id"], 
+						$input["type_$id"], $input["pref_$id"], 
+						$input["data_$id"]);
+					if ($warn) {
+						leave_crit('DOMAIN');
+						$result = "<HR><P><UL>$warn</UL>\n";
+						break;
+					}
+					upd_record($id, $input["domain_$id"],
+						$input["ttl_$id"], $input["type_$id"],
+						$input["data_$id"], $input["genptr_$id"], $input["comment_$id"]);
+					leave_crit('DOMAIN');
+				}
+				break;
+			default:
+			}
 		}
-	}
-	switch ($action) {
-	case 'Del':
-		del_record($id);
-		break;
-	case 'Upd':
-		switch ($input["type_$id"]) {
-		case 'SOA':
-			upd_soa_record($id, $input["ttl_$id"]);
-			break;
-		case 'MX':
-			if ($user = patient_enter_crit($REMOTE_USER,'DOMAIN')){
-				$result = sprintf($update_in_progress, ucfirst($user));
-				break;
-			}
-			$warn = validate_record($input['zone'], 
-				$input["domain_$id"], $input["ttl_$id"], 
-				$input["type_$id"], $input["pref_$id"], 
-				$input["data_$id"]);
-			if ($warn) {
-				leave_crit('DOMAIN');
-				$result = "<HR><P><UL>$warn</UL>\n";
-				break;
-			}
-			upd_mx_record($id, 
-				$input["domain_$id"], $input["ttl_$id"], 
-				$input["pref_$id"], $input["data_$id"]);
-			leave_crit('DOMAIN');
-			break;
-		default:
-			if ($user = patient_enter_crit($REMOTE_USER,'DOMAIN')){
-				$result = sprintf($update_in_progress, ucfirst($user));
-				break;
-			}
-			$warn = validate_record($input['zone'], 
-				$input["domain_$id"], $input["ttl_$id"], 
-				$input["type_$id"], $input["pref_$id"], 
-				$input["data_$id"]);
-			if ($warn) {
-				leave_crit('DOMAIN');
-				$result = "<HR><P><UL>$warn</UL>\n";
-				break;
-			}
-			upd_record($id, $input["domain_$id"],
-				$input["ttl_$id"], $input["type_$id"],
-				$input["data_$id"], $input["genptr_$id"]);
-			leave_crit('DOMAIN');
-		}
-		break;
-	default:
 	}
 	return $result;
 }
@@ -446,6 +488,7 @@ function add_record($INPUT_VARS)
 	$pref = ltrim(rtrim($INPUT_VARS['pref']));
 	$data = ltrim(rtrim($INPUT_VARS['data']));
 	$genptr = ltrim(rtrim($INPUT_VARS['genptr']));
+	$comment = ltrim(rtrim($INPUT_VARS['comment']));	
 	if ($user = patient_enter_crit($REMOTE_USER,'DOMAIN')){
 		print sprintf($update_in_progress, ucfirst($user));
 		exit();
@@ -456,7 +499,7 @@ function add_record($INPUT_VARS)
 		return "$html_top\n<UL>\n$warnings</UL>\n";
 	}
 	$zone = ltrim(rtrim($INPUT_VARS['zone']));
-	insert_record($zone, $domain, $ttl, $type, $pref, $data, $genptr);
+	insert_record($zone, $domain, $ttl, $type, $pref, $data, $genptr, $comment);
 	leave_crit('DOMAIN');
 	return "";
 }
@@ -519,7 +562,7 @@ case 'Details':
 case 'zonesearch':
 	print domain_search_form($INPUT_VARS);
 	$str = $INPUT_VARS['lookfor'];
-	print domain_list("%$str%", $INPUT_VARS['domtype'], "<A HREF=\"brzones.php?frame=records&zone=%s\" target=\"right\">%s%s</A><BR>\n");
+	print domain_list("%$str%", $INPUT_VARS['domtype'], "<A HREF=\"brzones.php?frame=records&zone=%s&mode=view\" target=\"right\">%s%s</A><BR>\n");
 	print $html_close;
 	break;
 default:

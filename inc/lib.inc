@@ -397,8 +397,10 @@ function del_record($id)
 # appropriate domain(s) as being updated. NB: This function should NOT
 # be used for MX or SOA records, use upd_mx_record and upd_soa_record 
 # for those
-function upd_record($id, $domain, $ttlspec, $type, $data, $genptr)
+function upd_record($id, $domain, $ttlspec, $type, $data, $genptr, $comment = '')
 {
+	$data    = strtr($data,"'",'.');
+	$comment = strtr($comment, "'",'.');
 	if ($type == "MX" || $type == "SOA")
 	    die("Internal error: upd_record($id, $domain, $ttlspec, $type, $data)<P>\n");
 	if (! $genptr )
@@ -416,10 +418,10 @@ function upd_record($id, $domain, $ttlspec, $type, $data, $genptr)
 		$tmp = valid_ip($data);
 		$data = $tmp;
 	}
-	if ($otype == 'A' &&  ($data != $odata || $type != $otype || $domain != $odomain && $genptr != $ogenptr)) {
+	if ($otype == 'A' &&  ($data != $odata || $type != $otype || $domain != $odomain || $genptr != $ogenptr )) {
 		affect_reverses($odata);
 	}
-	$query = "UPDATE records SET domain = '$domain', ttl = $ttl, type = '$type', data = '$data', genptr = $genptr WHERE id = $id";
+	$query = "UPDATE records SET domain = '$domain', ttl = $ttl, type = '$type', data = '$data', genptr = $genptr, comment='$comment' WHERE id = $id";
 	$rid = sql_query($query);
 	tag_zone_updated($id);
 	if ($type == 'A')
@@ -430,10 +432,12 @@ function upd_record($id, $domain, $ttlspec, $type, $data, $genptr)
 # Update the contents of an existing MX record, and mark the appropriate 
 # domain as being updated. NB: This function should ONLY be used for 
 # MX records, use upd_record or upd_soa_record for all other record types.
-function upd_mx_record($id, $domain, $ttlspec, $pref, $data)
+function upd_mx_record($id, $domain, $ttlspec, $pref, $data, $comment = '')
 {
 	$ttl = ttl_to_seconds($ttlspec);
-	$query = "UPDATE records SET domain = '$domain', ttl = $ttl, type = 'MX', pref = $pref, data = '$data' WHERE id = $id";
+	$data = strtr($data,"'",'.');
+	$comment = strtr($comment,"'",'.');
+	$query = "UPDATE records SET domain = '$domain', ttl = $ttl, type = 'MX', pref = $pref, data = '$data', comment='$comment' WHERE id = $id";
 	$rid = sql_query($query);
 	tag_zone_updated($id);
 }
@@ -525,7 +529,7 @@ function default_ttl($zone)
 
 # Add a resource record to an existing domain. The record data
 # are assumed to be correct, i.e. verified by validate_record.
-function insert_record($zone, $domain, $ttlspec, $type, $pref, $data, $genptr)
+function insert_record($zone, $domain, $ttlspec, $type, $pref, $data, $genptr, $comment = '')
 {
 	if ( $type != 'A' )
 		$genptr = 0;
@@ -537,10 +541,12 @@ function insert_record($zone, $domain, $ttlspec, $type, $pref, $data, $genptr)
 		$tmp = valid_ip($data);
 		$data = $tmp;
 	}
-	$query = "INSERT INTO records (zone, domain, ttl, type, data, genptr";
+	$data    = strtr($data,    "'",'.');
+	$comment = strtr($comment, "'",'.');
+	$query = "INSERT INTO records (zone, domain, ttl, type, data, genptr, comment";
 	if (strlen($pref))
 		$query .= ", pref";
-	$query .= ") VALUES ($zone, '$domain', '$ttl', '$type', '$data', $genptr";
+	$query .= ") VALUES ($zone, '$domain', '$ttl', '$type', '$data', $genptr, '$comment'";
 	if (strlen($pref))
 		$query .= ", '$pref'";
 	$query .= ")";
