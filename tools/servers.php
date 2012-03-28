@@ -155,7 +155,7 @@ $confirm_delete_form = '
 <INPUT type="hidden" name="subaction" value="realdelete">
 Do you really want to delete this DNS server from the database?<P>
 <B>%s</B><P>
-<INPUT type="submit" value="Really Delete";
+<INPUT type="submit" value="Really Delete">;
 </FORM>
 ';
 
