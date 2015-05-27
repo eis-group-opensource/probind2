@@ -19,6 +19,7 @@ else
  exit 1
 fi
 #
+sudo /etc/init.d/named restart
 echo /usr/local/sbin/rndc -c rndc.conf reload
 /usr/local/sbin/rndc -c rndc.conf reload
 ko=$?
