@@ -1,12 +1,73 @@
 <?
-if (!$TOP && file_exists("config.inc"))
+
+//*** 1. Fix for removed Session functions
+function fix_session_register(){
+    function session_register(){
+        $args = func_get_args();
+        foreach ($args as $key){
+            $_SESSION[$key]=$GLOBALS[$key];
+        }
+    }
+    function session_is_registered($key){
+        return isset($_SESSION[$key]);
+    }
+    function session_unregister($key){
+        unset($_SESSION[$key]);
+    }
+}
+if (!function_exists('session_register')) fix_session_register();
+//*** 1.-end
+
+//*** 2. Register globals as it was before.
+/* Forces all GET and POST globals to register and be magically quoted.
+* This forced register_globals and magic_quotes_gpc both act as if
+* they were turned ON even if turned off in your php.ini file.
+*
+* Reason behind forcing register_globals and magic_quotes is for legacy
+* PHP scripts that need to run with PHP 5.4 and higher.  PHP 5.4+ no longer
+* support register_globals and magic_quotes, which breaks legacy PHP code.
+*
+* This is used as a workaround, while you upgrade your PHP code, yet still
+* allows you to run in a PHP 5.4+ environment.
+*
+* Licenced under the GPLv2. Matt Kukowski Sept. 2013
+*/
+
+if (! isset($PXM_REG_GLOB)) {
+
+  $PXM_REG_GLOB = 1;
+  $HTTP_POST_VARS = &$_POST;
+  $HTTP_GET_VARS = &$_GET;
+  $HTTP_COOKIE_VARS = &$_COOKIE;
+  $HTTP_SERVER_VARS = &$_SERVER;
+  $HTTP_POST_FILES = &$_FILES;
+  $HTTP_SESSION_VARS = &$_SESSION;
+  $HTTP_ENV_VARS = &$_ENV;
+  $REQUEST_METHOD = &$_SERVER['REQUEST_METHOD'];
+
+  if (! ini_get('register_globals')) {
+    foreach (array_merge($_GET, $_POST) as $key => $val) {
+      global $$key;
+      $$key = (get_magic_quotes_gpc()) ? $val : addslashes($val);
+	/* print "key=$key val=$val<br>\n"; */
+    }
+  }
+  if (! get_magic_quotes_gpc()) {
+    foreach ($_POST as $key => $val) $_POST[$key] = addslashes($val);
+    foreach ($_GET as $key => $val)  $_GET[$key]  = addslashes($val);
+  }
+}
+//*** 2.-end
+
+
+if (!isset($TOP) && file_exists("config.inc"))
 	include('config.inc');
-elseif (!$TOP && file_exists("inc/config.inc"))
+elseif (!isset($TOP) && file_exists("inc/config.inc"))
 	include('inc/config.inc');
-elseif (!$TOP && file_exists("../inc/config.inc"))
+elseif (!isset($TOP) && file_exists("../inc/config.inc"))
 	include('../inc/config.inc');
 else
-	if (!$TOP)
+	if (!$isset(TOP))
 		die("Cannot locate config.inc.<P>\n");
 
 $BIN = "$TOP/bin";
