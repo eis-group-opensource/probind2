@@ -42,7 +42,7 @@ if ($INPUT_VARS['iamserious'] != 'true') {
 	exit();
 }
 
-sql_query("UPDATE zones SET updated = 1 WHERE NOT master AND domain != 'TEMPLATE'");
+sql_query("UPDATE zones SET updated = 1 WHERE (master IS NULL OR master = '') AND domain != 'TEMPLATE'");
 sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M' OR type = 'S'");
 
 print "<P>Done. Now you need to push the updates.<P><HR>\n";

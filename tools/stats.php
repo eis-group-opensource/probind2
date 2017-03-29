@@ -48,7 +48,7 @@ if ($update)
 # Bragging ...
 print "<TABLE width=\"100%\"><TR><TD>\n";
 print "<TABLE border cellpadding=4><TR><TH>Statistic</TH><TH>Count</TH></TR>\n";
-$rid = sql_query("SELECT COUNT(id) FROM zones WHERE (master IS NULL OR NOT master) AND domain != 'TEMPLATE'");
+$rid = sql_query("SELECT COUNT(id) FROM zones WHERE (master IS NULL OR master = '') AND domain != 'TEMPLATE'");
 $count = mysql_result($rid, 0);
 mysql_free_result($rid);
 print "<TR><TD>Authoritative domains</TD><TD align=right>$count</TD></TR>\n";

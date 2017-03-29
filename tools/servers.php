@@ -234,7 +234,7 @@ function add_servers($input)
 	    if ($res)
 	        return "<br>Error running script $HOST_DIR/add_script<br>";
 
-	    sql_query("UPDATE zones SET updated = 1 WHERE NOT master AND domain != 'TEMPLATE'");
+	    sql_query("UPDATE zones SET updated = 1 WHERE (master IS NULL OR master = '') AND domain != 'TEMPLATE'");
 	    sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M' OR type = 'S'");
 
 	    return 0;
