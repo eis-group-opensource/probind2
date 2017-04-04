@@ -67,7 +67,7 @@ elseif (!isset($TOP) && file_exists("inc/config.inc"))
 elseif (!isset($TOP) && file_exists("../inc/config.inc"))
 	include('../inc/config.inc');
 else
-	if (!$isset(TOP))
+	if (!isset($TOP))
 		die("Cannot locate config.inc.<P>\n");
 
 $BIN = "$TOP/bin";

@@ -23,5 +23,10 @@ $LOG_DIR  =  "$TOP/LOGS";
 // Access to the HOSTS and LOGS directories from the web
 $HOST_URL = "HOSTS/";
 $LOG_URL  = "LOGS/";
+// We do not want this to appear on the screen so disable notice messages
+error_reporting(E_ERROR|E_WARNING|E_PARSE);
+// This date used to generate serial number in SOA record
+date_default_timezone_set('America/Los_Angeles');
+
 
 ?>

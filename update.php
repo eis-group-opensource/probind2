@@ -447,7 +447,7 @@ if ($frame == 'BLANK') {
     print $html_bottom;
 	exit;
 }
-
+$session_counter = time();
 session_register("session_counter");
 if ($session_counter < time() - $SESSION_TIMEOUT ) {
     $session_counter = time();
@@ -457,7 +457,7 @@ if ($session_counter < time() - $SESSION_TIMEOUT ) {
     print $html_top1;
     exit;
 }
-$session_counter = time();
+
 session_start();
 
 print $html_top1;
