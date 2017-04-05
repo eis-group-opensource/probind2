@@ -2,3 +2,6 @@ IndexOptions FancyIndexing
 IndexOrderDefault descending date
 IndexIgnore .htaccess CVS
 AddType text/plain .log
+HeaderName header.html
+ReadmeName footer.html
+
