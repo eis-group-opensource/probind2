@@ -1,3 +1,4 @@
+#
 IndexOptions FancyIndexing
 IndexOrderDefault descending date
 IndexIgnore .* CVS
