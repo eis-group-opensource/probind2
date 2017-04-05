@@ -109,10 +109,10 @@ $slave_zone_detail_form = '
 <FORM action="brzones.php" method="post">
 <INPUT type="hidden" name="formname" value="slavezone">
 <INPUT type="hidden" name="id" value="%d">
-<TABLE border=0 width=60%%><TR><TH align=left>Domain</TH><TH align=left>Master</TH></TR>
+<TABLE border=0 width=60%%><TR><TH align=left>Domain</TH><TH align=left>Masters (separated by ;)</TH></TR>
 <TR>
 	<TD>%s</TD>
-	<TD><INPUT type=text value="%s" name="master" size=15></TD></TR>
+	<TD><INPUT type=text value="%s" name="master" size=64></TD></TR>
 <TR><TH align=left>Zonefile</TH><TH align=left>Updated</TH><TH>Disabled</TH></TR>
 <TR>
 	<TD><INPUT type=text value="%s" name="zonefile" size=50></TD>

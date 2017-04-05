@@ -1,0 +1,4 @@
+IndexOptions FancyIndexing
+IndexOrderDefault descending date
+IndexIgnore .htaccess CVS
+AddType text/plain .log

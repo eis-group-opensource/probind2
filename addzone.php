@@ -40,7 +40,7 @@ ameborder="0" border="0" framespacing="0" marginheight="0" marginwidth="10">
 $start_form = "
 <FORM method=\"post\" action=\"addzone.php\">
 <INPUT type=hidden name=\"type\" value=\"master\">
-<TABLE width=\"100%\">
+<TABLE>
 <TR><TD>Domain name</TD>
     <TD><TEXTAREA name=\"newdomain\" rows=8 cols=44></TEXTAREA></TD>
     <TD>Enter one or more names of domains to add to the database, each on
@@ -52,12 +52,19 @@ $start_form = "
 
 <FORM method=\"post\" action=\"addzone.php\">
 <INPUT type=hidden name=\"type\" value=\"slave\">
-<TABLE width=\"100%\">
+<TABLE>
 <TR><TD>Domain name</TD>
     <TD><INPUT name=\"newdomain\" size=32></TD>
-<TR><TD>Master server</TD>
+</TR>
+<TR><TD>Master servers</TD>
     <TD><INPUT name=\"newmaster\" size=32></TD>
+</TR>
+<TR>
+    <TD></TD>
+    <TD><INPUT name=\"newmaster2\" size=32></TD>
+</TR>
 <TR><TD colspan=2 align=center><INPUT type=submit value=\"Add Slave Domain\"></TD>
+</TR>
 </TABLE>
 </FORM>
 ";
@@ -114,12 +121,18 @@ function add_slave_domain($input)
 {
 	$domain = $input['newdomain'];
 	$master = $input['newmaster'];
+        $master2 = $input['newmaster2'];
 	$warnings = validate_domain($domain);
 	$warnings .= validate_master($master);
+	if ( "$master2" != "" ) {
+		$warnings .= validate_master($master2);
+	}
 	# Enough validation, lets do it.
 	if (strlen($warnings)) {
 		$result .= "The domain was not created, for the following reasons:<P><UL>\n$warnings</UL>\n";
 	} else {
+		if ( "$master2" != "" )
+			$master = $master.";".$master2;
 		$id = add_domain($domain, $master);
 		$result .= "<HR><P>Domain '<A HREF=\"brzones.php?frame=records&zone=$id\">$domain</A>' successfully added.<P>\n";
 	}
