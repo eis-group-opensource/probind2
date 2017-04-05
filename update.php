@@ -173,7 +173,7 @@ function main_update_menu($input)
 	print "</TABLE>\n";
 	print $res;
 	print "</FORM>\n";
-        print "<A TARGET=\"VIEW\" href=\"LOGS\">Update logs</A>\n";		
+        print "<A TARGET=\"VIEW\" href=\"LOGS\">See log files</A>\n";		
 	
 	exit;
 }
