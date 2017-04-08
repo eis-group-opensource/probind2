@@ -473,8 +473,9 @@ $A_LOG="<A TARGET=\"VIEW\" href=\"view.php?base=LOGS&file=$UPDATE_LOG_NAME\">LOG
 $A_LOGE="<A TARGET=\"VIEW\" href=\"view.php?base=LOGS&file=$UPDATE_LOG_NAME&error=1\">LOG</A>";
 
 print "<SCRIPT>open('update.php?frame=PROGRESS','MAIN');</SCRIPT><HR>\n";
-for($i = 0; $i < 512; $i++) 
+for($i = 0; $i < 1024; $i++) 
     print "<B></B>\n";
+flush();
 
 # !!!
 if ($user = patient_enter_crit($REMOTE_USER, 'PUSH')) {
