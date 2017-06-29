@@ -421,7 +421,8 @@ $gen   = $INPUT_VARS['gen'];
 $push  = $INPUT_VARS['push'];
 $conf  = $INPUT_VARS['conf'];
 $frame = $INPUT_VARS['frame'];
-
+if ( ! isset($frame) ) 
+	$frame = $HTTP_GET_VARS['frame'];
 
 #
 # Set up frame structure
