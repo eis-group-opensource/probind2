@@ -24,7 +24,7 @@ $html_bottom = '
 ';
 
 $start_frame = '
-<HTML> 
+<HTML>
 <HEAD>
 <TITLE>Add Zone</TITLE>
 </HEAD>
@@ -44,15 +44,24 @@ $start_form = "
 <TR><TD>Domain name</TD>
     <TD><TEXTAREA name=\"newdomain\" rows=8 cols=44></TEXTAREA></TD>
     <TD>Enter one or more names of domains to add to the database, each on
-    a separate line</TD></TR>
+    a separate line. You will be able to edit zone options later.</TD></TR>
 <TR><TD colspan=2 align=center><INPUT type=submit value=\"Add Master Domain(s)\"></TD>
 </TABLE>
 </FORM>
 <P><HR><P>
 
 <FORM method=\"post\" action=\"addzone.php\">
-<INPUT type=hidden name=\"type\" value=\"slave\">
 <TABLE>
+<TR><TD>Domain type:</TD>
+    <TD>
+    <SELECT name=\"type\">
+  	 <option value=\"slave\" selected>slave</option>
+  	 <option value=\"forward\">forward</option>
+ 	 <option value=\"stub\">stub</option>
+   	 <option value=\"static\">static stub</option>
+    </SELECT>
+    </TD>
+</TR>
 <TR><TD>Domain name</TD>
     <TD><INPUT name=\"newdomain\" size=32></TD>
 </TR>
@@ -60,8 +69,16 @@ $start_form = "
     <TD><INPUT name=\"newmaster\" size=32></TD>
 </TR>
 <TR>
-    <TD></TD>
+    <TD>(forwarders for forward)</TD>
     <TD><INPUT name=\"newmaster2\" size=32></TD>
+</TR>
+<TR>
+    <TD>You can edit options later</TD>
+    <TD><INPUT name=\"newmaster3\" size=32></TD>
+</TR>
+<TR>
+    <TD></TD>
+    <TD><INPUT name=\"newmaster4\" size=32></TD>
 </TR>
 <TR><TD colspan=2 align=center><INPUT type=submit value=\"Add Slave Domain\"></TD>
 </TR>
@@ -72,9 +89,9 @@ $start_form = "
 function validate_domain($domain)
 {
 	$warnings = "";
-	if (!strlen($domain)) 
+	if (!strlen($domain))
 		$warnings .= "<LI>You didn't specify a new domain name.\n";
-	if (!valid_domain($domain)) 
+	if (!valid_domain($domain))
 		$warnings .= "<LI>'$domain' is not a valid domain name, or the domain already exists in the database.\n";
 	return $warnings;
 }
@@ -85,7 +102,7 @@ function validate_master($master)
 	if (!$master)
 		$warnings .= "<LI>You must specify a master for this domain.\n";
 	if (valid_domain($master)) {
-		if (!($tmp = gethostbyname($master))) 
+		if (!($tmp = gethostbyname($master)))
 			$warnings .= "<LI>'$master' is an unknown hostname.\n";
 		else
 			$master = $tmp;
@@ -117,23 +134,36 @@ function add_master_domain($input)
     return $result;
 }
 
-function add_slave_domain($input)
+function add_slave_domain($input, $type)
 {
 	$domain = $input['newdomain'];
 	$master = $input['newmaster'];
-        $master2 = $input['newmaster2'];
+    $master2 = $input['newmaster2'];
+    $master3 = $input['newmaster3'];
+    $master4 = $input['newmaster4'];
 	$warnings = validate_domain($domain);
 	$warnings .= validate_master($master);
 	if ( "$master2" != "" ) {
 		$warnings .= validate_master($master2);
 	}
+	if ( "$master3" != "" ) {
+		$warnings .= validate_master($master3);
+	}
+	if ( "$master4" != "" ) {
+		$warnings .= validate_master($master2);
+	}
+
 	# Enough validation, lets do it.
 	if (strlen($warnings)) {
 		$result .= "The domain was not created, for the following reasons:<P><UL>\n$warnings</UL>\n";
 	} else {
 		if ( "$master2" != "" )
 			$master = $master.";".$master2;
-		$id = add_domain($domain, $master);
+		if ( "$master3" != "" )
+			$master = $master.";".$master3;
+		if ( "$master4" != "" )
+			$master = $master.";".$master4;
+		$id = add_domain($domain, $master, $type );
 		$result .= "<HR><P>Domain '<A HREF=\"brzones.php?frame=records&zone=$id\">$domain</A>' successfully added.<P>\n";
 	}
 	$result .= "<hr><p>\n";
@@ -158,6 +188,15 @@ case 'master':
 	break;
 case 'slave':
 	print $html_top.add_slave_domain($INPUT_VARS).$html_bottom;
+	break;
+case 'stub':
+	print $html_top.add_slave_domain($INPUT_VARS,'stub').$html_bottom;
+	break;
+case 'forward':
+	print $html_top.add_slave_domain($INPUT_VARS,'forward').$html_bottom;
+	break;
+case 'static':
+	print $html_top.add_slave_domain($INPUT_VARS,'static').$html_bottom;
 	break;
 case 'fill':
     if ( !$INPUT_VARS['Cancel']) {

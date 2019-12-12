@@ -42,7 +42,7 @@ while ( $entry = readdir($ht)) {
 closedir($ht);
 
 $script_form = mk_select_a("script", $script_list, $DEFAULT_PUSH);
-    
+
 $preamble = '
 NB: When you change these settings, the change is only reflected in
 domains which are pushed onto the DNS servers after the update. Some changes (such as
@@ -67,6 +67,7 @@ $add_form = '
  <TH>Type</TH>
  <TH>Updates</TH>
  <TH>NS records</TH>
+ <TH>BIND VERSION:</TH>
 </TR><TR align=left>
  <TD><SELECT name="type"><OPTION>Master</OPTION>
   <OPTION SELECTED>Slave</OPTION></SELECT></TD>
@@ -74,23 +75,26 @@ $add_form = '
   <OPTION>Update</OPTION></SELECT></TD>
  <TD><SELECT name="mkrec"><OPTION SELECTED>Skip</OPTION>
   <OPTION>NS record</OPTION></SELECT></TD>
+ <TD><INPUT NAME=bind_version TYPE=text SIZE=4 VALUE="9.10"></TD>
 </TR><TR align=left>
- <TH colspan=3>Directory on the server containing the zone files</TH>
+ <TH colspan=4>Directory on the server containing the zone files</TH>
 </TR><TR align=left>
- <TD colspan=3><INPUT type="text" name="zonedir" SIZE=70 MAXLENGTH=255 value="'."$DEFAULT_DIR".'"></TD>
+ <TD colspan=4><INPUT type="text" name="zonedir" SIZE=70 MAXLENGTH=255 value="'."$DEFAULT_DIR".'"></TD>
 </TR><TR align=left>
- <TH colspan=3>Template directory (in '."$TEMPL_DIR".')</TH>
+ <TH colspan=4>Template directory (in '."$TEMPL_DIR".')</TH>
 </TR><TR align=left>
- <TD colspan=3>'."$templ_form".'</TD>
+ <TD colspan=4>'."$templ_form".'</TD>
 </TR><TR align=left>
- <TH colspan=3>Script used to push data to the server</TH>
+ <TH colspan=4>Script used to push data to the server</TH>
 </TR><TR align=left>
- <TD colspan=3>'."$script_form".'</TD>
+ <TD colspan=4>'."$script_form".'</TD>
 </TR><TR align=left>
-</TR><TR align=left>
+</TR>
+<TR><TD colspan=4>If BIND version is below 9.10, static zones will be configured as forward zones.</TD></TR>
+<TR><TD colspan=4>You can edit server options later using server update form.</TD></TR><TR align=left>
  <TH>Description</TH>
 </TR><TR>
- <TD colspan=3><TEXTAREA name="description" COLS=70 ROWS=12></TEXTAREA></TD>
+ <TD colspan=4><TEXTAREA name="description" COLS=70 ROWS=12></TEXTAREA></TD>
 </TR><TR>
  <TD><INPUT type="reset"></TD>
  <TD></TD>
@@ -115,30 +119,35 @@ $update_form = '
  <TH>Type</TH>
  <TH>Update</TH>
  <TH>NS record</TH>
+ <TH>BIND version</TH>
 </TR><TR align=left>
  <TD>%s</TD>
  <TD>%s</TD>
  <TD>%s</TD>
+ <TD><INPUT NAME=bind_version TYPE=text SIZE=4 VALUE="%s"></TD>
 </TR><TR align=left>
- <TH colspan=3>Directory on the server containing the zone files</TH>
+ <TH colspan=4>Directory on the server containing the zone files</TH>
 </TR><TR align=left>
- <TD colspan=3><INPUT type="text" name="zonedir" value="%s" SIZE=70 MAXLENGTH=255></TD>
+ <TD colspan=4><INPUT type="text" name="zonedir" value="%s" SIZE=70 MAXLENGTH=255></TD>
 </TR><TR align=left>
  <TH colspan=1>Template directory</TH>
  <TD colspan=1>%s</TD>
  <TD colspan=1>Update host from template? <INPUT type="checkbox" name="updatet" value=1></TD>
+ <TD></TD>
 </TR><TR align=left>
  <TH colspan=1>Script used to push data to the server</TH>
- <TD colspan=1>%s</TD> 
-</TR><TR align=left>
- <TH colspan=3>Description</TH>
- 
+ <TD colspan=1>%s</TD>
+</TR>
+<TR><TD colspan=4>If BIND version is below 9.10, static zones will be configured as forward zones.</TD></TR>
+<TR align=left>
+ <TH colspan=4>Description</TH>
+
 </TR><TR>
- <TD colspan=3><TEXTAREA name="description" COLS=80 ROWS=4>%s</TEXTAREA></TD>
+ <TD colspan=4><TEXTAREA name="description" COLS=80 ROWS=4>%s</TEXTAREA></TD>
 </TR><TR>
 <TH>Options (<b>No syntax check here!</b>)</TH>
 </TR><TR>
- <TD colspan=3><TEXTAREA name="options" COLS=80 ROWS=7>%s</TEXTAREA></TD>
+ <TD colspan=4><TEXTAREA name="options" COLS=80 ROWS=7>%s</TEXTAREA></TD>
 </TR><TR>
  <TD><INPUT type="reset"></TD>
  <TD><INPUT type="submit" name="subaction" value="Delete"></TD>
@@ -207,8 +216,9 @@ function add_servers($input)
 	$template = $input['template'];
 	$script = $input['script'];
 	$descr = $input['description'];
+	$bind_version = $input['bind_version'];
 	$warnings = valid_server($name, $ipno, $type, $push, $zonedir, $template, $script);
-	if (strlen($warnings)) 
+	if (strlen($warnings))
 		return $warnings;
 	$query = "SELECT * FROM servers WHERE hostname = '$name'";
 	$rid = sql_query($query);
@@ -216,7 +226,7 @@ function add_servers($input)
 	mysql_free_result($rid);
 	if ($count)
 		return "$name already exists in the database.<BR>\n";
-	$query = "INSERT INTO servers (hostname, ipno, type, pushupdates, mknsrec, zonedir, template, script, descr, state) VALUES ('$name', '$ipno', '$type', $push, $mkrec, '$zonedir', '$template', '$script', '$descr', 'OUT')";
+	$query = "INSERT INTO servers (hostname, ipno, type, pushupdates, mknsrec, zonedir, template, script, descr, state,bind_version) VALUES ('$name', '$ipno', '$type', $push, $mkrec, '$zonedir', '$template', '$script', '$descr', 'OUT', $bind_version)";
 	sql_query($query);
 
 	if (is_file("$TEMPL_DIR/$template/named.tmpl")) {
@@ -224,7 +234,7 @@ function add_servers($input)
 	    passthru("mkdir -p $HOST_DIR/$name/SEC 2>& 1",$res);
 	    if (!$res)
 	        passthru("cp $TEMPL_DIR/$template/*.* $HOST_DIR/$name/. 2>& 1", $res);
-		
+
 	    if ($res)
 	        return "<br>Error when creating directory $HOST_DIR/$name/.<br>";
 
@@ -245,7 +255,7 @@ function add_servers($input)
 function mk_update_form($server)
 {
 	global $update_form, $template_list, $script_list;
-	$query = "SELECT id, hostname, ipno, type, pushupdates, mknsrec, zonedir, template, script, descr, options FROM servers WHERE id = $server";
+	$query = "SELECT id, hostname, ipno, type, pushupdates, mknsrec, zonedir, template, script, descr, options, bind_version FROM servers WHERE id = $server";
 	$rid = sql_query($query);
 	if ($row = mysql_fetch_array($rid)) {
 		$id = $row['id'];
@@ -259,12 +269,14 @@ function mk_update_form($server)
 		$script = $row['script'];
 		$descr = $row['descr'];
 		$options = $row['options'];
+		$bind_version=$row['bind_version'];
 		$result .= sprintf($update_form,
-			$id, $name, $name, $ipno, 
-			mk_select("type", array("Master", "Slave"), $type), 
-			mk_select("push", array("Skip", "Update"), $push), 
+			$id, $name, $name, $ipno,
+			mk_select("type", array("Master", "Slave"), $type),
+			mk_select("push", array("Skip", "Update"), $push),
 			mk_select("mkrec", array("Skip", "NS record"), $mkrec),
-			$zonedir, 
+			$bind_version,
+			$zonedir,
 			mk_select_a("template", $template_list, $template),
 			mk_select_a("script", $script_list, $script),
 			$descr, $options);
@@ -277,7 +289,7 @@ function mk_update_form($server)
 
 function browse_servers()
 {
-	$query = "SELECT id, hostname, ipno, type, pushupdates, mknsrec FROM servers ORDER BY hostname";
+	$query = "SELECT id, hostname, ipno, type, pushupdates, mknsrec, bind_version FROM servers ORDER BY hostname";
 	$rid = sql_query($query);
 	$result = "<FORM action=\"servers.php\" method=\"post\">
 <INPUT type=\"hidden\" name=\"action\" value=\"addform\">
@@ -287,6 +299,7 @@ function browse_servers()
  <TH>Type</TH>
  <TH>Update</TH>
  <TH>NS record</TH>
+ <TH>Bind</TH>
 </TR>\n";
 	while ($server = mysql_fetch_array($rid)) {
 		$id = $server['id'];
@@ -295,12 +308,14 @@ function browse_servers()
 		$type = ($server['type'] == 'M' ? "Master" : "Slave");
 		$push = ($server['pushupdates'] ? "Yes" : "No");
 		$mkrec = ($server['mknsrec'] ? "Yes" : "No");
+		$bind_version = $server['bind_version'];
 		$result .= "<TR>
  <TD><A HREF=\"servers.php?action=detailedview&server=$id\">$name</A></TD>
  <TD>$ipno</TD>
  <TD>$type</TD>
  <TD>$push</TD>
  <TD>$mkrec</TD>
+ <TD>$bind_version</TD>
 </TR>\n";
 	}
 	$result .= "<TR><TD><INPUT type=\"submit\" value=\"Add another server\"></TD></TR>\n";
@@ -326,6 +341,7 @@ function update_servers($input)
 	$descr = $input['description'];
 	$updatet=$input['updatet'];
 	$options = strtr( $input['options'], "'", '"');
+	$bind_version = ($input['bind_version']);
 	switch (strtolower($input['subaction'])) {
 	case 'delete':
 		return sprintf($confirm_delete_form, $id, $name, $name);
@@ -338,12 +354,12 @@ function update_servers($input)
 		        passthru("$HOST_DIR/delete_script $name 2>& 1");
 		    passthru("rm -rf $HOST_DIR/$name 2>& 1");
 		}
-		
+
 		return "Deleted the '$name' server.<P>\n";
 	case 'update':
 		if ($warns = valid_server($name, $ipno, $type, $push, $zonedir, $template, $script))
 			return $warns;
-		$query = "UPDATE servers SET hostname = '$name', ipno = '$ipno', type = '$type', pushupdates = $push, mknsrec = $mkrec, zonedir = '$zonedir', template = '$template', script = '$script', descr = '$descr', state = 'OUT', options='$options' WHERE id = $id";
+		$query = "UPDATE servers SET hostname = '$name', ipno = '$ipno', type = '$type', pushupdates = $push, mknsrec = $mkrec, zonedir = '$zonedir', template = '$template', script = '$script', descr = '$descr', state = 'OUT', options='$options', bind_version='$bind_version'  WHERE id = $id";
 		$rid = sql_query($query);
 		$count = mysql_affected_rows();
 		if ($updatet && is_file("$TEMPL_DIR/$template/named.tmpl")) {
@@ -372,7 +388,7 @@ case 'detailedview':
 	print mk_update_form($INPUT_VARS['server']);
 	break;
 case 'add':
-	if ($warns = add_servers($INPUT_VARS)) 
+	if ($warns = add_servers($INPUT_VARS))
 		print $warns;
 	else
 		print $add_form;

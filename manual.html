@@ -29,13 +29,13 @@
     <tr>
       <td style="vertical-align: top;">Date:<br>
       </td>
-      <td style="vertical-align: top;">22 Mart 2003<br>
+      <td style="vertical-align: top;">11 December 2019>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top;">Version:<br>
       </td>
-      <td style="vertical-align: top;">2.0<br>
+      <td style="vertical-align: top;">2.2<br>
       </td>
     </tr>
     <tr>
@@ -48,7 +48,7 @@
 </table>
 <div class="MsoNormal" align="center" style="text-align: center;">
 <hr size="3" width="100%" align="center"> </div>
-<p> This is the manual for ProBIND, release 2.0. ProBIND is an
+<p> This is the manual for ProBIND, release 2.2. ProBIND is an
 application for managing DNS servers. The present release is probably
 not suitable for users who are not knowledgeable about DNS in general.
 If you want to learn about DNS in general, or BIND in particular, then I
@@ -61,6 +61,8 @@ page. This bar is always visible. The start page is identical to the
 "Browse zones" page. </p>
 <p> </p>
 <ul>
+  <li><a href="#new2.2">What is new in version 2.2</a> </li>
+  <li><a href="#new2.1">What is new in version 2.1</a> </li>
   <li><a href="#about">About ProBIND</a> </li>
   <li><a href="#add">Adding a zone</a> </li>
   <li><a href="#del">Deleting a zone</a> </li>
@@ -81,6 +83,24 @@ page. This bar is always visible. The start page is identical to the
   <li><a href="#push">Pushing updates</a> </li>
   <li><a href="#import">Import</a> </li>
   <li><a href="#license">License</a> </li>
+</ul>
+<h2><a name="new2.2">What is new in version 2.1</h2>
+<ul>
+<li>New zone types added - forward, stub, static-stab</li>
+<li>Servers has now bind version option which allows to define, if server support new types or not. For now, only one check is implemented - if
+bind version is lower then 9.10, then static-stub became forward.
+<li>Zone editor has now record filter and limit maximum number of records on the screen. It allows to edit really big zones.
+<li>Search has now search by comment (absent in previous version).
+<li>Database now has version number, so system can detect if database is not from the current version of the code.
+<li>Zone View/Edit modes are now controlled by the separate buttons on the top of zone content.
+<li>Slave, Forward, Stub and Static Stub zones can now have up to 4 master or forwarders IP (and more can be added directly
+by zone update menu).
+</ul>
+<h2><a name="new2.2">What is new in version 2.1</h2><ul>
+<li>Comment added into the records.
+<li>Full zone can be edited at once now.
+<li>Push scripts improved.
+<li>As an option, change control script added which can reportd DNS changes to the email and/or jira.
 </ul>
 <h2><a name="about">About ProBIND</a></h2>
 <p> ProBIND is a web application for administrating one or more BIND
@@ -444,7 +464,7 @@ copied to the server, except named.tmpl file which is used to generate
 real named.conf file. The template named.tmpl is essentially the entire
 named.conf file, except for the actual zone definitions. When the
 named.conf file is prepared for upload to the DNS server, the template
-is read, and 4 macros are expanded: $ZONE_DIR, $OPTIONS, $ACL and  
+is read, and 4 macros are expanded: $ZONE_DIR, $OPTIONS, $ACL and
 $ZONE_DEFINITIONS. They expand to the directory containing zone files,
 server options, list of secondary servers (for the access lists) and
 the actual zone definitions (whith zone options from the zone

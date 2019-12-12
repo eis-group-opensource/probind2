@@ -357,7 +357,10 @@ function parse_zone($input, $opts)
 	}		
 	if ($opts['v'])
 		print "Adding zone '$zone', master = '$master'\n";
-	$zid = add_domain($zone, $masters, $options);
+	#
+	# zone_type = '' as function can recognize it automatically.
+	#
+	$zid = add_domain($zone, $masters, '', $options);
 	sql_query("DELETE FROM records WHERE zone = $zid");
 	if ($type == "master") 
 		$count = load_zone($zone, $file, $zid, $zone, $master, $opts);

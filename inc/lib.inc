@@ -296,7 +296,7 @@ function valid_ip($ip)
 # NB: The 'master' parameter contains the IP number of the DNS master
 # server for the new (slave) domain, i.e., it is the empty string if 
 # the domain is a master domain.
-function add_domain($domain, $master, $eoptions = "")
+function add_domain($domain, $master, $zone_type, $eoptions = "")
 {
 	global $domain_lock_msg, $REMOTE_USER, $SLAVE_ON_SLAVES;
 	# Find the template data
@@ -322,15 +322,16 @@ function add_domain($domain, $master, $eoptions = "")
 	if ($user = patient_enter_crit($REMOTE_USER, 'DOMAIN'))
 		die (sprintf($domain_lock_msg, ucfirst($user)));
 	# Add the domain to the zones table
-	$rid = sql_query("INSERT INTO zones (domain, serial, refresh, retry, expire, master, updated, zonefile, options) VALUES ('$domain', $serial, $refresh, $retry, $expire, $master, 1, '$zonefile', '$options')");
+	$rid = sql_query("INSERT INTO zones (domain, serial, refresh, retry, expire, master, updated, zonefile, zone_type, options ) VALUES ('$domain', $serial, $refresh, $retry, $expire, $master, 1, '$zonefile', '$zone_type', '$options')");
 	$newzone = mysql_insert_id();
-	sql_query("UPDATE zones SET ctime = mtime WHERE id = $newzone");
+	$apache_user= apache_getenv("REMOTE_USER");
+	sql_query("UPDATE zones SET ctime = mtime, modified_by='$apache_user' WHERE id = $newzone");
 	# Just in case a domain of the same name was recently deleted...
 	sql_query("DELETE FROM deleted_domains WHERE domain = '$domain'");
 
 
 	if ($master != "''") {
-		if ($SLAVE_ON_SLAVES)
+		if ($SLAVE_ON_SLAVES || $zone_type != 'slave')
 		    sql_query("UPDATE servers SET state = 'OUT'");
 		else
 		    sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M'");
@@ -342,7 +343,7 @@ function add_domain($domain, $master, $eoptions = "")
 		sql_query("INSERT INTO records (domain, zone, ttl, type, pref, data) VALUES ('$domain', $newzone, $ttl, '$type', '$pref', '$data')");
 	}
 	mysql_free_result($rid);
-	sql_query("UPDATE records SET ctime = mtime WHERE zone = $newzone");
+	sql_query("UPDATE records SET ctime = mtime,  WHERE zone = $newzone");
 	if ($master != "''" && !$SLAVE_ON_SLAVES)
 		sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M'");
 	else
@@ -400,7 +401,7 @@ function del_zone($zoneid)
 function domain_list($lookfor, $type, $format)
 {
 	$result = "";
-	$query = "SELECT id, domain, master, disabled FROM zones";
+	$query = "SELECT id, domain, master, disabled, zone_type FROM zones";
 	switch ($type) {
 	case '*': 
 		$query .= " WHERE domain LIKE '$lookfor'"; 
@@ -419,11 +420,21 @@ function domain_list($lookfor, $type, $format)
 	$rid = sql_query($query);
 	$typestr = "";
 	$result1 = "";
-	while (list($id, $domain, $master, $disabled) = mysql_fetch_row($rid)) {
+	while (list($id, $domain, $master, $disabled, $zone_type) = mysql_fetch_row($rid)) {
 		if ($disabled)
 			$d = "<IMAGE border=0 width=\"8\" height=\"8\" SRC=\"images/noway.gif\">";
 		else
 		        $d = "";
+		switch ($zone_type) {
+			case 'forward': $d = $d."<FONT color=BLUE>f </FONT>";break;
+			case 'stub': $d = $d."<FONT color=BLUE>u </FONT>"; break;
+			case 'static': $d = $d."<FONT color=BLUE>a </FONT>"; break;
+			default: 
+				if ( $master != '' ) {
+					$d = $d."<FONT color=BLUE>s </FONT>";
+				};
+			break;
+		};
 		if ($type == "*")
 			$typestr = ($master ? " (slave)" : "");
 		if (preg_match("/\.in-addr\.arpa(\.)?$/", $domain))
