@@ -8,7 +8,7 @@ require 'inc/lib.inc';
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 </HEAD>
 <BODY bgcolor="#999966">
-<TABLE border="0" cellpadding="0" cellspacing="0" width="100%">    
+<TABLE border="0" cellpadding="0" cellspacing="0" width="100%">
 <TR><TD align=left>
    <TABLE border="0" cellpadding="0" cellspacing="0">
     <TR>
@@ -19,7 +19,7 @@ require 'inc/lib.inc';
      <TD background="images/button-middle.gif"><A HREF="../index.html" target="_top"><B>change</B></A></TD>
      <TD><IMG SRC="images/button-right.gif" width="10" height="33"></TD>
     </TR>
-   </TABLE> 
+   </TABLE>
   </TD>
   <TD align=center valign=middle>
   <TABLE border="0" cellpadding="0" cellspacing="0">
@@ -40,6 +40,7 @@ require 'inc/lib.inc';
    </TR>
    </TABLE>
 </TD>
+<TD ALIGN=CENTER><B>Version<BR>2.2</B></font></TD>
 <TD align=right><IMG SRC="images/ProBIND-logo.gif" width="138" height="50" border="0">&nbsp;</TD>
 </TR>
 </TABLE>

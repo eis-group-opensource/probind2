@@ -80,7 +80,7 @@ $start_form = "
     <TD></TD>
     <TD><INPUT name=\"newmaster4\" size=32></TD>
 </TR>
-<TR><TD colspan=2 align=center><INPUT type=submit value=\"Add Slave Domain\"></TD>
+<TR><TD colspan=2 align=center><INPUT type=submit value=\"Add Slave|Forward|STUB Domain\"></TD>
 </TR>
 </TABLE>
 </FORM>

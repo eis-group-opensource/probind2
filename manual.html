@@ -84,8 +84,8 @@ page. This bar is always visible. The start page is identical to the
   <li><a href="#import">Import</a> </li>
   <li><a href="#license">License</a> </li>
 </ul>
-<h2><a name="new2.2">What is new in version 2.1</h2>
-<ul>
+<h2><a name="new2.2">What is new in version 2.2</h2>
+<ol>
 <li>New zone types added - forward, stub, static-stab</li>
 <li>Servers has now bind version option which allows to define, if server support new types or not. For now, only one check is implemented - if
 bind version is lower then 9.10, then static-stub became forward.
@@ -95,13 +95,13 @@ bind version is lower then 9.10, then static-stub became forward.
 <li>Zone View/Edit modes are now controlled by the separate buttons on the top of zone content.
 <li>Slave, Forward, Stub and Static Stub zones can now have up to 4 master or forwarders IP (and more can be added directly
 by zone update menu).
-</ul>
-<h2><a name="new2.2">What is new in version 2.1</h2><ul>
+</ol>
+<h2><a name="new2.2">What is new in version 2.1</h2><ol>
 <li>Comment added into the records.
 <li>Full zone can be edited at once now.
 <li>Push scripts improved.
 <li>As an option, change control script added which can reportd DNS changes to the email and/or jira.
-</ul>
+</ol>
 <h2><a name="about">About ProBIND</a></h2>
 <p> ProBIND is a web application for administrating one or more BIND
 servers. It is intended for small to medium sized ISPs, but there is no
@@ -145,10 +145,16 @@ you manage with ProBIND, by an outside domain registry, e.g. NSI. When
 you create a master zone, the zone is initialized with a copy of the
 records in the TEMPLATE pseudo-zone. </p>
 <p> A slave zone is one that is managed elsewhere, but which your server
-is a backup for. The zone data will be fetched from the master server
+is a backup for. The zone data will be fetched from the master servers
 you specify. You can specify either an IP number or a hostname as the
 master server, but if you specify a hostname, that hostname must be
-resolvable. </p>
+resolvable. You can specify few IP or host names. </p>
+<p>Stub zone is like Slave zone, but only list of NS servers will be extracted from the masters. You specify up to 4 master IP or master names. Server will update list of name servers
+taking it from the master server(s). IT creates 'stub' zone in Bind.</p>
+<p>Forward zone is actually forwarding condition - you can specify up to 4 IP of name servers which can resolve names in this zone. These IP do not need to belong to the
+authoritative/master servers. It creates 'forward' zone in Bind.
+<p>Static zone is a new kind of STUB zone - server will resolve names in the zone, requesting one of specified masters. It will not update NS server list for such zone.
+It creates 'static-stub' zone on the server, if bind version is higher or equal to 9.10; else it creates forward zone.
 <p>Each zone can contain options, which will be added into the zone
 description in the named.conf file on master servers (options are not
 applied to the zones on slave servers). By default, options are
@@ -239,10 +245,14 @@ the page" feature of the browthers, and is slow in case of a very long
 (thousand records) zone. This section will contain a set of buttons: </p>
 <ul>
   <li>"Add RR" takes you to a sub-page where you can add Resource
-Records to the zone. </li>
-  <li>"Edit zone (total)" (view mode only) - switch to edit mode; </li>
-  <li>"edit" - allow to edit a single RR record; </li>
-  <li>"Delete Zone?" does just that - it takes you to a form where you
+Records to the zone. </li
+  <li>Filter begin with: - first line on the screen; if not 1, so many lines will be skipped;
+  <li>Max records to show: - maximum number of records shown on the screen.
+  <li>next, prev - pre-select next or previous portion of the output. (Attention - if you delete records, few recrord can move from next page to previous one, so be careful).
+  <li>View: - apply filter, and change to the VIEW mode</li>
+  <li>Edit - apply filter, and change to Edit mode - allows to edit many records at once </li>
+  <li>Filter: - few fields allows to filter outbut. You must use '%' as wildcard (for example, enter 10.21.5.% into Data field to see all A records in 10.21.5).</li>
+ <li>"Delete Zone?" does just that - it takes you to a form where you
 must confirm your intention to delete the displayed zone. </li>
 </ul>
 <p> After the button row follows the explicit resource records. These
@@ -254,15 +264,19 @@ you will also change the TTL for all implicit resource records, and for
 all those explicit resource records that had the same TTL as the SOA
 record. The TTL in the SOA record also becomes the default TTL for new
 resource records. </p>
-<p> There is an "Upd" (for update) and "Del" (for delete) button for
-each resource record. These buttons updates the RR in the database, or
-deletes it, respectively. NB: The "Upd" button affects all resource
+<p>You can select single record to edit, in View mode, and it will be shown on top. Or you can edit few records. Each record has status selector, which can be changed as:
+<ul>
+<li>on - record is active;
+<li>off - record will be deactivated (but exists in database);
+<li>dev - record will be deleted.
+</ul>
+<p> NB: The "Upd" button affects all resource
 record changed on the screen. When you change a record, the button for
 it changes it's color, but you can continue with other records and press
 any of this butons in the very end. So if you want to update a lot of
 records, you have to change this records, and then press any "Upd"
 button. In "view" mode, you have to press "edit" button next to the
-record to edit this record, or you can press "Edit zone (total)" button
+record to edit this record, or you can press "Edit" button in the filter on top,
 and edit as much records as you need. </p>
 <p>Button "Delete zone" in the end of edit zone send you to the "Delete
 zone" page where you will be requested to confirm deletion once more

@@ -30,24 +30,24 @@ function ns_test_form($id, $input) {
 	$zone = $input['zone'];
 	$rtype = $input['type'];
 	if (!$rtype)
-		$rtype = "SOA";
+		$rtype = "ANY";
 	$result = "";
 	$query = "SELECT hostname, ipno, type FROM servers WHERE id = $id";
 	$rid = sql_query($query);
 	if (!mysql_num_rows($rid)) {
 		return "<FONT color=RED>NO NS SERVER ID=$id</FONT><BR>\n";
 	}
-			
+
 	list($host, $ip, $type) = mysql_fetch_row($rid);
 	mysql_free_result($rid);
-	
+
 	if ($type == "S")
 		$query = "SELECT domain FROM zones WHERE domain != 'TEMPLATE' AND master = '' ORDER BY mtime DESC";
 	else
 		$query = "SELECT domain FROM zones WHERE domain != 'TEMPLATE'  ORDER BY master ASC, mtime DESC";
-			
+
 	$rid = sql_query($query);
-	
+
 	$result .= "<FORM action=\"test.php\"><INPUT type=\"HIDDEN\" name=\"id\" value=\"$id\">\n";
 	$result .= "<INPUT type=\"HIDDEN\" name=\"host\" value=\"$host\">\n";
 	$result .= "<INPUT type=\"HIDDEN\" name=\"ip\" value=\"$ip\">\n";
@@ -72,13 +72,13 @@ function ns_test_form($id, $input) {
 	}
 	mysql_free_result($rid);
 	$result .= mk_select_a("zone", $array, $zone);
-	
+
 	$array = array('ANY', 'SOA', 'A', 'PTR', 'CNAME', 'MX', 'NS', 'TXT', 'HINFO', 'SRV');
 	$result .= "</TD><TD>\n";
 	$result .= mk_select_a("type", $array, $rtype);
 
 	$result .= "</TR>\n</TABLE>\n";
-	      
+
 	return $result;
 }
 
@@ -112,15 +112,15 @@ if ( $INPUT_VARS['Test'] ) {
 		$rq = strtr($rq,     ";<>|&,:","       ");
 		$type = strtr($type, ";<>|&,:","       ");
 	}
-	
-	print "request: <B>$rq {type=$type}</B> server: <B>$host ($ip)</B> results:<BR><PRE>\n"; 
-	
+
+	print "request: <B>$rq {type=$type}</B> server: <B>$host ($ip)</B> results:<BR><PRE>\n";
+
 	$cmd = "$BIN/testns -h $ip -t $type $rq";
 	passthru("$cmd", $ret);
 	print "</PRE>\n";
 	if ($ret) {
 		print $html_failure;
-	}	
+	}
 	print $html_bottom;
 	// make_test();
 }

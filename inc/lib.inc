@@ -296,7 +296,7 @@ function valid_ip($ip)
 # NB: The 'master' parameter contains the IP number of the DNS master
 # server for the new (slave) domain, i.e., it is the empty string if 
 # the domain is a master domain.
-function add_domain($domain, $master, $zone_type, $eoptions = "")
+function add_domain($domain, $master, $zone_type = "", $eoptions = "")
 {
 	global $domain_lock_msg, $REMOTE_USER, $SLAVE_ON_SLAVES;
 	# Find the template data
@@ -329,7 +329,6 @@ function add_domain($domain, $master, $zone_type, $eoptions = "")
 	# Just in case a domain of the same name was recently deleted...
 	sql_query("DELETE FROM deleted_domains WHERE domain = '$domain'");
 
-
 	if ($master != "''") {
 		if ($SLAVE_ON_SLAVES || $zone_type != 'slave')
 		    sql_query("UPDATE servers SET state = 'OUT'");
@@ -343,7 +342,8 @@ function add_domain($domain, $master, $zone_type, $eoptions = "")
 		sql_query("INSERT INTO records (domain, zone, ttl, type, pref, data) VALUES ('$domain', $newzone, $ttl, '$type', '$pref', '$data')");
 	}
 	mysql_free_result($rid);
-	sql_query("UPDATE records SET ctime = mtime,  WHERE zone = $newzone");
+	$apache_user= apache_getenv("REMOTE_USER");
+	sql_query("UPDATE records SET ctime = mtime, modified_by='$apache_user'  WHERE zone = $newzone");
 	if ($master != "''" && !$SLAVE_ON_SLAVES)
 		sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M'");
 	else
@@ -526,7 +526,8 @@ function upd_record($id, $domain, $ttlspec, $type, $data, $genptr, $comment = ''
 	if ($otype == 'A' &&  ($data != $odata || $type != $otype || $domain != $odomain || $genptr != $ogenptr )) {
 		affect_reverses($odata);
 	}
-	$query = "UPDATE records SET domain = '$domain', ttl = $ttl, type = '$type', data = '$data', genptr = $genptr, comment='$comment', disabled=$disabled WHERE id = $id";
+	$apache_user= apache_getenv("REMOTE_USER");
+	$query = "UPDATE records SET domain = '$domain', ttl = $ttl, type = '$type', data = '$data', genptr = $genptr, comment='$comment', disabled=$disabled, modified_by='$apache_user' WHERE id = $id";
 	$rid = sql_query($query);
 	tag_zone_updated($id);
 	if ($type == 'A')
@@ -671,7 +672,8 @@ function insert_record($zone, $domain, $ttlspec, $type, $pref, $data, $genptr, $
 	$query .= ")";
 	$rid = sql_query($query);
 	$id = mysql_insert_id();
-	$query = "UPDATE records SET ctime = mtime WHERE id = $id";
+	$apache_user= apache_getenv("REMOTE_USER");
+	$query = "UPDATE records SET ctime = mtime, modified_by='$apache_user' WHERE id = $id";
 	$rid = sql_query($query);
 	tag_zone_updated($id);
 	if ($type == 'A')

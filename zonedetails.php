@@ -23,10 +23,11 @@ function fmt_timestamp($timestamp)
 
 function update_description($domain, $descrip, $options)
 {
-	if (strlen($options) > 254) {
-		print "<FONT color=RED size=+2>Too much options; maximum options length is 255 symbols</FONT><BR>\n";
-		return;
-	}
+	# We have options as next now.
+	#if (strlen($options) > 254) {
+	#	print "<FONT color=RED size=+2>Too much options; maximum options length is 255 symbols</FONT><BR>\n";
+	#	return;
+	#}
 	$query = "SELECT id FROM zones WHERE domain = '$domain'";
 	$rid = sql_query($query);
 	($zone = mysql_fetch_array($rid))
@@ -39,6 +40,7 @@ function update_description($domain, $descrip, $options)
 	$rid = sql_query($query);
 	$options = strtr($options, "'",'"');
 	$rid = sql_query("UPDATE zones SET options='$options', updated=1 WHERE id=$id");
+    sql_query("UPDATE servers SET state = 'OUT' WHERE state != 'OUT'");
 }
 
 function domain_details($domain)
@@ -71,7 +73,7 @@ at the top.
 <TEXTAREA name=\"description\" rows=10 cols=60>\n";
 	if ($annotation = mysql_fetch_array($rid)) {
 		$result .= $annotation['descr'];
-	}	
+	}
 	$result .= "</TEXTAREA>
 </TR><TR>
 <TD><INPUT type=reset></TD>
