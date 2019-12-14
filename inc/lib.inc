@@ -324,7 +324,7 @@ function add_domain($domain, $master, $zone_type = "", $eoptions = "")
 	# Add the domain to the zones table
 	$rid = sql_query("INSERT INTO zones (domain, serial, refresh, retry, expire, master, updated, zonefile, zone_type, options ) VALUES ('$domain', $serial, $refresh, $retry, $expire, $master, 1, '$zonefile', '$zone_type', '$options')");
 	$newzone = mysql_insert_id();
-	$apache_user= apache_getenv("REMOTE_USER");
+	$apache_user= getenv("REMOTE_USER");
 	sql_query("UPDATE zones SET ctime = mtime, modified_by='$apache_user' WHERE id = $newzone");
 	# Just in case a domain of the same name was recently deleted...
 	sql_query("DELETE FROM deleted_domains WHERE domain = '$domain'");
@@ -342,7 +342,7 @@ function add_domain($domain, $master, $zone_type = "", $eoptions = "")
 		sql_query("INSERT INTO records (domain, zone, ttl, type, pref, data) VALUES ('$domain', $newzone, $ttl, '$type', '$pref', '$data')");
 	}
 	mysql_free_result($rid);
-	$apache_user= apache_getenv("REMOTE_USER");
+	$apache_user= getenv("REMOTE_USER");
 	sql_query("UPDATE records SET ctime = mtime, modified_by='$apache_user'  WHERE zone = $newzone");
 	if ($master != "''" && !$SLAVE_ON_SLAVES)
 		sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'M'");
@@ -526,7 +526,7 @@ function upd_record($id, $domain, $ttlspec, $type, $data, $genptr, $comment = ''
 	if ($otype == 'A' &&  ($data != $odata || $type != $otype || $domain != $odomain || $genptr != $ogenptr )) {
 		affect_reverses($odata);
 	}
-	$apache_user= apache_getenv("REMOTE_USER");
+	$apache_user= getenv("REMOTE_USER");
 	$query = "UPDATE records SET domain = '$domain', ttl = $ttl, type = '$type', data = '$data', genptr = $genptr, comment='$comment', disabled=$disabled, modified_by='$apache_user' WHERE id = $id";
 	$rid = sql_query($query);
 	tag_zone_updated($id);
@@ -586,8 +586,6 @@ function update_zone($id, $serial, $refresh, $retry, $expire, $master, $zonefile
 		$query = "UPDATE zones SET master = '$master', zonefile = '$zonefile', updated = 1, disabled = $disabled WHERE id = $id";
 	}
 	$rid = sql_query($query);
-	if ($SLAVE_ON_SLAVES)
-	    sql_query("UPDATE servers SET state = 'OUT' WHERE type = 'S' AND state != 'OUT'");
 }
 
 # Return a formatted HTML string which describes the problems with 
@@ -672,7 +670,7 @@ function insert_record($zone, $domain, $ttlspec, $type, $pref, $data, $genptr, $
 	$query .= ")";
 	$rid = sql_query($query);
 	$id = mysql_insert_id();
-	$apache_user= apache_getenv("REMOTE_USER");
+	$apache_user= getenv("REMOTE_USER");
 	$query = "UPDATE records SET ctime = mtime, modified_by='$apache_user' WHERE id = $id";
 	$rid = sql_query($query);
 	tag_zone_updated($id);

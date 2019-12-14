@@ -142,6 +142,7 @@ Filter begin with:  <INPUT type="text" size=6 name="s_begin" value="%s">
 Max records to show: <INPUT type="text" size=6 name="s_max" value="%s">
 <INPUT type="button" name="s_next" value="next" onclick=\'s_begin.value = Number(s_begin.value) + Number(s_max.value)\'>
 <INPUT type="button" name="s_prev" value="prev" onclick=\'s_begin.value = Number(s_begin.value) - Number(s_max.value)\'>
+Total %s records
 </TD>
 </TR>
 <TR><TD>
@@ -443,7 +444,8 @@ function right_frame($vars)
 		if ( ! $s_begin) $s_begin = 1;
 		if ( ! $s_max  ) $s_max = 500;
 		$rid = sql_query("SELECT id, domain, ttl, records.type AS type, pref, data, genptr, comment, lpad(pref, 5, '0') AS sortpref, records.disabled AS disabled FROM records, typesort WHERE $filter zone = $zone AND records.type = typesort.type ORDER BY typesort.ord, domain, sortpref");
-		$result .= sprintf($rr_form_top, $s_begin, $s_max, $zone, $s_domain, $s_type, $s_data, $s_comment);
+		$count = mysql_num_rows($rid);
+		$result .= sprintf($rr_form_top, $s_begin, $s_max, $count, $zone, $s_domain, $s_type, $s_data, $s_comment);
 		$result1 = "";
 		$nrec = 0;
 		while ($record = mysql_fetch_array($rid)) {

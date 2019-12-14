@@ -21,6 +21,7 @@ Options:
 ");
 }
 
+
 # Return a text describing problems with the current database, or 
 # an empty string to signify all clear.
 function verify_database()
