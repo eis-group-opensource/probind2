@@ -40,7 +40,7 @@ require 'inc/lib.inc';
    </TR>
    </TABLE>
 </TD>
-<TD ALIGN=CENTER><B>Version<BR>2.2</B></font></TD>
+<TD ALIGN=CENTER><B>Version<BR>2.2.0</B></font></TD>
 <TD align=right><IMG SRC="images/ProBIND-logo.gif" width="138" height="50" border="0">&nbsp;</TD>
 </TR>
 </TABLE>
