@@ -24,7 +24,7 @@ $query_form = '
 <INPUT type=hidden name="select" value="result">
 <INPUT type=hidden name="pointer" value="%d">
 <TABLE width="100%%">
-<TR><TH>Zone</TH><TH>Domain</TH><TH>Type</TH><TH>Pref</TH><TH>Data</TH></TR>
+<TR><TH>Zone</TH><TH>Domain</TH><TH>Type</TH><TH>Pref</TH><TH>Data</TH><TH>Comment</TH></TR>
 <TR>
 <TD><INPUT TYPE=text name="zdomain" value="%s" SIZE=15 MAXLENGTH=100></TD>
 <TD><INPUT TYPE=text name="rdomain" value="%s" SIZE=15 MAXLENGTH=100></TD>
@@ -163,14 +163,14 @@ function result_form($INPUT_VARS)
 	$result .= "<TABLE><TR>\n";
 	$result .= "<TD>";
 	$result .= sprintf($button_form,
-		$zdomain, $rdomain, $type, $pref, $data,
+		$zdomain, $rdomain, $type, $pref, $data, $comment,
 		0, "start",
 		"<<<< First");
 	$result .= "</TD>";
 	if ($pointer) {
 		$result .= "<TD>";
 		$result .= sprintf($button_form,
-			$zdomain, $rdomain, $type, $pref, $data,
+			$zdomain, $rdomain, $type, $pref, $data, $comment,
 			$pointer-$ROWS_PER_PAGE, "prev",
 			"<< Prev $ROWS_PER_PAGE");
 		$result .= "</TD>";
@@ -178,7 +178,7 @@ function result_form($INPUT_VARS)
 	if (($count >= 50) && (($pointer + $ROWS_PER_PAGE) <= $count)) {
 		$result .= "<TD>";
 		$result .= sprintf($button_form,
-			$zdomain, $rdomain, $type, $pref, $data,
+			$zdomain, $rdomain, $type, $pref, $data, $comment,
 			$pointer+$ROWS_PER_PAGE, "next",
 			"Next $ROWS_PER_PAGE >>");
 		$result .= "</TD>";
@@ -190,7 +190,7 @@ function result_form($INPUT_VARS)
 		"Last >>>>");
 	$result .= "</TD>";
 	$result .= "</TR></TABLE>\n";
-	$result .= "<TABLE><TR><TH align=left>Host</TH><TH align=left>Domain</TH><TH align=left>Type</TH><TH align=left>Pref</TH><TH align=left>Data</TH></TR>\n";
+	$result .= "<TABLE><TR><TH align=left>Host</TH><TH align=left>Domain</TH><TH align=left>Type</TH><TH align=left>Pref</TH><TH align=left>Data</TH><TH>Comment</TH></TR>\n";
 	while ($row = mysql_fetch_array($rid)) {
 		$result .= "<TR><TD>".$row['rdom']."</TD>";
 		$result .= "<TD><A HREF=\"brzones.php?frame=records&zone=";
