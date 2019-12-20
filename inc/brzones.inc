@@ -2,6 +2,10 @@
 
 require 'inc/lib.inc';
 
+#
+# Maximum recrods on page. Apache can not process too many input forms.
+#
+$MAX_PAGE_RR=200;
 $start_form = '
 <HTML>
 <HEAD>
@@ -138,11 +142,7 @@ $rr_form_top = '
 </FORM>
 <FORM action="wrzones.php" method="post">
 <TD colspan=6>
-Filter begin with:  <INPUT type="text" size=6 name="s_begin" value="%s">
-Max records to show: <INPUT type="text" size=6 name="s_max" value="%s">
-<INPUT type="button" name="s_next" value="next" onclick=\'s_begin.value = Number(s_begin.value) + Number(s_max.value)\'>
-<INPUT type="button" name="s_prev" value="prev" onclick=\'s_begin.value = Number(s_begin.value) - Number(s_max.value)\'>
-Total %s records
+Total %s records. Shown records from <INPUT type="text" name="s_begin" value="%s" SIZE="5"> to %s . %s 
 </TD>
 </TR>
 <TR><TD>
@@ -369,7 +369,7 @@ function right_frame($vars)
 {
 	global $html_top, $default_right_frame, $master_zone_detail_form;
 	global $slave_zone_detail_form, $nodomain_right_frame;
-	global $rr_form_top, $rr_form_bot, $static_head, $static_bottom, $rr_form_hr;
+	global $rr_form_top, $rr_form_bot, $static_head, $static_bottom, $rr_form_hr, $MAX_PAGE_RR;
 	$result = $html_top;
 	$search = '';
 	if (($dom = $vars['domain']) && !$vars['zone']) {
@@ -427,31 +427,50 @@ function right_frame($vars)
 		$s_data   = $vars['s_data'];
 		$s_comment = $vars['s_comment'];
 		$s_begin  = $vars['s_begin'];
-		$s_max    = $vars['s_max'];
 		#
 		if ( $s_domain != '' ) {
-			$filter = $filter."records.domain LIKE '$s_domain' AND";
+			$filter = $filter."records.domain LIKE '$s_domain' AND ";
 		};
 		if ( $s_type != '' ) {
-			$filter = $filter."records.type LIKE '$s_type' AND";
+			$filter = $filter."records.type LIKE '$s_type' AND ";
 		};
 		if ( $s_data != '' ) {
-			$filter = $filter."records.data LIKE '$s_data' AND";
+			$filter = $filter."records.data LIKE '$s_data' AND ";
 		};
 		if ( $s_comment != '' ) {
-			$filter = $filter."records.comment LIKE '$s_comment' AND";
+			$filter = $filter."records.comment LIKE '$s_comment' AND ";
 		};
-		if ( ! $s_begin) $s_begin = 1;
-		if ( ! $s_max  ) $s_max = 500;
+		if ( ! $s_begin || $s_begin < 1 ) $s_begin = 1;
 		$rid = sql_query("SELECT id, domain, ttl, records.type AS type, pref, data, genptr, comment, lpad(pref, 5, '0') AS sortpref, records.disabled AS disabled FROM records, typesort WHERE $filter zone = $zone AND records.type = typesort.type ORDER BY typesort.ord, domain, sortpref");
 		$count = mysql_num_rows($rid);
-		$result .= sprintf($rr_form_top, $s_begin, $s_max, $count, $zone, $s_domain, $s_type, $s_data, $s_comment);
+		$buttons="";
+		$mode = $vars['mode'];
+		$add_value="this.value=\"$mode\";";
+		## $buttons .= "($mode)";
+		#
+		# We always show First button as it is activated if user just click Enter.
+		#
+		$buttons .= '<INPUT type="submit" name="mode" value="First" onclick=\'s_begin.value = 1;'.$add_value.'\'>'."\n";
+		if ( $s_begin > 1 ) {
+		#	if ( $s_begin - $MAX_PAGE_RR > 1 ) {
+		#       We generated First here, but it resulted in incorrect reaction to Enter.
+		#	}
+			$buttons .= '<INPUT type="submit" name="mode"  value="Prev"  onclick=\'s_begin.value = Number(s_begin.value) - Number('."$MAX_PAGE_RR".');'.$add_value.'\'>'."\n";
+		};
+		if ( $count > $MAX_PAGE_RR + $s_begin ) {
+		
+			$s_end = $MAX_PAGE_RR + $s_begin - 1;
+			$buttons .= '<INPUT type="submit" name="mode" value="Next" onclick=\'s_begin.value = Number(s_begin.value) + Number('."$MAX_PAGE_RR".');'.$add_value.'\'>'."\n";;
+		} else {
+			$s_end = $count;
+		};
+		$result .= sprintf($rr_form_top, $count, $s_begin, $s_end, $buttons, $zone, $s_domain, $s_type, $s_data, $s_comment);
 		$result1 = "";
 		$nrec = 0;
 		while ($record = mysql_fetch_array($rid)) {
 		    $nrec = $nrec + 1;
-		    if ( $nrec < $s_begin || $nrec > ($s_begin + $s_max) ) {
-		    	continue;
+		    if ( $nrec != 1 && ( $nrec < $s_begin || $nrec > $s_end) ) {
+		    		continue;
 		    };
 			if ( $vars['mode'] == 'edit' || $vars['mode'] == 'edit zone (total)' || $vars['mode'] == 'Edit' ) {
 				$result .= record_form($record);
