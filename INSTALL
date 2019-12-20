@@ -1,3 +1,7 @@
+This is outdated manual. Use Install2.2.html instead.
+
+
+===========================================================================
 This is a step-by-step procedure for getting started with ProBIND.
 In the examples, I will assume that your Apache document root is in
 /www/htdocs, and that the stand-alone PHP interpreter is installed as

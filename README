@@ -1,4 +1,4 @@
-This is ProBIND version 2.2.1
+This is ProBIND version 2.
 
 Read Design.htm document and manual.html document.
 Read Install.html document about installation.
@@ -10,8 +10,10 @@ Copyright & Licensing
 =====================
 
 ProBIND2 was developed as a hard modification for ProBind (see below)
-by Alexei P. Roudnev, alex@relcom.net, as part of his duty as a senior
+by Alexei P. Roudnev, aprudnev@gmail.com, as part of his duty as a senior
 network/software engineer, in Exigengroup LTD , wwww.exigengroup.com .
+
+It was later moved to EISGroup LTD and became version 2.2.1, and to github.
 
 All copyrights have been incorporated from ProBIND.
 
@@ -91,7 +93,7 @@ the my needs, but probably not good enough for the world at large - yet.
 Please help me make this software better! Feel free to email me at 
 fjohansen@proventum.net if you have any suggestions for improvements.
 
-Prerequisites
+Prerequisites (for version 1.0, see Install.html manual now).
 =============
 
 MySQL-3.22.32 or later

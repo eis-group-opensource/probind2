@@ -1,911 +1,1515 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
+
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
-  <meta name="ProgId" content="Word.Document">
-  <title>ProBIND Installation Manual</title>
-  <link rel="Stylesheet" type="text/css" media="all" href="style.css">
-  <meta name="author" content="Alexei Roudnev">
-  <meta name="description"
- content="Installation instruction for ProBIND 2.0">
+<meta http-equiv=Content-Type content="text/html; charset=us-ascii">
+<meta name=Generator content="Microsoft Word 14 (filtered)">
+<title>ProBIND Installation Manual</title>
+<link rel=Stylesheet type="text/css" media=all href=style.css>
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Cambria;
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:Consolas;
+	panose-1:2 11 6 9 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	color:windowtext;}
+h1
+	{mso-style-link:"Heading 1 Char";
+	margin-right:0in;
+	margin-left:0in;
+	font-size:18.0pt;
+	font-weight:bold;}
+h2
+	{mso-style-link:"Heading 2 Char";
+	margin-right:0in;
+	margin-left:0in;
+	font-size:13.5pt;
+	font-weight:bold;}
+h3
+	{mso-style-link:"Heading 3 Char";
+	margin-right:0in;
+	margin-left:0in;
+	font-size:13.5pt;
+	font-weight:bold;}
+h4
+	{mso-style-link:"Heading 4 Char";
+	margin-right:0in;
+	margin-left:0in;
+	font-size:13.5pt;
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{font-family:"Verdana","sans-serif";
+	color:#002244;
+	text-decoration:none none;}
+a:visited, span.MsoHyperlinkFollowed
+	{font-family:"Verdana","sans-serif";
+	color:#662244;
+	text-decoration:none none;}
+p
+	{margin-right:0in;
+	margin-left:0in;
+	font-size:8.5pt;}
+pre
+	{mso-style-link:"HTML Preformatted Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	color:windowtext;}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{mso-style-link:"Balloon Text Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:8.0pt;
+	font-family:"Tahoma","sans-serif";
+	color:windowtext;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	color:windowtext;}
+span.Heading1Char
+	{mso-style-name:"Heading 1 Char";
+	mso-style-link:"Heading 1";
+	font-family:"Cambria","serif";
+	color:#365F91;
+	font-weight:bold;}
+span.Heading2Char
+	{mso-style-name:"Heading 2 Char";
+	mso-style-link:"Heading 2";
+	font-family:"Cambria","serif";
+	color:#4F81BD;
+	font-weight:bold;}
+span.Heading3Char
+	{mso-style-name:"Heading 3 Char";
+	mso-style-link:"Heading 3";
+	font-family:"Cambria","serif";
+	color:#4F81BD;
+	font-weight:bold;}
+span.Heading4Char
+	{mso-style-name:"Heading 4 Char";
+	mso-style-link:"Heading 4";
+	font-family:"Cambria","serif";
+	color:#4F81BD;
+	font-weight:bold;
+	font-style:italic;}
+span.HTMLPreformattedChar
+	{mso-style-name:"HTML Preformatted Char";
+	mso-style-link:"HTML Preformatted";
+	font-family:Consolas;}
+span.BalloonTextChar
+	{mso-style-name:"Balloon Text Char";
+	mso-style-link:"Balloon Text";
+	font-family:"Tahoma","sans-serif";}
+p.msolistparagraphcxspfirst, li.msolistparagraphcxspfirst, div.msolistparagraphcxspfirst
+	{mso-style-name:msolistparagraphcxspfirst;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	color:windowtext;}
+p.msolistparagraphcxspmiddle, li.msolistparagraphcxspmiddle, div.msolistparagraphcxspmiddle
+	{mso-style-name:msolistparagraphcxspmiddle;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	color:windowtext;}
+p.msolistparagraphcxsplast, li.msolistparagraphcxsplast, div.msolistparagraphcxsplast
+	{mso-style-name:msolistparagraphcxsplast;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	color:windowtext;}
+p.msochpdefault, li.msochpdefault, div.msochpdefault
+	{mso-style-name:msochpdefault;
+	margin-right:0in;
+	margin-left:0in;
+	font-size:10.0pt;}
+.MsoChpDefault
+	{font-size:10.0pt;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+<meta name=author content="Alexei Roudnev">
+<meta name=description content="Installation instruction for ProBIND 2.0">
 </head>
-<body style="background-color: rgb(204, 204, 170);" lang="EN-US"
- link="#002244" vlink="#662244" alink="#000099">
-<div class="Section1">
-<table border="0" cellspacing="3" cellpadding="0" width="100%"
- style="width: 100%;">
-  <tbody>
-    <tr>
-      <td valign="bottom" style="padding: 0.75pt;">
-      <h1><a name="mozTocId540784" class="mozTocH1"></a>ProBIND
-Installation Guide</h1>
-      </td>
-      <td valign="top" style="padding: 0.75pt;">
-      <p class="MsoNormal" align="right" style="text-align: right;"><a
- href="http://probind2.sourceforge.net" target="_top"><img border="0"
- width="124" height="45" id="_x0000_i1025" src="images%5Cprobind.gif"
- alt="ProBIND home page"></a><o:p></o:p></p>
-      </td>
-    </tr>
-  </tbody>
+
+<body bgcolor="#CCCCAA" lang=EN-US link="#002244" vlink="#662244"
+alink="#000099">
+
+<div class=WordSection1>
+
+<table class=MsoNormalTable border=0 cellspacing=3 cellpadding=0 width="100%"
+ style='width:100.0%'>
+ <tr>
+  <td valign=bottom style='padding:.75pt .75pt .75pt .75pt'>
+  <h1><a name=mozTocId540784></a>ProBIND Installation Guide</h1>
+  </td>
+  <td valign=top style='padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal align=right style='text-align:right'><a
+  href="http://probind2.sourceforge.net/" target="_top"><span style='font-size:
+  8.5pt;font-family:"Verdana","sans-serif"'><img border=0 width=124 height=45
+  src="images/probind.gif" alt="ProBIND home page"></span></a></p>
+  </td>
+ </tr>
 </table>
-<div class="MsoNormal" align="center" style="text-align: center;">
-<hr size="2" width="100%" align="center"> </div>
-<u1:p></u1:p><o:p></o:p>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 40%; margin-left: auto; margin-right: 0px;">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">Document author:</td>
-      <td style="vertical-align: top;">Alexei Roudnev<br>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">Date:<br>
-      </td>
-      <td style="vertical-align: top;">22 Mart 2003<br>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">Version:<br>
-      </td>
-      <td style="vertical-align: top;">2.0<br>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top;">Status:<br>
-      </td>
-      <td style="vertical-align: top;">Release<br>
-      </td>
-    </tr>
-  </tbody>
+
+<div class=MsoNormal align=center style='text-align:center'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>
+
+<hr size=2 width="100%" align=center>
+
+</span></div>
+
+<table class=MsoNormalTable border=0 cellpadding=0 width="40%"
+ style='width:40.0%'>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-size:8.5pt;font-family:"Verdana","sans-serif";
+  color:black'><u2:p></u2:p><u1:p></u1:p>Document author:</span></p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-size:8.5pt;font-family:"Verdana","sans-serif";
+  color:black'>Alexei Roudnev</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-size:8.5pt;font-family:"Verdana","sans-serif";
+  color:black'>Date:</span></p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-size:8.5pt;font-family:"Verdana","sans-serif";
+  color:black'>12 Dec 2019</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-size:8.5pt;font-family:"Verdana","sans-serif";
+  color:black'>Version:</span></p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-size:8.5pt;font-family:"Verdana","sans-serif";
+  color:black'>2.2</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-size:8.5pt;font-family:"Verdana","sans-serif";
+  color:black'>Status:</span></p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p class=MsoNormal><span style='font-size:8.5pt;font-family:"Verdana","sans-serif";
+  color:black'>Release</span></p>
+  </td>
+ </tr>
 </table>
-<div class="MsoNormal" align="center" style="text-align: center;">
-<hr size="3" width="100%" align="center"> </div>
-<h1><a name="mozTocId782922" class="mozTocH1"></a><br>
-Table of content<br>
-</h1>
-<ul id="mozToc">
-<!--mozToc h1 1 h2 2--><li><a href="#mozTocId463936">Introduction</a></li>
-  <li><a href="#mozTocId394750">0 Backup</a></li>
-  <li><a href="#mozTocId671326">1 Prerequisites</a>
-    <ul>
-      <li><a href="#mozTocId455221">1.2 Configure PHP</a></li>
-    </ul>
-  </li>
-  <li><a href="#mozTocId536541">2 Install the ProBIND software</a>
-    <ul>
-      <li><a href="#mozTocId306682">2.1 Unpack ProBIND system and set
-up apache server</a></li>
-      <li><a href="#mozTocId552458">2.2 Create work directories</a></li>
-      <li><a href="#mozTocId966540">2.3 MySQL configuration</a></li>
-      <li><a href="#mozTocId372807">2.4 Edit inc/config.inc</a></li>
-      <li><a href="#mozTocId106187">2.5 Database initialization</a></li>
-      <li><a href="#mozTocId892989">2.6 Check (and edit if necessary)
-program names in scripts</a></li>
-      <li><a href="#mozTocId496363">2.6 Configure .htaccess and
-tools/.htaccess files.</a></li>
-    </ul>
-  </li>
-  <li><a href="#mozTocId49173">3 Configure the ProBIND software</a>
-    <ul>
-      <li><a href="#mozTocId774260">3.1 Settings</a></li>
-      <li><a href="#mozTocId363766">3.2 Describing your BIND servers</a></li>
-      <li><a href="#mozTocId622952">3.2 Preparing remote name servers,
-and 'rsync' setting</a></li>
-      <li><a href="#mozTocId757427">4 Start using ProBIND</a></li>
-      <li><a href="#mozTocId477712">4.1 Using the import script</a></li>
-      <li><a href="#mozTocId512309">4.2 Update the BIND servers</a></li>
-    </ul>
-  </li>
-  <li><a href="#mozTocId995051">5 Troubleshooting</a>
-    <ul>
-      <li><a href="#mozTocId362239">5.1 Web server and php configuration</a></li>
-      <li><a href="#mozTocId13924">5.2 Pushing updates failed on the
-first (update) step, even when you use 'nop' script.</a></li>
-      <li><a href="#mozTocId157192">5.3 Problems with 'PUSH' and
-'RECONFIG' steps of the update</a></li>
-      <li><a href="#mozTocId734397">5.4 Problems with different TOOLS
-or with TEST buttons of the UPDATE screen</a></li>
-      <li><a href="#mozTocId539460">5.5 Table 'SQL9a3a_0' is full</a></li>
-    </ul>
-  </li>
-  <li><a href="#mozTocId295213">APPENDIX I. References:</a></li>
+
+<div class=MsoNormal align=center style='text-align:center'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>
+
+<hr size=3 width="100%" align=center>
+
+</span></div>
+
+<h1><a name=mozTocId782922></a><br>
+Table of content</h1>
+
+<ul style='margin-top:0in' type=disc id=mozToc>
+<!--mozToc h1 1 h2 2-->
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'><a href="#mozTocId463936">Introduction</a></span></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'><a href="#mozTocId394750">0 Backup</a></span></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'><a href="#mozTocId671326">1
+     Prerequisites</a> </span></li>
+ <ul style='margin-top:0in' type=circle>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId455221">1.2
+      Configure PHP</a></span></li>
+ </ul>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'><a href="#mozTocId536541">2 Install
+     the ProBIND software</a> </span></li>
+ <ul style='margin-top:0in' type=circle>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId306682">2.1 Unpack ProBIND
+      system and set up apache server</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId552458">2.2 Create
+      work directories</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId966540">2.3 MySQL
+      configuration</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId372807">2.4 Edit
+      inc/config.inc</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId106187">2.5
+      Database initialization</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId892989">2.6 Check
+      (and edit if necessary) program names in scripts</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId496363">2.6
+      Configure .htaccess and tools/.htaccess files.</a></span></li>
+ </ul>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'><a href="#mozTocId49173">3 Configure
+     the ProBIND software</a> </span></li>
+ <ul style='margin-top:0in' type=circle>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId774260">3.1
+      Settings</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId363766">3.2
+      Describing your BIND servers</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId622952">3.2
+      Preparing remote name servers, and 'rsync' setting</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId757427">4 Start
+      using ProBIND</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId477712">4.1 Using
+      the import script</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId512309">4.2 Update
+      the BIND servers</a></span></li>
+ </ul>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'><a href="#mozTocId995051">5
+     Troubleshooting</a> </span></li>
+ <ul style='margin-top:0in' type=circle>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId362239">5.1 Web
+      server and php configuration</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId13924">5.2 Pushing
+      updates failed on the first (update) step, even when you use 'nop'
+      script.</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId157192">5.3
+      Problems with 'PUSH' and 'RECONFIG' steps of the update</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId734397">5.4
+      Problems with different TOOLS or with TEST buttons of the UPDATE screen</a></span></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'><a href="#mozTocId539460">5.5 Table
+      'SQL9a3a_0' is full</a></span></li>
+ </ul>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'><a href="#mozTocId295213">APPENDIX I.
+     References:</a></span></li>
 </ul>
-<h1><br>
-</h1>
-<h1><a name="mozTocId463936" class="mozTocH1"></a>Introduction</h1>
-<p>This is a step-by-step procedure for getting started with ProBIND.
-In the examples, I will assume that your Apache document root is in
-/www/htdocs, and that the stand-alone PHP interpreter is installed as
-/usr/local/bin/php </p>
-<h1><a name="mozTocId394750" class="mozTocH1"></a>0 Backup</h1>
-<p>Before you do anything to an actual, live DNS server, be sure that
-you have a usable backup of the configuration and zone files! </p>
-<h1><a name="mozTocId671326" class="mozTocH1"></a>1 Prerequisites</h1>
-<p>Make sure that you have the following software installed (most of
-which is included in recent distributions of Linux): </p>
-<ul type="disc">
-  <li class="MsoNormal" style="color: black;">mysql-3.22.32 or later
-(custom configuration for 3.23 required)<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">php-4.0.2 or later
-(apache module and stand      alone interpreter)<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">apache-1.3.12 or later <o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">perl-5.005 or later <o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">Net::DNS-0.12 or later <o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">openssh (optional) <o:p></o:p></li>
+
+<h1>&nbsp;</h1>
+
+<h1><a name=mozTocId463936></a>Introduction</h1>
+
+<p>This is a step-by-step procedure for getting started with ProBIND. In the
+examples, I will assume that your Apache document root is in /www/htdocs, and
+that the stand-alone PHP interpreter is installed as /usr/local/bin/php </p>
+
+<h1><a name=mozTocId394750></a>0 Backup</h1>
+
+<p>Before you do anything to an actual, live DNS server, be sure that you have
+a usable backup of the configuration and zone files! </p>
+
+<h1><a name=mozTocId671326></a>Release notes</h1>
+
+<p class=MsoNormal>This manual is slightly outdated. System was used in this
+configuration:</p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+"Verdana","sans-serif"'>-</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>FreeBSD 10.3</p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+"Verdana","sans-serif"'>-</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Mysql 5.5</p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+"Verdana","sans-serif"'>-</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>PHP 5.6</p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+"Verdana","sans-serif"'>-</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Perl 5.24</p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+"Verdana","sans-serif"'>-</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>p5-Net-DNS-1.14</p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+"Verdana","sans-serif"'>-</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>apache2.4</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>It do not have much dependencies of these components so can
+be easily adapted to other mysql, php and apache., perl is used ONLY in testing
+module (green test buttons).</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<h1>1 Prerequisites</h1>
+
+<p>Make sure that you have the following software installed (most of which is
+included in recent distributions of Linux): </p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>mysql-5 or similar</span></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>php-5.6 or later (apache module and
+     stand alone interpreter)</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>apache </span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>perl-5 or later <u1:p></u1:p>for DNS
+     test function (only)</span></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>Net::DNS-0.12 or later <u1:p></u1:p>&nbsp;(perl
+     mmodule for DNS test function)</span></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>openssh (optional) </span><u1:p></u1:p></li>
 </ul>
-<p class="MsoNormal">The Net::DNS perl module is available from CPAN,
-or from this URL:
-http://www.perl.com/CPAN/authors/id/MFUHR/Net-DNS-0.12.tar.gz <o:p></o:p></p>
+
+<p class=MsoNormal><span style='color:black'>The Net::DNS perl module is
+available from CPAN, or from this URL:
+http://www.perl.com/CPAN/authors/id/MFUHR/Net-DNS-0.12.tar.gz </span><u1:p></u1:p></p>
+
 <p>The apache server must have the mysql and PHP modules available. </p>
-<p>The only unusual bit about these packages, is that PHP must be
-installed _both_ as an Apache module, and as a CGI interpreter, i.e. as
-a stand- alone interpreter. I am not aware of any RPMs of stand-alone
-PHP4, so you will have to compile and install this yourself: </p>
-<h3><a name="mozTocId451653" class="mozTocH3"></a>1.1 Installing
-stand-alone PHP4</h3>
-<p style="margin-bottom: 12pt;">Download the PHP4 sources from
+
+<p>The only unusual bit about these packages, is that PHP must be installed
+_both_ as an Apache module, and as a CGI interpreter, i.e. as a stand- alone
+interpreter. </p>
+
+<h3 style='margin-left:.5in;text-indent:-.5in'><a name=mozTocId451653></a>1.1<span
+style='font-size:7.0pt;font-family:"Times New Roman","serif"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Installing stand-alone PHP4</h3>
+
+<p class=MsoNormal>(Ignore it for other versions)</p>
+
+<p style='margin-bottom:12.0pt'>Download the PHP4 sources from
 http://www.php.net/mirrors.php. Unpack the tarball somewhere, e.g.
-/home/your/src/php. Change to this directory. Then execute these
-commands:</p>
-<pre>&nbsp; <br></pre>
-<table border="1" cellspacing="4" cellpadding="0" width="80%"
- bgcolor="#cccccc"
- style="border: 1.5pt outset ; background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial; width: 80%;">
-  <tbody>
-    <tr>
-      <td style="padding: 2.4pt;">
-      <pre
- style="background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial;">./configure --with-mysq<br>&nbsp;make<br>&nbsp;make install<br></pre>
-      <p class="MsoNormal"><o:p></o:p></p>
-      </td>
-    </tr>
-  </tbody>
+/home/your/src/php. Change to this directory. Then execute these commands:</p>
+
+<pre><span style='color:black'>&nbsp; </span></pre>
+
+<table class=MsoNormalTable border=1 cellspacing=4 cellpadding=0 width="80%"
+ style='width:80.0%;background:#CCCCCC;border:outset 1.5pt;-moz-background-clip: initial;
+ -moz-background-inline-policy: initial;-moz-background-origin: initial;
+ background-position-x:0%;background-position-y:
+ 50%;background-attachment:
+ scroll'>
+ <tr>
+  <td style='padding:2.4pt 2.4pt 2.4pt 2.4pt'><pre style='background:#CCCCCC;
+  -moz-background-clip: initial;-moz-background-inline-policy: initial;
+  -moz-background-origin: initial;background-position-x:
+  0%;background-position-y:50%;
+  background-attachment:scroll'><span style='color:black'>./configure --with-mysq<br>
+  <br>
+  </span></pre><pre style='background:#CCCCCC'><span style='color:black'>&nbsp;make<br>
+  <br>
+  </span></pre><pre style='background:#CCCCCC'><span style='color:black'>&nbsp;make install</span></pre></td>
+ </tr>
 </table>
-<pre style="margin-bottom: 12pt;"><br></pre>
-<h2><a name="mozTocId455221" class="mozTocH2"></a>1.2 Configure PHP</h2>
-<pre style="margin-bottom: 12pt;">&nbsp;<o:p></o:p></pre>
+
+<pre style='margin-bottom:12.0pt'><span style='color:black'>&nbsp;</span></pre>
+
+<h2><a name=mozTocId455221></a>1.2 Configure PHP</h2>
+
+<pre style='margin-bottom:12.0pt'><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
 <p>Configure php, for the configuration, verify /usr/local/etc/php.ini,<br>
 /usr/local/etc/php.standalone/php.ini files (names depends of your php
 version),<br>
 and set up variables if it is version is 4.2.3 or bigger:</p>
-<pre><br><br>&nbsp;&nbsp; <o:p></o:p></pre>
-<table border="1" cellspacing="4" cellpadding="0" width="80%"
- bgcolor="#cccccc"
- style="border: 1.5pt outset ; background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial; width: 80%;">
-  <tbody>
-    <tr>
-      <td style="padding: 2.4pt;">
-      <p class="MsoNormal">register_globals = On<br>
-register_argc_argv = On<o:p></o:p></p>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<pre style="margin-bottom: 12pt;"><br><br><br><br>Modern php have different php.ini files for the php module and standalone php interpreter, so be sure to configure both module and interpreter. <o:p></o:p></pre>
-<h1><a name="mozTocId536541" class="mozTocH1"></a>2 Install the ProBIND
-software</h1>
-<h2><a name="mozTocId306682" class="mozTocH2"></a>2.1 Unpack ProBIND
-system and set up apache server</h2>
-<p>Unpack the ProBIND tarball somewhere that is reachable by your
-apache server. Usually, this would be in a directory in the document
-root for your Apache installation, e.g. /www/htdocs/probind. Create this
-directory.</p>
-<p>I recommend to use '/var/PROBIND/' directory, and create a symbolic
-link into this directory from your apache home directory. If you plan to
-use ProBIND for a few different name spaces, create a subdirectory (for
-example, /var/PROBIND/intdns and /var/PROBIND/extdns), and unpack
-ProBIND into each of them. Use symlinks, or configure http daemon using
-&lt;DIRECTORY&gt; operator. </p>
-<p>In any case, you must have url pointing to the home directory of
-ProBIND, one for every of your name spaces, for example:</p>
-<ul type="disc">
-  <li class="MsoNormal" style="color: black;">https://your_host/probind/intdns<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">https://your_host/probind/extdns<o:p></o:p></li>
-</ul>
-<p class="MsoNormal">Or, if you have single name space and no https:<o:p></o:p></p>
-<ul type="disc">
-  <li class="MsoNormal" style="color: black;">http://you_host/probind/<o:p></o:p></li>
-</ul>
-<p class="MsoNormal" style="margin-bottom: 12pt;"><br>
+
+<pre><span style='color:black'><br>
 <br>
-If you created a few different name directories for the different name
-spaces, move content of 'parent' directory into the parent level of your
-ProBIND and edit&nbsp; html files in it:<o:p></o:p></p>
-<table border="1" cellspacing="4" cellpadding="0" width="80%"
- bgcolor="#cccccc"
- style="border: 1.5pt outset ; background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial; width: 80%;">
-  <tbody>
-    <tr>
-      <td style="padding: 2.4pt;">
-      <p class="MsoNormal">cp parent/* ..<br>
-vi ../menu.html<o:p></o:p></p>
-      </td>
-    </tr>
-  </tbody>
+</span></pre><pre><span style='color:black'><br>
+<br>
+</span></pre><pre><span style='color:black'>&nbsp;&nbsp; </span><u1:p></u1:p></pre>
+
+<table class=MsoNormalTable border=1 cellspacing=4 cellpadding=0 width="80%"
+ style='width:80.0%;background:#CCCCCC;border:outset 1.5pt;-moz-background-clip: initial;
+ -moz-background-inline-policy: initial;-moz-background-origin: initial;
+ background-position-x:0%;background-position-y:
+ 50%;background-attachment:
+ scroll'>
+ <tr>
+  <td style='padding:2.4pt 2.4pt 2.4pt 2.4pt'>
+  <p class=MsoNormal><span style='color:black'>register_globals = On<br>
+  register_argc_argv = On</span><u1:p></u1:p></p>
+  </td>
+ </tr>
 </table>
-<pre>&nbsp;<o:p></o:p></pre>
-<p class="MsoNormal">This directory contains a simple html page, and
-you can write our your own, if you wish.<o:p></o:p></p>
+
+<pre style='margin-bottom:12.0pt'><span style='color:black'><br>
+<br>
+</span></pre><pre style='margin-bottom:12.0pt'><span style='color:black'><br>
+<br>
+</span></pre><pre style='margin-bottom:12.0pt'><span style='color:black'><br>
+<br>
+</span></pre><pre style='margin-bottom:12.0pt'><span style='color:black'><br>
+<br>
+</span></pre><pre style='margin-bottom:12.0pt'><span style='color:black'>Modern php have different php.ini files for the php module and standalone php interpreter, so be sure to configure both module and interpreter. </span><u1:p></u1:p></pre>
+
+<h1><a name=mozTocId536541></a>2 Install the ProBIND software</h1>
+
+<h2><a name=mozTocId306682></a>2.1 Unpack ProBIND system and set up apache
+server</h2>
+
+<p>Unpack the ProBIND tarball somewhere that is reachable by your apache
+server. Usually, this would be in a directory in the document root for your
+Apache installation, e.g. /www/htdocs/probind. Create this directory.</p>
+
+<p>I recommend to use '/var/PROBIND/' directory, and create a symbolic link
+into this directory from your apache home directory. If you plan to use ProBIND
+for a few different name spaces, create a subdirectory (for example,
+/var/PROBIND/intdns and /var/PROBIND/extdns), and unpack ProBIND into each of
+them. Use symlinks, or configure http daemon using &lt;DIRECTORY&gt; operator. </p>
+
+<p>In any case, you must have url pointing to the home directory of ProBIND,
+one for every of your name spaces, for example:</p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>https://your_host/probind/intdns</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>https://your_host/probind/extdns</span><u1:p></u1:p></li>
+</ul>
+
+<p class=MsoNormal><span style='color:black'>Or, if you have single name space
+and no https:</span><u1:p></u1:p></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>http://you_host/probind/</span><u1:p></u1:p></li>
+</ul>
+
+<p class=MsoNormal style='margin-bottom:12.0pt'><span style='color:black'><br>
+<br>
+If you created a few different name directories for the different name spaces,
+move content of 'parent' directory into the parent level of your ProBIND and
+edit&nbsp; html files in it:</span><u1:p></u1:p></p>
+
+<table class=MsoNormalTable border=1 cellspacing=4 cellpadding=0 width="80%"
+ style='width:80.0%;background:#CCCCCC;border:outset 1.5pt;-moz-background-clip: initial;
+ -moz-background-inline-policy: initial;-moz-background-origin: initial;
+ background-position-x:0%;background-position-y:
+ 50%;background-attachment:
+ scroll'>
+ <tr>
+  <td style='padding:2.4pt 2.4pt 2.4pt 2.4pt'>
+  <p class=MsoNormal><span style='color:black'>cp parent/* ..<br>
+  vi ../menu.html</span><u1:p></u1:p></p>
+  </td>
+ </tr>
+</table>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<p class=MsoNormal><span style='color:black'>This directory contains a simple
+html page, and you can write your own, if you wish.</span><u1:p></u1:p></p>
+
 <p>I recommend using a separate apache server, running in https mode on
-separate port, for all administrative functions, and run it as a special
-user (for example, 'monitor'). It makes configuration much simpler. If
-you have installed 'snmpstat' monitoring system, use apache running in
-this system - it already has all necessary settings and authentications.</p>
-<p>In any case, apache server should be run as a special user with
-existing home directory and existing shell, to allow different
-configuration scripts to work. You can experiment with standard apache
-installation, which runs as 'nobody', or run apache in a jail, but be
-sure that you will be able to configure 'rsync' and 'ssh' for remote
-access to the named@name_servers without the password.</p>
-<h2><a name="mozTocId552458" class="mozTocH2"></a>2.2 Create work
-directories</h2>
+separate port, for all administrative functions, and run it as a special user
+(for example, 'monitor'). It makes configuration much simpler. If you have
+installed 'snmpstat' monitoring system, use apache running in this system - it
+already has all necessary settings and authentications.</p>
+
+<p>In any case, apache server should be run as a special user with existing
+home directory and existing shell, to allow different configuration scripts to
+work. You can experiment with standard apache installation, which runs as
+'nobody', or run apache in a jail, but be sure that you will be able to
+configure 'rsync' and 'ssh' for remote access to the named@name_servers without
+the password.</p>
+
+<h2><a name=mozTocId552458></a>2.2 Create work directories</h2>
+
 <p><br>
-Now create working directories for configured host files (HOSTS) and
-log files (LOGS) (you can use symlinks if you wish to use different
-disks for the ProBIND and it's working files). Make this directory
-writable for your apache server and scripts. For example, if you run
-'httpd' as a user 'httpd', you should run:</p>
-<p>&nbsp;<o:p></o:p></p>
-<table border="1" cellspacing="4" cellpadding="0" width="80%"
- bgcolor="#cccccc"
- style="border: 1.5pt outset ; background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial; width: 80%;">
-  <tbody>
-    <tr>
-      <td style="padding: 2.4pt;">
-      <p class="MsoNormal">mkdir HOSTS<br>
-mkdir LOGS<br>
-chown httpd HOSTS LOGS<o:p></o:p></p>
-      </td>
-    </tr>
-  </tbody>
+Now create working directories for configured host files (HOSTS) and log files (LOGS)
+(you can use symlinks if you wish to use different disks for the ProBIND and
+it's working files). Make this directory writable for your apache server and
+scripts. For example, if you run 'httpd' as a user 'httpd', you should run:</p>
+
+<p>&nbsp;<u1:p></u1:p></p>
+
+<table class=MsoNormalTable border=1 cellspacing=4 cellpadding=0 width="80%"
+ style='width:80.0%;background:#CCCCCC;border:outset 1.5pt;-moz-background-clip: initial;
+ -moz-background-inline-policy: initial;-moz-background-origin: initial;
+ background-position-x:0%;background-position-y:
+ 50%;background-attachment:
+ scroll'>
+ <tr>
+  <td style='padding:2.4pt 2.4pt 2.4pt 2.4pt'>
+  <p class=MsoNormal><span style='color:black'>mkdir HOSTS<br>
+  mkdir LOGS<br>
+  chown httpd HOSTS LOGS</span><u1:p></u1:p></p>
+  </td>
+ </tr>
 </table>
-<p>http server must support Indexing in these directories. If you are
-not sure how to do it, create .htaccess file in HOME directory:</p>
-<p>&nbsp;<o:p></o:p></p>
-<table border="1" cellspacing="4" cellpadding="0" width="80%"
- bgcolor="#cccccc"
- style="border: 1.5pt outset ; background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial; width: 80%;">
-  <tbody>
-    <tr>
-      <td style="padding: 2.4pt;">
-      <pre>cat &gt; HOSTS/.htaccess<br>Options Indexes<br>FancyIndexing on<br>^D<br>cat &gt; LOGS/.htaccess<br>Options Indexes<br>FancyIndexing on<br>^D<o:p></o:p></pre>
-      </td>
-    </tr>
-  </tbody>
+
+<p>http server must support Indexing in these directories. If you are not sure
+how to do it, create .htaccess file in HOME directory:</p>
+
+<p>&nbsp;<u1:p></u1:p></p>
+
+<table class=MsoNormalTable border=1 cellspacing=4 cellpadding=0 width="80%"
+ style='width:80.0%;background:#CCCCCC;border:outset 1.5pt;-moz-background-clip: initial;
+ -moz-background-inline-policy: initial;-moz-background-origin: initial;
+ background-position-x:0%;background-position-y:
+ 50%;background-attachment:
+ scroll'>
+ <tr>
+  <td style='padding:2.4pt 2.4pt 2.4pt 2.4pt'><pre><span style='color:black'>cat &gt; HOSTS/.htaccess<br>
+  <br>
+  </span></pre><pre><span style='color:black'>Options Indexes<br>
+  <br>
+  </span></pre><pre><span style='color:black'>FancyIndexing on<br>
+  <br>
+  </span></pre><pre><span style='color:black'>^D<br>
+  <br>
+  </span></pre><pre><span style='color:black'>cat &gt; LOGS/.htaccess<br>
+  <br>
+  </span></pre><pre><span style='color:black'>Options Indexes<br>
+  <br>
+  </span></pre><pre><span style='color:black'>FancyIndexing on<br>
+  <br>
+  </span></pre><pre><span style='color:black'>^D</span><u1:p></u1:p></pre></td>
+ </tr>
 </table>
-<pre style="margin-bottom: 12pt;">&nbsp;<o:p></o:p></pre>
-<h2><a name="mozTocId966540" class="mozTocH2"></a>2.3 MySQL
-configuration</h2>
-<pre>&nbsp;<o:p></o:p></pre>
-<p>Now you must create a MySQL database instance. The name of the
-database instance is not important, so pick something descriptive, e.g.
-'intdns' or 'extdns'. You should also create a MySQL user for ProBIND.</p>
-<pre>&nbsp; <o:p></o:p></pre>
-<table border="1" cellspacing="4" cellpadding="0" width="80%"
- bgcolor="#cccccc"
- style="border: 1.5pt outset ; background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial; width: 80%;">
-  <tbody>
-    <tr>
-      <td style="padding: 2.4pt;">
-      <pre>mysql -u root -p<br>Enter password:<br>mysql&gt;create database intdns;<br>mysql&gt;quit<o:p></o:p></pre>
-      </td>
-    </tr>
-  </tbody>
+
+<pre style='margin-bottom:12.0pt'><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<h2><a name=mozTocId966540></a>2.3 MySQL configuration</h2>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<p>Now you must create a MySQL database instance. The name of the database
+instance is not important, so pick something descriptive, e.g. 'intdns' or
+'extdns'. You should also create a MySQL user for ProBIND.</p>
+
+<pre><span style='color:black'>&nbsp; </span><u1:p></u1:p></pre>
+
+<table class=MsoNormalTable border=1 cellspacing=4 cellpadding=0 width="80%"
+ style='width:80.0%;background:#CCCCCC;border:outset 1.5pt;-moz-background-clip: initial;
+ -moz-background-inline-policy: initial;-moz-background-origin: initial;
+ background-position-x:0%;background-position-y:
+ 50%;background-attachment:
+ scroll'>
+ <tr>
+  <td style='padding:2.4pt 2.4pt 2.4pt 2.4pt'><pre><span style='color:black'>mysql -u root -p<br>
+  <br>
+  </span></pre><pre><span style='color:black'>Enter password:<br>
+  <br>
+  </span></pre><pre><span style='color:black'>mysql&gt;create database intdns;<br>
+  <br>
+  </span></pre><pre><span style='color:black'>mysql&gt;quit</span><u1:p></u1:p></pre></td>
+ </tr>
 </table>
-<p class="MsoNormal">&nbsp;<o:p></o:p></p>
-<p class="MsoNormal" style="margin-left: 24pt;">NB: There is no need to
-run the MySQL database and the Apache server<br>
-on the same host.<o:p></o:p></p>
-<p>It is recommended to use Windows GUI for MySQL, instead of command
-line 'mysql' program.</p>
-<p>If you want to maintain a few name spaces, create different
-databases for all name spaces.</p>
-<h2><a name="mozTocId372807" class="mozTocH2"></a>2.4 Edit
-inc/config.inc</h2>
-<pre>&nbsp;<o:p></o:p></pre>
-<p>The inc/config.inc file is a mini PHP script, which enables ProBIND
-to<br>
+
+<p class=MsoNormal><span style='color:black'>&nbsp;</span><u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-left:24.0pt'><span style='color:black'>NB:
+There is no need to run the MySQL database and the Apache server<br>
+on the same host.</span><u1:p></u1:p></p>
+
+<p>It is recommended to use Windows GUI for MySQL, instead of command line
+'mysql' program.</p>
+
+<p>If you want to maintain a few name spaces, create different databases for
+all name spaces.</p>
+
+<h2><a name=mozTocId372807></a>2.4 Edit inc/config.inc</h2>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<p>The inc/config.inc file is a mini PHP script, which enables ProBIND to<br>
 find its way around your installation. An example of config.inc is<br>
 provided in the tarball. It contains few settings, which you must edit<br>
 to reflect your installation:</p>
-<pre style="margin-bottom: 12pt;">&nbsp; <o:p></o:p></pre>
-<table border="1" cellspacing="4" cellpadding="0" width="80%"
- bgcolor="#cccccc"
- style="border: 1.5pt outset ; background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial; width: 80%;">
-  <tbody>
-    <tr>
-      <td style="padding: 2.4pt;">
-      <p class="MsoNormal" style="margin-bottom: 12pt;">&lt;?<br>
-      <br>
-$TOP = "/var/PROBIND/intdns";<br>
-$TMP="/tmp";<br>
-$MYSQL_HOST = "localhost";<br>
-$MYSQL_DB = "named";<br>
-$MYSQL_USER = "probind";<br>
-$MYSQL_PASSWD = "*******"; // Set up password here<br>
-$NAME_SPACE = "TEST";<br>
-      <br>
-$DEFAULT_PUSH = "push.remote";<br>
-$DEFAULT_DIR&nbsp; = "/var/named9";<br>
-$DEFAULT_TMPL = "v9-master";<br>
-      <br>
-// Directories - templates, HOSTS and LOGS<br>
-$TEMPL_DIR = "$TOP/templates";<br>
-$HOST_DIR =&nbsp; "$TOP/HOSTS";<br>
-$LOG_DIR&nbsp; =&nbsp; "$TOP/LOGS";<br>
-      <br>
-// Access to the HOSTS and LOGS directories from the web, relative to
-the current directory<br>
-$HOST_URL = "HOSTS/";<br>
-$LOG_URL&nbsp; = "LOGS/";<br>
-      <br>
-?&gt;<o:p></o:p></p>
-      </td>
-    </tr>
-  </tbody>
+
+<pre style='margin-bottom:12.0pt'><span style='color:black'>&nbsp; </span><u1:p></u1:p></pre>
+
+<table class=MsoNormalTable border=1 cellspacing=4 cellpadding=0 width="80%"
+ style='width:80.0%;background:#CCCCCC;border:outset 1.5pt;-moz-background-clip: initial;
+ -moz-background-inline-policy: initial;-moz-background-origin: initial;
+ background-position-x:0%;background-position-y:
+ 50%;background-attachment:
+ scroll'>
+ <tr>
+  <td style='padding:2.4pt 2.4pt 2.4pt 2.4pt'>
+  <p class=MsoNormal style='margin-bottom:12.0pt'><span style='color:black'>&lt;?<br>
+  <br>
+  $TOP = &quot;/var/PROBIND/intdns&quot;;<br>
+  $TMP=&quot;/tmp&quot;;<br>
+  $MYSQL_HOST = &quot;localhost&quot;;<br>
+  $MYSQL_DB = &quot;named&quot;;<br>
+  $MYSQL_USER = &quot;probind&quot;;<br>
+  $MYSQL_PASSWD = &quot;*******&quot;; // Set up password here<br>
+  $NAME_SPACE = &quot;TEST&quot;;<br>
+  <br>
+  $DEFAULT_PUSH = &quot;push.remote&quot;;<br>
+  $DEFAULT_DIR&nbsp; = &quot;/var/named9&quot;;<br>
+  $DEFAULT_TMPL = &quot;v9-master&quot;;<br>
+  <br>
+  // Directories - templates, HOSTS and LOGS<br>
+  $TEMPL_DIR = &quot;$TOP/templates&quot;;<br>
+  $HOST_DIR =&nbsp; &quot;$TOP/HOSTS&quot;;<br>
+  $LOG_DIR&nbsp; =&nbsp; &quot;$TOP/LOGS&quot;;<br>
+  <br>
+  // Access to the HOSTS and LOGS directories from the web, relative to the
+  current directory<br>
+  $HOST_URL = &quot;HOSTS/&quot;;<br>
+  $LOG_URL&nbsp; = &quot;LOGS/&quot;;<br>
+  <br>
+  ?&gt;</span><u1:p></u1:p></p>
+  </td>
+ </tr>
 </table>
-<p class="MsoNormal"><br>
+
+<p class=MsoNormal><span style='color:black'><br>
 <br>
-Edit variables:<o:p></o:p></p>
-<ul type="disc">
-  <li class="MsoNormal" style="color: black;">$TOP - full name of the
-probind directory. If      you install a few different name spaces, each
-will have it's own name;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">$MYSQL_DB - data base
-name (see previous      step);<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">$MYSQL_USER and
-$MYSQL_PASSWD - user and      password for mysql access;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">$NAME_SPACE - name space
-name, as it will be      shown on the screen. If you create a few name
-spaces, use the same names      and you used in the root level menu.<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">$DEFAULT_* - defaults for
-the name servers; I      recommend do not change it;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">$TEMPL_DIR - name server
-templates; change it      only if you are going to use non standard
-templates and name server      configurations;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">$HOST_DIR - directory
-created to keep all      hosts configurations (writable by apache php);<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">$LOG_DIR - directory for
-the log files      (writable by apache php).<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">$HOST_URL and $LOG_URL -
-relative names for      http access (do not change).<o:p></o:p></li>
+Edit variables:</span><u1:p></u1:p></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>$TOP - full name of the probind
+     directory. If you install a few different name spaces, each will have it's
+     own name;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>$MYSQL_DB - data base name (see
+     previous step);</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>$MYSQL_USER and $MYSQL_PASSWD - user
+     and password for mysql access;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>$NAME_SPACE - name space name, as it
+     will be shown on the screen. If you create a few name spaces, use the same
+     names and you used in the root level menu.</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>$DEFAULT_* - defaults for the name
+     servers; I recommend do not change it;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>$TEMPL_DIR - name server templates;
+     change it only if you are going to use non standard templates and name
+     server configurations;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>$HOST_DIR - directory created to keep
+     all hosts configurations (writable by apache php);</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>$LOG_DIR - directory for the log files
+     (writable by apache php).</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>$HOST_URL and $LOG_URL - relative
+     names for http access (do not change).</span><u1:p></u1:p></li>
 </ul>
-<h2><a name="mozTocId106187" class="mozTocH2"></a>2.5 Database
-initialization</h2>
-<p>Then load the etc/mktables.sql file into the MySQL database you just
-create</p>
-<table border="1" cellspacing="4" cellpadding="0" width="80%"
- bgcolor="#cccccc"
- style="border: 1.5pt outset ; background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial; width: 80%;">
-  <tbody>
-    <tr>
-      <td style="padding: 2.4pt;">
-      <pre>mysql -u probind -p intdns &lt; etc/mktables.sql<br>Enter password:<o:p></o:p></pre>
-      </td>
-    </tr>
-  </tbody>
+
+<h2><a name=mozTocId106187></a>2.5 Database initialization</h2>
+
+<p>Then load the etc/mktables.sql file into the MySQL database you just create</p>
+
+<table class=MsoNormalTable border=1 cellspacing=4 cellpadding=0 width="80%"
+ style='width:80.0%;background:#CCCCCC;border:outset 1.5pt;-moz-background-clip: initial;
+ -moz-background-inline-policy: initial;-moz-background-origin: initial;
+ background-position-x:0%;background-position-y:
+ 50%;background-attachment:
+ scroll'>
+ <tr>
+  <td style='padding:2.4pt 2.4pt 2.4pt 2.4pt'><pre><span style='color:black'>mysql -u probind -p intdns &lt; etc/mktables2.2.sql<br>
+  <br>
+  </span></pre><pre><span style='color:black'>Enter password:</span><u1:p></u1:p></pre></td>
+ </tr>
 </table>
-<p class="MsoNormal">&nbsp;<o:p></o:p></p>
-<ul type="disc">
-  <li class="MsoNormal" style="color: black;">probind - $MYSQL_USER<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">intdns - $MYSQL_DB<o:p></o:p></li>
+
+<p class=MsoNormal><span style='color:black'>&nbsp;</span><u1:p></u1:p></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>probind - $MYSQL_USER</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>intdns - $MYSQL_DB</span><u1:p></u1:p></li>
 </ul>
-<p class="MsoNormal">&nbsp;<o:p></o:p></p>
-<p>This concludes basic installation, you should now be able to open
-the web interface in a browser. The database is still empty though. In
-the next phase, you create the settings for further operations.</p>
-<pre>&nbsp;<o:p></o:p></pre>
-<pre style="margin-bottom: 12pt;">&nbsp;<o:p></o:p></pre>
-<h2><a name="mozTocId892989" class="mozTocH2"></a>2.6 Check (and edit
-if necessary) program names in scripts</h2>
+
+<p class=MsoNormal><span style='color:black'>&nbsp;<u1:p></u1:p>For updating
+from version 2.1, run</span></p>
+
+<p class=MsoNormal><span style='color:black'>mysql -u probind -p intdns &lt;
+etc/convert_002.sql</span></p>
+
+<p class=MsoNormal><span style='color:black'>&nbsp;</span></p>
+
+<p>This concludes basic installation, you should now be able to open the web
+interface in a browser. The database is still empty though. In the next phase, you
+create the settings for further operations.</p>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre><pre
+style='margin-bottom:12.0pt'><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<h2><a name=mozTocId892989></a>2.6 Check (and edit if necessary) program names
+in scripts</h2>
+
 <p>Run:</p>
-<table border="1" cellspacing="4" cellpadding="0" width="80%"
- bgcolor="#cccccc"
- style="border: 1.5pt outset ; background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial; width: 80%;">
-  <tbody>
-    <tr>
-      <td style="padding: 2.4pt;">
-      <pre>grep perl */*<br><br>grep bash */*<o:p></o:p></pre>
-      </td>
-    </tr>
-  </tbody>
+
+<table class=MsoNormalTable border=1 cellspacing=4 cellpadding=0 width="80%"
+ style='width:80.0%;background:#CCCCCC;border:outset 1.5pt;-moz-background-clip: initial;
+ -moz-background-inline-policy: initial;-moz-background-origin: initial;
+ background-position-x:0%;background-position-y:
+ 50%;background-attachment:
+ scroll'>
+ <tr>
+  <td style='padding:2.4pt 2.4pt 2.4pt 2.4pt'><pre><span style='color:black'>grep perl */*<br>
+  <br>
+  </span></pre><pre><span style='color:black'>&nbsp; <br>
+  <br>
+  </span></pre><pre><span style='color:black'>grep bash */*</span><u1:p></u1:p></pre></td>
+ </tr>
 </table>
-<pre>&nbsp;<o:p></o:p></pre>
-<p>and verify if your system has perl and bash on the proper place;
-edit scripts or set up symlink if necessary.</p>
-<pre>&nbsp;<o:p></o:p></pre>
-<h2><a name="mozTocId496363" class="mozTocH2"></a>2.6 Configure
-.htaccess and tools/.htaccess files.</h2>
-<p class="MsoNormal" style="margin-left: 24pt;">&nbsp;<o:p></o:p></p>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<p>and verify if your system has perl and bash on the proper place; edit
+scripts or set up symlink if necessary.</p>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<h2><a name=mozTocId496363></a>2.6 Configure .htaccess and tools/.htaccess
+files.</h2>
+
+<p class=MsoNormal style='margin-left:24.0pt'><span style='color:black'>&nbsp;</span><u1:p></u1:p></p>
+
 <p>By default, accesses require group 'dns' and ProBIND configuration
 (including cleaning locks) require dnsadm group; change .htaccess and
 toosl/.htaccess if you need other access rules.</p>
-<p class="MsoNormal"
- style="margin-left: 1in; font-style: italic; font-weight: bold;">ProBIND
-uses apache authentication by default. Check .htaccess files in the
-ProBIND directory and tools subdirectory, and edit them if you need
-another access poli4cy. I recommend turning authentication off on the
-installation stage, and then turning it back and restoring
-authentication after you have all components up and running.<o:p></o:p></p>
-<pre>&nbsp;<o:p></o:p></pre>
-<h1><a name="mozTocId49173" class="mozTocH1"></a>3 Configure the
-ProBIND software</h1>
-<p>Open the ProBIND web interface. If you installed ProBIND directly in
-the Apache document root, open your browser on this URL:
-http://yourhost/probind (or https://yourhost/probind/intdns, if you use
-https and few name spaces).</p>
-<p>You must see a ProBIND menu <a href="manual.html">(read manual) .</a>
-, with a message</p>
-<table border="1" cellspacing="4" cellpadding="0" width="80%"
- bgcolor="#cccccc"
- style="border: 1.5pt outset ; background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial; width: 80%;">
-  <tbody>
-    <tr>
-      <td style="padding: 2.4pt;">
-      <pre
- style="background: rgb(204, 204, 170) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial;">The database is not in an operational state. The following problems exist:<o:p></o:p></pre>
-      </td>
-    </tr>
-  </tbody>
+
+<p class=MsoNormal style='margin-left:1.0in'><b><i><span style='color:black'>ProBIND
+uses apache authentication by default. Check .htaccess files in the ProBIND
+directory and tools subdirectory, and edit them if you need another access
+poli4cy. I recommend turning authentication off on the installation stage, and
+then turning it back and restoring authentication after you have all components
+up and running.</span></i></b><u1:p></u1:p></p>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<h1><a name=mozTocId49173></a>3 Configure the ProBIND software</h1>
+
+<p>Open the ProBIND web interface. If you installed ProBIND directly in the
+Apache document root, open your browser on this URL: http://yourhost/probind (or
+https://yourhost/probind/intdns, if you use https and few name spaces).</p>
+
+<p>You must see a ProBIND menu <a href="manual.html">(read manual) .</a> , with
+a message</p>
+
+<table class=MsoNormalTable border=1 cellspacing=4 cellpadding=0 width="80%"
+ style='width:80.0%;background:#CCCCCC;border:outset 1.5pt;-moz-background-clip: initial;
+ -moz-background-inline-policy: initial;-moz-background-origin: initial;
+ background-position-x:0%;background-position-y:
+ 50%;background-attachment:
+ scroll'>
+ <tr>
+  <td style='padding:2.4pt 2.4pt 2.4pt 2.4pt'><pre style='background:#CCCCAA;
+  -moz-background-clip: initial;-moz-background-inline-policy: initial;
+  -moz-background-origin: initial;background-position-x:
+  0%;background-position-y:50%;
+  background-attachment:scroll'><span style='color:black'>The database is not in an operational state. The following problems exist:</span><u1:p></u1:p></pre></td>
+ </tr>
 </table>
-<pre>&nbsp;<o:p></o:p></pre>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
 <p>On this step, few errors are possible:</p>
-<ul type="disc">
-  <li class="MsoNormal" style="color: black;">Unable to connect to the
-database - verify $MYSQL_USER, $MYSQL_PASSWORD and $MYSQL_HOST;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">Database ... not found -
-verify $MYSQL_DB;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">Numerous error messages
-are possible if you have incorrect $TOP variable;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">What's cooking doc? I've
-never even &lt;i&gt;heard&lt;/i&gt; about that HTTP method:- if you
-forget to configure register_globals      = On and register_argc_argv =
-On<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">&nbsp;You see php file
-instead of seen result of the script - php module was not configuring in
-apache. Follow php      instructions to do it.<o:p></o:p></li>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>Unable to connect to the database -
+     verify $MYSQL_USER, $MYSQL_PASSWORD and $MYSQL_HOST;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>Database ... not found - verify
+     $MYSQL_DB;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>Numerous error messages are possible
+     if you have incorrect $TOP variable;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>What's cooking doc? I've never even
+     &lt;i&gt;heard&lt;/i&gt; about that HTTP method:- if you forget to
+     configure register_globals = On and register_argc_argv = On</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>&nbsp;You see php file instead of seen
+     result of the script - php module was not configuring in apache. Follow
+     php instructions to do it.</span><u1:p></u1:p></li>
 </ul>
-<p class="MsoNormal" style="margin-bottom: 12pt;">If you can see
-ProBIND screen, and it is just saying that data base is not in the
-operational mode, go to the next step and configure ProBIND settings.
-This step it is safe - you will not break any DNS server until you
-configure 'rsync' and create working directories on the servers, so you
-can start with real information. Do not use existing directory names -
-it is much easier to create a new named directory and then, after all
-zones are imported and rsync is configured, just to symlink
-/etc/named.conf to the new place. <o:p></o:p></p>
-<h2><a name="mozTocId774260" class="mozTocH2"></a>3.1 Settings</h2>
-<p>Click the 'Misc. tools' link in the top frame. Then select
-'Settings' in the sub-menu that appears. Fill out the fields according
-to your needs and click the 'Update settings' button. See <a
- href="manual.html#settings">manual - settings</a> for additional
-details of the setting.</p>
-<h2><a name="mozTocId363766" class="mozTocH2"></a>3.2 Describing your
-BIND servers</h2>
-<p>Now you must tell the database about your BIND servers. Click
-'Servers' on the submenu. Add a description for each server you wish to
-manage through the ProBIND interface. For each server, you must specify
-its hostname, an IP number and some supplemental information that
-ProBIND needs: If the server is used as a master or slave server,
-whether it should receive updates from ProBIND, and whether the server
-should appear in NS records for the domains managed by ProBIND. The
-latter two settings makes it possible to use ProBIND e.g. while you are<br>
+
+<p class=MsoNormal style='margin-bottom:12.0pt'><span style='color:black'>If
+you can see ProBIND screen, and it is just saying that data base is not in the
+operational mode, go to the next step and configure ProBIND settings. This step
+it is safe - you will not break any DNS server until you configure 'rsync' and
+create working directories on the servers, so you can start with real
+information. Do not use existing directory names - it is much easier to create
+a new named directory and then, after all zones are imported and rsync is
+configured, just to symlink /etc/named.conf to the new place. </span><u1:p></u1:p></p>
+
+<h2><a name=mozTocId774260></a>3.1 Settings</h2>
+
+<p>Click the 'Misc. tools' link in the top frame. Then select 'Settings' in the
+sub-menu that appears. Fill out the fields according to your needs and click
+the 'Update settings' button. See <a href="manual.html#settings">manual -
+settings</a> for additional details of the setting.</p>
+
+<h2><a name=mozTocId363766></a>3.2 Describing your BIND servers</h2>
+
+<p>Now you must tell the database about your BIND servers. Click 'Servers' on the
+submenu. Add a description for each server you wish to manage through the
+ProBIND interface. For each server, you must specify its hostname, an IP number
+and some supplemental information that ProBIND needs: If the server is used as
+a master or slave server, whether it should receive updates from ProBIND, and
+whether the server should appear in NS records for the domains managed by
+ProBIND. The latter two settings makes it possible to use ProBIND e.g. while
+you are<br>
 migrating a BIND server from one host to another, or deals with a
-dual-interface server that must receive updates through one interface,
-but speaks with the outside world on another.</p>
-<p>Three fields in the server description are used when delivering an
-update to the server. </p>
-<ul type="disc">
-  <li class="MsoNormal" style="color: black;">The first field tells
-ProBIND where the      zonefiles exist on the server, e.g. /var/named.<br>
-    <br>
-    <div style="margin-left: 40px;"><span
- style="font-style: italic; font-weight: bold;"> NB: ProBIND expects
-that the named.conf file exists in the same directory as the zone files.
-You may have to create a symlink in /etc to /var/named/named.conf to
-alleviate this. </span><br
- style="font-style: italic; font-weight: bold;">
-    <br style="font-style: italic; font-weight: bold;">
-    <span style="font-style: italic; font-weight: bold;"> Also NB: All
-files in this directory are subject to being completely
-rewritten/overwritten/deleted by ProBIND. If you have some interesting
-hacks in your named.conf, be sure to put them into the ProBIND template
-file before you update the BIND server. You can use 'Server options' and
-macro $OPTIONS in the template file, as well.</span><o:p
- style="font-style: italic; font-weight: bold;"></o:p></div>
-  </li>
+dual-interface server that must receive updates through one interface, but
+speaks with the outside world on another.</p>
+
+<p>Three fields in the server description are used when delivering an update to
+the server. </p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black;margin-bottom:12.0pt'><span
+     style='font-size:8.5pt;font-family:"Verdana","sans-serif"'>The first field
+     tells ProBIND where the zonefiles exist on the server, e.g. /var/named.</span></li>
 </ul>
-<p style="margin-left: 24pt;">You can not set up server options on this
-step; to configure them, open server after you created it and edits
-options, then click 'Update' button.</p>
-<pre>&nbsp;<o:p></o:p></pre>
-<ul type="disc">
-  <li class="MsoNormal" style="color: black;">You must also specify a
-template directory for      the name server. It is one of the
-directories from $TEMPL_DIR. You can      copy one of pre-defined
-template directories and create your own      templates. 'named.tmpl'
-file is a template for 'named.conf', with the      macros<o:p></o:p></li>
-  <ul type="circle">
-    <li class="MsoNormal" style="color: black;">$OPTIONS - server
-options;<o:p></o:p></li>
-    <li class="MsoNormal" style="color: black;">$ZONE_DIR - zone
-directory;<o:p></o:p></li>
-    <li class="MsoNormal" style="color: black;">$ZONE_DEFINITIONS -
-replaced by the zone definitions generated by the system;<o:p></o:p></li>
-  </ul>
-  <li class="MsoNormal" style="color: black;">Finally, you must specify
-a script that will      copy zonefiles to the BIND server, and then
-restart the BIND server. This      script must exist in the sbin
-directory of ProBIND installation. See the push.remote script included
-in the distribution, it is based on openssh for secure access to the
-BIND server host. If you want to try out ProBIND without risk to your
-servers, specify the included 'nop' script in this field.<o:p></o:p></li>
+
+<div style='margin-left:30.0pt'>
+
+<p class=MsoNormal style='margin-left:.5in'><b><i><span style='font-size:8.5pt;
+font-family:"Verdana","sans-serif";color:black'>NB: ProBIND expects that the
+named.conf file exists in the same directory as the zone files. You may have to
+create a symlink in /etc to /var/named/named.conf to alleviate this. <br>
+<br>
+Also NB: All files in this directory are subject to being completely
+rewritten/overwritten/deleted by ProBIND. If you have some interesting hacks in
+your named.conf, be sure to put them into the ProBIND template file before you
+update the BIND server. You can use 'Server options' and macro $OPTIONS in the
+template file, as well.</span></i></b></p>
+
+</div>
+
+<u1:p style="font-style: italic; font-weight: bold;"></u1:p>
+
+<p style='margin-left:24.0pt'>You can not set up server options on this step;
+to configure them, open server after you created it and edits options, then
+click 'Update' button.</p>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>You must also specify a template
+     directory for the name server. It is one of the directories from
+     $TEMPL_DIR. You can copy one of pre-defined template directories and
+     create your own templates. 'named.tmpl' file is a template for
+     'named.conf', with the macros</span><u1:p></u1:p></li>
+ <ul style='margin-top:0in' type=circle>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'>$OPTIONS - server options;</span><u1:p></u1:p></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'>$ZONE_DIR - zone directory;</span><u1:p></u1:p></li>
+  <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+      font-family:"Verdana","sans-serif"'>$ZONE_DEFINITIONS - replaced by the
+      zone definitions generated by the system;</span><u1:p></u1:p></li>
+ </ul>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>Finally, you must specify a script
+     that will copy zonefiles to the BIND server, and then restart the BIND
+     server. This script must exist in the sbin directory of ProBIND
+     installation. See the push.remote script included in the distribution, it
+     is based on openssh for secure access to the BIND server host. If you want
+     to try out ProBIND without risk to your servers, specify the included
+     'nop' script in this field.</span><u1:p></u1:p></li>
 </ul>
-<p class="MsoNormal">See <a href="manual.html#servers">manual - serves</a>
-for more details.<o:p></o:p></p>
-<h2><a name="mozTocId622952" class="mozTocH2"></a>3.2 Preparing remote
-name servers, and 'rsync' setting</h2>
-<p>If (most likely) you use push.remote script, you need to configure
-ssh to work without password for the proper 'rsync' work. By default,
-push.remote use 'ssh' (or ssh2, if exists) to the user 'named' on the
-host by its IP address. Such steps are recommended:</p>
-<pre>&nbsp;<o:p></o:p></pre>
-<p class="MsoNormal" style="margin-left: 0.5in; text-indent: -0.25in;">1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On
-the remote name server - Create user 'named' for the named control
-functions on the name server; .<o:p></o:p></p>
-<p class="MsoNormal"
- style="margin-bottom: 12pt; margin-left: 0.5in; text-indent: -0.25in;">2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On
-the remote name server - Create a directory for the 'named'
-configuration (I recommend /var/named9) and make a link<o:p></o:p></p>
-<table border="1" cellspacing="4" cellpadding="0" width="80%"
- bgcolor="#cccccc"
- style="border: 1.5pt outset ; background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial; width: 80%; margin-left: 0.5in;">
-  <tbody>
-    <tr>
-      <td style="padding: 2.4pt;">
-      <pre>&nbsp;ln -s /var/named9/named.conf /etc/named.conf</pre>
-      </td>
-    </tr>
-  </tbody>
+
+<p class=MsoNormal><span style='color:black'>See <a href="manual.html#servers"><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif"'>manual - serves</span></a>
+for more details.</span><u1:p></u1:p></p>
+
+<h2><a name=mozTocId622952></a>3.2 Preparing remote name servers, and 'rsync'
+setting</h2>
+
+<p>If (most likely) you use push.remote script, you need to configure ssh to
+work without password for the proper 'rsync' work. By default, push.remote use
+'ssh' (or ssh2, if exists) to the user 'named' on the host by its IP address.
+Such steps are recommended:</p>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='color:black'>1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On the remote name
+server - Create user 'named' for the named control functions on the name
+server; .</span><u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:12.0pt;
+margin-left:.5in;text-indent:-.25in'><span style='color:black'>2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On
+the remote name server - Create a directory for the 'named' configuration (I
+recommend /var/named9) and make a link</span><u1:p></u1:p></p>
+
+<table class=MsoNormalTable border=1 cellspacing=4 cellpadding=0 width="80%"
+ style='width:80.0%;margin-left:.5in;background:#CCCCCC;border:outset 1.5pt;
+ -moz-background-clip: initial;-moz-background-inline-policy: initial;
+ -moz-background-origin: initial;background-position-x:
+ 0%;background-position-y:50%;
+ background-attachment:scroll'>
+ <tr>
+  <td style='padding:2.4pt 2.4pt 2.4pt 2.4pt'><pre><span style='color:black'>&nbsp;ln -s /var/named9/named.conf /etc/named.conf</span></pre></td>
+ </tr>
 </table>
-<pre style="margin-left: 0.5in; text-indent: -0.25in;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<o:p></o:p></pre>
-<p class="MsoNormal" style="margin-left: 0.5in; text-indent: -0.25in;">4.&nbsp;If
-you are doing it on the running name server, postpone this step until
-you have rsync running, and all zones imported and configured.<o:p></o:p></p>
-<p class="MsoNormal" style="margin-left: 0.5in; text-indent: -0.25in;">5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On
-the remote name server Sun solaris - check that init.d scripts run your
-(right) named server instead of (if it exists) old ugly 'in.named'
-server. Other system - set up proper script.<o:p></o:p></p>
-<p class="MsoNormal" style="margin-left: 0.5in; text-indent: -0.25in;">6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On
-the remote name server - create '~named/.ssh' (or ~named/.ssh2)
-directory (where ~named - home directory of the user 'named' and root
-directory for the named server), and configure ssh access from ( httpd
-user @ ProBind server) to ( named @ remote server)&nbsp; without the
-password. I recommend to use 'public key' authentication, create proper
-.ssh directory and then copy it into all remote '/var/named9'
-directories so that, to set up new name server, you should only create a
-use and copy this directory.<o:p></o:p></p>
-<p class="MsoNormal" style="margin-left: 1in; text-indent: -0.25in;">1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If
-your ProBIND system use 'openssh':<o:p></o:p></p>
-<p class="MsoNormal" style="margin-left: 1.5in; text-indent: -0.25in;">1)
-generate .ssh/id_dsa, id_dsa.pub and id_dsa_ssh2.pub<o:p></o:p></p>
-<p class="MsoNormal" style="margin-left: 1.5in; text-indent: -0.25in;">2)
-copy id_dsa.pub into .ssh directory on the host running 'named' if it
-use 'openssh';<o:p></o:p></p>
-<p class="MsoNormal" style="margin-left: 1.5in; text-indent: -0.25in;">3)
-copy id_dsa_ssh2.pub into .ssh2 directory on the host running 'named'
-if it use commercial 'ssh', and edit 'authorization' file in .ssh2
-directory.<o:p></o:p></p>
-<p class="MsoNormal" style="margin-left: 1in; text-indent: -0.25in;">2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Consult
-manual in all other cases;<o:p></o:p></p>
-<p class="MsoNormal" style="margin-left: 0.5in; text-indent: -0.25in;">7.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;login
-locally as httpd user (user running php scripts for ProBIND), chdir to
-probind directory, probind, and try to run 'ssh -l named HOST rsync'
-where HOST is ip address of the&nbsp; host running 'named'; confirm all
-prompts if necessary. In the result, this command should not ask any
-passwords or confirmations.<o:p></o:p></p>
-<p class="MsoNormal" style="margin-left: 0.5in; text-indent: -0.25in;">8.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You
-can configure 'host' based login method, which are a little more
-complicated, consult manuals.<o:p></o:p></p>
-<p class="MsoNormal" style="margin-left: 0.5in; text-indent: -0.25in;">9.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If
-you need to change a script, copy sbin/push.rsync to the new script (in
-sbin directory) and edit it. Do not proceed with ProBIND until you can
-run test 'ssh' command without the password. You can set uncomment test
-'ssh' command in the push.remote script, if necessary, and start with
-it, but I do not recommend to do it until you can run 'ssh -l named
-HOST&nbsp; who' (or 'ssh ... rsync') manually.<o:p></o:p></p>
-<pre>&nbsp;<o:p></o:p></pre>
-<p class="MsoNormal"
- style="margin-left: 48pt; font-style: italic; font-weight: bold;">REMEMBER
-- to run a script, ProBIND (which works with the user id of your http
-server) need<br>
-to run 'rsync', and 'rsync' in turn needs to run 'ssh' without the
-password. So, configure 'ssh'<br>
-first and check everything manually.<o:p></o:p></p>
-<pre>&nbsp;<o:p></o:p></pre>
-<h2><a name="mozTocId757427" class="mozTocH2"></a>4 Start using ProBIND</h2>
-<p>At this point you should click 'Browse domains' and flesh out the
-TEMPLATE pseudo-domain. If you have some data, which should apply to all
-your domains, add it now. This might include TXT or MX records which all
-your domains should contain.</p>
-<p>&nbsp;<o:p></o:p></p>
-<p class="MsoNormal"
- style="margin-left: 48pt; font-weight: bold; font-style: italic;">NB:
-DO NOT ADD ANY NS RECORDS TO YOUR TEMPLATE! NS records for your servers
-are automatically generated by ProBIND. You control how the NS records
-are generated when you describe your BIND servers.<o:p></o:p></p>
-<pre><span style="font-weight: bold; font-style: italic;">&nbsp;</span><o:p></o:p></pre>
-<p>You are now ready to populate the database. You can do this
-manually, or you can use the etc/import script to load an existing BIND
-configuration with zone files into the database.</p>
-<p class="MsoNormal"
- style="margin-left: 48pt; font-weight: bold; font-style: italic;">NB.
-Remember - you do not make any real changes until you click 'Update'
-button, and after it, you do not apply changes to the real name server
-until you run 'Reconfigure' step of update and have remote 'rndc'
-configured properly. <o:p></o:p></p>
-<h2><a name="mozTocId477712" class="mozTocH2"></a>4.1 Using the import
-script</h2>
-<p>You probably already have a BIND installation that you want to
-streamline the management of. Otherwise you would not be looking at this
-program. The good news is that there is a small PHP script included with
-ProBIND, etc/import, which automates the task of converting BIND
-named.conf and zone files to ProBIND database entries.</p>
-<p class="MsoNormal" style="margin-left: 24pt;">If you do have a fancy
-named configuration and want to move it into ProBIND, you can create a
-new template directory, specific for your name server, copy all
-configuration files into it, then import zones into the system and
-create a named.tmpl file from named.conf file by replacing all imported
-zone information to the macro $ZONE_DEFINITIONS. If you have as simple
-configuration, it can be easy to use standard 'named9' template and use
-configurable options to set up specific features of the name server. You
-can make a few experiments, but I recommend to use a standard
-configuration - in most cases, fancy named.conf file means bad design
-and bad reliability of your system. Do not forget to copy 'reconfig.sh'
-script into the new template directory.<o:p></o:p></p>
-<p>&nbsp;<o:p></o:p></p>
-<p>To import your BIND configuration, copy named.conf and your entire
-zone files into a separate on your ProBIND host.</p>
+
+<pre style='margin-left:.5in;text-indent:-.25in'><span style='color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;</span><u1:p></u1:p></pre>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='color:black'>4.&nbsp;If you are doing it on the running name server, postpone
+this step until you have rsync running, and all zones imported and configured.</span><u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='color:black'>5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On the remote name
+server Sun solaris - check that init.d scripts run your (right) named server
+instead of (if it exists) old ugly 'in.named' server. Other system - set up
+proper script.</span><u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='color:black'>6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On the remote name
+server - create '~named/.ssh' (or ~named/.ssh2) directory (where ~named - home
+directory of the user 'named' and root directory for the named server), and
+configure ssh access from ( httpd user @ ProBind server) to ( named @ remote
+server)&nbsp; without the password. I recommend to use 'public key'
+authentication, create proper .ssh directory and then copy it into all remote
+'/var/named9' directories so that, to set up new name server, you should only create
+a use and copy this directory.</span><u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='color:black'>1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If your ProBIND
+system use 'openssh':</span><u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-left:1.5in;text-indent:-.25in'><span
+style='color:black'>1) generate .ssh/id_dsa, id_dsa.pub and id_dsa_ssh2.pub</span><u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-left:1.5in;text-indent:-.25in'><span
+style='color:black'>2) copy id_dsa.pub into .ssh directory on the host running
+'named' if it use 'openssh';</span><u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-left:1.5in;text-indent:-.25in'><span
+style='color:black'>3) copy id_dsa_ssh2.pub into .ssh2 directory on the host
+running 'named' if it use commercial 'ssh', and edit 'authorization' file in
+.ssh2 directory.</span><u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='color:black'>2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Consult manual
+in all other cases;</span><u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='color:black'>7.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;login locally as
+httpd user (user running php scripts for ProBIND), chdir to probind directory,
+probind, and try to run 'ssh -l named HOST rsync' where HOST is ip address of
+the&nbsp; host running 'named'; confirm all prompts if necessary. In the
+result, this command should not ask any passwords or confirmations.</span><u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='color:black'>8.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You can configure
+'host' based login method, which are a little more complicated, consult manuals.</span><u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='color:black'>9.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If you need to change
+a script, copy sbin/push.rsync to the new script (in sbin directory) and edit
+it. Do not proceed with ProBIND until you can run test 'ssh' command without
+the password. You can set uncomment test 'ssh' command in the push.remote
+script, if necessary, and start with it, but I do not recommend to do it until
+you can run 'ssh -l named HOST&nbsp; who' (or 'ssh ... rsync') manually.</span><u1:p></u1:p></p>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<p class=MsoNormal style='margin-left:48.0pt'><b><i><span style='color:black'>REMEMBER
+- to run a script, ProBIND (which works with the user id of your http server)
+need<br>
+to run 'rsync', and 'rsync' in turn needs to run 'ssh' without the password.
+So, configure 'ssh'<br>
+first and check everything manually.</span></i></b><u1:p></u1:p></p>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<h2><a name=mozTocId757427></a>4 Start using ProBIND</h2>
+
+<p>At this point you should click 'Browse domains' and flesh out the TEMPLATE
+pseudo-domain. If you have some data, which should apply to all your domains,
+add it now. This might include TXT or MX records which all your domains should
+contain.</p>
+
+<p>&nbsp;<u1:p></u1:p></p>
+
+<p class=MsoNormal style='margin-left:48.0pt'><b><i><span style='color:black'>NB:
+DO NOT ADD ANY NS RECORDS TO YOUR TEMPLATE! NS records for your servers are
+automatically generated by ProBIND. You control how the NS records are
+generated when you describe your BIND servers.</span></i></b><u1:p></u1:p></p>
+
+<pre><b><i><span style='color:black'>&nbsp;</span></i></b><u1:p></u1:p></pre>
+
+<p>You are now ready to populate the database. You can do this manually, or you
+can use the etc/import script to load an existing BIND configuration with zone
+files into the database.</p>
+
+<p class=MsoNormal style='margin-left:48.0pt'><b><i><span style='color:black'>NB.
+Remember - you do not make any real changes until you click 'Update' button,
+and after it, you do not apply changes to the real name server until you run
+'Reconfigure' step of update and have remote 'rndc' configured properly. </span></i></b><u1:p></u1:p></p>
+
+<h2><a name=mozTocId477712></a>4.1 Using the import script</h2>
+
+<p>You probably already have a BIND installation that you want to streamline
+the management of. Otherwise you would not be looking at this program. The good
+news is that there is a small PHP script included with ProBIND, etc/import,
+which automates the task of converting BIND named.conf and zone files to
+ProBIND database entries.</p>
+
+<p class=MsoNormal style='margin-left:24.0pt'><span style='color:black'>If you
+do have a fancy named configuration and want to move it into ProBIND, you can
+create a new template directory, specific for your name server, copy all
+configuration files into it, then import zones into the system and create a
+named.tmpl file from named.conf file by replacing all imported zone information
+to the macro $ZONE_DEFINITIONS. If you have as simple configuration, it can be
+easy to use standard 'named9' template and use configurable options to set up
+specific features of the name server. You can make a few experiments, but I
+recommend to use a standard configuration - in most cases, fancy named.conf
+file means bad design and bad reliability of your system. Do not forget to copy
+'reconfig.sh' script into the new template directory.</span><u1:p></u1:p></p>
+
+<p>&nbsp;<u1:p></u1:p></p>
+
+<p>To import your BIND configuration, copy named.conf and your entire zone files
+into a separate on your ProBIND host.</p>
+
 <p>Then execute this command:</p>
-<table border="1" cellspacing="4" cellpadding="0" width="80%"
- bgcolor="#cccccc"
- style="border: 1.5pt outset ; background: rgb(204, 204, 204) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-inline-policy: initial; -moz-background-origin: initial; width: 80%;">
-  <tbody>
-    <tr>
-      <td style="padding: 2.4pt;">
-      <pre># $PROBIND is your ProBIND directory. It is important because import search for the<br># configuration here .<br># $IMPORT_DIR is a directory where you copy named configuration files and zones.<br># It must be _FULL NAME_, not a relative name.<br># You can use exact name or set up a variable<br>cd $PROBIND<br>etc/import -v [-a] [-d] $IMPORT_DIR/named.conf | tee import.log<o:p></o:p></pre>
-      </td>
-    </tr>
-  </tbody>
+
+<table class=MsoNormalTable border=1 cellspacing=4 cellpadding=0 width="80%"
+ style='width:80.0%;background:#CCCCCC;border:outset 1.5pt;-moz-background-clip: initial;
+ -moz-background-inline-policy: initial;-moz-background-origin: initial;
+ background-position-x:0%;background-position-y:
+ 50%;background-attachment:
+ scroll'>
+ <tr>
+  <td style='padding:2.4pt 2.4pt 2.4pt 2.4pt'><pre><span style='color:black'># $PROBIND is your ProBIND directory. It is important because import search for the<br>
+  <br>
+  </span></pre><pre><span style='color:black'># configuration here .<br>
+  <br>
+  </span></pre><pre><span style='color:black'># $IMPORT_DIR is a directory where you copy named configuration files and zones.<br>
+  <br>
+  </span></pre><pre><span style='color:black'># It must be _FULL NAME_, not a relative name.<br>
+  <br>
+  </span></pre><pre><span style='color:black'># You can use exact name or set up a variable<br>
+  <br>
+  </span></pre><pre><span style='color:black'>cd $PROBIND<br>
+  <br>
+  </span></pre><pre><span style='color:black'>etc/import -v [-a] [-d] $IMPORT_DIR/named.conf | tee import.log</span><u1:p></u1:p></pre></td>
+ </tr>
 </table>
-<p class="MsoNormal">&nbsp;<o:p></o:p></p>
-<p>Options: &nbsp; -a means _write out old zone content as an
-annotation; -d means _replace zone definition if it exists in the data
-base_.</p>
-<p style="margin-left: 24pt;">Note the $IMPOPT_DIR prefix on the
-filename. Due to a peculiarity of PHP as a stand-alone interpreter, it
-is necessary to specify the full path to the source file.</p>
-<p>Review the import log and the database carefully. You do not want to
-update your BIND servers, until your are confident that the database
-accurately represents your DNS data. If you have a lot of comments in
-your zone files, run import with the -a flag too (i.e. import -av
-$IMPORT_DIR/named.conf). That way the unaltered text of a zone file is
-put into the ProBIND database as a comment text for the zone.</p>
-<p>See <a href="manual.html#import">manual - import</a> for additional
-details.</p>
-<pre>&nbsp;<o:p></o:p></pre>
-<h2><a name="mozTocId512309" class="mozTocH2"></a>4.2 Update the BIND
-servers</h2>
+
+<p class=MsoNormal><span style='color:black'>&nbsp;</span><u1:p></u1:p></p>
+
+<p>Options: &nbsp; -a means _write out old zone content as an annotation; -d means
+_replace zone definition if it exists in the data base_.</p>
+
+<p style='margin-left:24.0pt'>Note the $IMPOPT_DIR prefix on the filename. Due
+to a peculiarity of PHP as a stand-alone interpreter, it is necessary to
+specify the full path to the source file.</p>
+
+<p>Review the import log and the database carefully. You do not want to update
+your BIND servers, until your are confident that the database accurately
+represents your DNS data. If you have a lot of comments in your zone files, run
+import with the -a flag too (i.e. import -av $IMPORT_DIR/named.conf). That way
+the unaltered text of a zone file is put into the ProBIND database as a comment
+text for the zone.</p>
+
+<p>See <a href="manual.html#import">manual - import</a> for additional details.</p>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<h2><a name=mozTocId512309></a>4.2 Update the BIND servers</h2>
+
 <p>When you are satisfied with the contents, click the 'Update' link to
-generate the zone files and distribute them to the servers. You can
-inspect the zone files generated in the tmp/master directory in the
-ProBIND installation. If you set up 2 step update, you can inspect log
-files after a first 2 steps of update (generate files and rsync them)
-and then run 3-th step (reconfigure). You can manually disable every
-step, or remove some servers from the update.</p>
-<p>From the very beginning, you can need to push files into the server
-before running starting named server. I recommend such sequence in
-installation new server:</p>
-<ol>
-  <li> Set up named daemon and 'named' user on the remote system, create
-named directory (/var/named9) writable for 'named', and copy '.ssh' (or
-.ssh2)&nbsp; directory into it. Verify remote access (ssh
-named@IP_ADDRESS who) from the user running ProBIND (script in apache);<o:p></o:p></li>
-  <li> Configure server in ProBIND, and run 'update' (all&nbsp; 3
-steps). Update must succeed on the first stage (update and push) but
-fail on the third stage (reconfigure) because you have not running named
-yet (or you are running another named).<o:p></o:p></li>
-  <li> Now, verify content of '/var/named9' directory on the remote
-server, create (if necessary) symbolic link (rm /etc/named.conf; ln -s
-/var/named9/named.conf /etc/named.conf), and start named daemon on this
-system. Be sure that named daemon started successfully;<o:p></o:p></li>
-  <li> Now, uncheck 'ignore' checkbox (which was checked automatically
-because system get an update error) on the 'update' screen and repeat
-update. It must succeed.<o:p></o:p></li>
-  <li> Now, try 'TEST' button and verify zones created on the remote
-server making requests (SOA request is enough).</li>
-</ol>
-<br>
-If you want to see what ProBIND would do to your servers, without
-actually letting it touch them, specify the "nop" update script in the
-BIND server descriptions. This will let ProBIND generate all the files
-it thinks are needed on your BIND server, but not actually copy them.
-You can examine the generated files in the tmp/master and tmp/slave
-directories.<br>
-<br>
-<p>See <a href="manual.html#push">manual - push</a> for additional
-information.</p>
-<pre>&nbsp;<o:p></o:p></pre>
-<h1><a name="mozTocId995051" class="mozTocH1"></a>5 Troubleshooting</h1>
-<p style="margin-bottom: 12pt;">ProBIND is a complex distributed
-system, and there are a lot of possibilities to make something wrong
-during installation. Fortunately, after you installed it first time and
-set up remote access, it is very easy to add new name servers, set up
-additional name spaces, change named versions and manage DNS
-information.&nbsp; Below I describe most common problems and their
-solutions:</p>
-<h2><a name="mozTocId362239" class="mozTocH2"></a>5.1 Web server and
-php configuration</h2>
-<ul>
-  <li> Can not get access to the ProBIND home page - by default, ProBIND
-uses base authentication. Check (or temporary remove) .htaccess and
-tools/.htaccess files.</li>
-  <li> You can see top menu, but see script content instead of server
-statistics on the frame below - it is likely that you have not php
-installed or php data type is not configured; consult php documentation.</li>
+generate the zone files and distribute them to the servers. You can inspect the
+zone files generated in the tmp/master directory in the ProBIND installation.
+If you set up 2 step update, you can inspect log files after a first 2 steps of
+update (generate files and rsync them) and then run 3-th step (reconfigure).
+You can manually disable every step, or remove some servers from the update.</p>
+
+<p>From the very beginning, you can need to push files into the server before
+running starting named server. I recommend such sequence in installation new
+server:</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>1.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>Set up
+named daemon and 'named' user on the remote system, create named directory
+(/var/named9) writable for 'named', and copy '.ssh' (or .ssh2)&nbsp; directory
+into it. Verify remote access (ssh named@IP_ADDRESS who) from the user running
+ProBIND (script in apache);</span></p>
+
+<u1:p></u1:p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>2.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>Configure
+server in ProBIND, and run 'update' (all&nbsp; 3 steps). Update must succeed on
+the first stage (update and push) but fail on the third stage (reconfigure)
+because you have not running named yet (or you are running another named).</span></p>
+
+<u1:p></u1:p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>3.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>Now,
+verify content of '/var/named9' directory on the remote server, create (if
+necessary) symbolic link (rm /etc/named.conf; ln -s /var/named9/named.conf /etc/named.conf),
+and start named daemon on this system. Be sure that named daemon started
+successfully;</span></p>
+
+<u1:p></u1:p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>4.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>Now,
+uncheck 'ignore' checkbox (which was checked automatically because system get
+an update error) on the 'update' screen and repeat update. It must succeed.</span></p>
+
+<u1:p></u1:p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>5.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>Now, try
+'TEST' button and verify zones created on the remote server making requests
+(SOA request is enough).</span></p>
+
+<p class=MsoNormal style='margin-bottom:12.0pt'><span style='font-size:8.5pt;
+font-family:"Verdana","sans-serif";color:black'><br>
+If you want to see what ProBIND would do to your servers, without actually
+letting it touch them, specify the &quot;nop&quot; update script in the BIND
+server descriptions. This will let ProBIND generate all the files it thinks are
+needed on your BIND server, but not actually copy them. You can examine the
+generated files in the tmp/master and tmp/slave directories.</span></p>
+
+<p>See <a href="manual.html#push">manual - push</a> for additional information.</p>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<h1><a name=mozTocId995051></a>5 Troubleshooting</h1>
+
+<p style='margin-bottom:12.0pt'>ProBIND is a complex distributed system, and
+there are a lot of possibilities to make something wrong during installation.
+Fortunately, after you installed it first time and set up remote access, it is
+very easy to add new name servers, set up additional name spaces, change named
+versions and manage DNS information.&nbsp; Below I describe most common
+problems and their solutions:</p>
+
+<h2><a name=mozTocId362239></a>5.1 Web server and php configuration</h2>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>Can not get access to the ProBIND home
+     page - by default, ProBIND uses base authentication. Check (or temporary
+     remove) .htaccess and tools/.htaccess files.</span></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>You can see top menu, but see script
+     content instead of server statistics on the frame below - it is likely
+     that you have not php installed or php data type is not configured;
+     consult php documentation.</span></li>
 </ul>
-<ul type="disc">
-  <li class="MsoNormal" style="color: black;">Php reports that 'What's
-cooking doc?' - you did not configured variables register_globals = On
-and register_argc_argv = On for php      module; check that php is not
-configured in safe mode;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">ProBIND can not open data
-base - verify $TOP and $MYSQL_* variables in inc/config.inc file, and
-MySQL data base parameters;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">import script does not
-work - verify register_globals = On and register_argc_argv = On for
-stand alone php; verify that you have specified full name of the
-named.conf file, verify that you have stand alone php interpreter
-installed;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">You can not make setting
-or change an information - verify that MySQL user configured in ProBIND
-have full access to the data base.<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">When you add a server,
-system can not create server file in 'HOSTS' directory - verify that php
-script running in apache server have a write (create directory)
-permission in the      HOSTS directory, and that 'HOSTS' directory does
-exists;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">lock is reported - go to
-Tools -&gt; Setting and click on the 'Clean lock' button.<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">you can not see a context
-of the server configuration directory (reference from the 'update'
-screen) - check      that your have permission to make 'indexing' for
-the HOSTS directory, and      that your apache server have .conf and
-.dns file extensions configured as      a text files.<o:p></o:p></li>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>Php reports that 'What's cooking doc?'
+     - you did not configured variables register_globals = On and register_argc_argv
+     = On for php module; check that php is not configured in safe mode;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>ProBIND can not open data base -
+     verify $TOP and $MYSQL_* variables in inc/config.inc file, and MySQL data
+     base parameters;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>import script does not work - verify
+     register_globals = On and register_argc_argv = On for stand alone php;
+     verify that you have specified full name of the named.conf file, verify
+     that you have stand alone php interpreter installed;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>You can not make setting or change an
+     information - verify that MySQL user configured in ProBIND have full
+     access to the data base.</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>When you add a server, system can not
+     create server file in 'HOSTS' directory - verify that php script running
+     in apache server have a write (create directory) permission in the HOSTS
+     directory, and that 'HOSTS' directory does exists;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>lock is reported - go to Tools -&gt;
+     Setting and click on the 'Clean lock' button.</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>you can not see a context of the
+     server configuration directory (reference from the 'update' screen) -
+     check that your have permission to make 'indexing' for the HOSTS
+     directory, and that your apache server have .conf and .dns file extensions
+     configured as a text files.</span><u1:p></u1:p></li>
 </ul>
-<h2><a name="mozTocId13924" class="mozTocH2"></a>5.2 Pushing updates
-failed on the first (update) step, even when you use 'nop' script.</h2>
-<p>Using 'nop' script is a next step to debug a system - if updates
-does not work, change scripts to 'nop' and be sure that&nbsp; you can
-run 'update' to the very end.</p>
-<ul type="disc">
-  <li class="MsoNormal" style="color: black;">update can not write log
-file, or you can not      see log file for the update - check that php
-script have a write      permissions in LOGS and HOSTS directories. <o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">update can not generate
-named.conf file or      zone files - check that you have stand alone php
-installed and configured      (see above), and check permissions (see
-above).<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">update does not generate
-named.conf file when      you use custom template directory - be sure
-that your directory have 'named.tmpl'      template file, and that this
-file has all necessary macros. Then, 'update'      server configuration
-checking up the box 'update from template files';<o:p></o:p></li>
+
+<h2><a name=mozTocId13924></a>5.2 Pushing updates failed on the first (update)
+step, even when you use 'nop' script.</h2>
+
+<p>Using 'nop' script is a next step to debug a system - if updates does not
+work, change scripts to 'nop' and be sure that&nbsp; you can run 'update' to
+the very end.</p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>update can not write log file, or you
+     can not see log file for the update - check that php script have a write
+     permissions in LOGS and HOSTS directories. </span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>update can not generate named.conf
+     file or zone files - check that you have stand alone php installed and
+     configured (see above), and check permissions (see above).</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>update does not generate named.conf
+     file when you use custom template directory - be sure that your directory
+     have 'named.tmpl' template file, and that this file has all necessary
+     macros. Then, 'update' server configuration checking up the box 'update
+     from template files';</span><u1:p></u1:p></li>
 </ul>
-<h2><a name="mozTocId157192" class="mozTocH2"></a>5.3 Problems with
-'PUSH' and 'RECONFIG' steps of the update</h2>
-<p>The "push.rsync" script depends on ssh to copy files from your
-probind server to one or more BIND servers. This means that your web
-server userid must somehow be allowed to copy files to the name server
-userid on the BIND server, without password prompts.</p>
-<p>An example to illustrate this: ProBIND is installed under an Apache
-server running under userid nobody on host foo.example.com. BIND is
-running under userid root on host bar.example.com. The problem is that a
-very untrusted user (nobody@foo.example.com) needs to upload data to
-root@bar.example.com, and reload the name server. Additionally, SSH
-insists on having a home directory so it can keep a database of keys in
-~/.ssh.</p>
-<p style="margin-left: 24pt;">There are several ways around this. I
-recommend::</p>
-<p style="margin-left: 24pt;">1a) Make apache on foo run under a more
+
+<h2><a name=mozTocId157192></a>5.3 Problems with 'PUSH' and 'RECONFIG' steps of
+the update</h2>
+
+<p>The &quot;push.rsync&quot; script depends on ssh to copy files from your
+probind server to one or more BIND servers. This means that your web server
+userid must somehow be allowed to copy files to the name server userid on the
+BIND server, without password prompts.</p>
+
+<p>An example to illustrate this: ProBIND is installed under an Apache server
+running under userid nobody on host foo.example.com. BIND is running under
+userid root on host bar.example.com. The problem is that a very untrusted user
+(nobody@foo.example.com) needs to upload data to root@bar.example.com, and
+reload the name server. Additionally, SSH insists on having a home directory so
+it can keep a database of keys in ~/.ssh.</p>
+
+<p style='margin-left:24.0pt'>There are several ways around this. I recommend::</p>
+
+<p style='margin-left:24.0pt'>1a) Make apache on foo run under a more
 privileged user id (e.g. httpd, for example), or</p>
-<p style="margin-left: 24pt;">1b) Make $TOP/sbin/push setuid to a more
+
+<p style='margin-left:24.0pt'>1b) Make $TOP/sbin/push setuid to a more
 privileged user id, or</p>
-<p style="margin-left: 24pt;">1c) Give the nobody user a home directory
-with write access</p>
-<p style="margin-left: 24pt;">(The least bad idea of these is probably
-1a, but this depends a lot on circumstances.). By default, ProBIND is
-installed with named user on remote name servers (named should never be
-run as a root, from security point of view, so it is highly
-recommended), and use 'ssh' access without the password from the current
-apache user to the remote 'named' users (which means that user used for
-apache should have a home directory).</p>
-<p style="margin-left: 24pt;">2) Make this more privileged trusted by
-root on bar. This is as easy as appending the /root/.ssh/identity.pub
-file from foo to /root/.ssh/known_hosts on bar. (or id_dsa.pub to
-known_hosts2).</p>
-<p style="margin-left: 24pt;">3) Verify that you can ssh from httpd@foo
-to named@bar by ip address of 'bar' without being prompted for a
-password.</p>
-<pre>&nbsp;<o:p></o:p></pre>
-<p>if you can run first and second steps of update, but can not
-'reconfig' the server, check logs (clicking on the 'logs' on the update
-window) and verify:</p>
-<ul type="disc">
-  <li class="MsoNormal" style="color: black;">you used correct template
-- named8 for&nbsp; bind8, and named9 for bind9;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">or you have a correct
-'reconfig'sh' file in the template and HOSTS/server_name directory;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">remote system have ndc
-(for bind8) or rndc (for bind9) in available for this script;<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">push.rsync script have a
-proper shell name (#!/bin/sh );<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">for named9 only - rndc
-did not find any syntax errors in the generated named.conf file.<o:p></o:p></li>
+
+<p style='margin-left:24.0pt'>1c) Give the nobody user a home directory with
+write access</p>
+
+<p style='margin-left:24.0pt'>(The least bad idea of these is probably 1a, but
+this depends a lot on circumstances.). By default, ProBIND is installed with
+named user on remote name servers (named should never be run as a root, from
+security point of view, so it is highly recommended), and use 'ssh' access
+without the password from the current apache user to the remote 'named' users
+(which means that user used for apache should have a home directory).</p>
+
+<p style='margin-left:24.0pt'>2) Make this more privileged trusted by root on
+bar. This is as easy as appending the /root/.ssh/identity.pub file from foo to
+/root/.ssh/known_hosts on bar. (or id_dsa.pub to known_hosts2).</p>
+
+<p style='margin-left:24.0pt'>3) Verify that you can ssh from httpd@foo to
+named@bar by ip address of 'bar' without being prompted for a password.</p>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<p>if you can run first and second steps of update, but can not 'reconfig' the
+server, check logs (clicking on the 'logs' on the update window) and verify:</p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>you used correct template - named8
+     for&nbsp; bind8, and named9 for bind9;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>or you have a correct 'reconfig'sh'
+     file in the template and HOSTS/server_name directory;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>remote system have ndc (for bind8) or rndc
+     (for bind9) in available for this script;</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>push.rsync script have a proper shell
+     name (#!/bin/sh );</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>for named9 only - rndc did not find
+     any syntax errors in the generated named.conf file.</span><u1:p></u1:p></li>
 </ul>
-<h2><a name="mozTocId734397" class="mozTocH2"></a>5.4 Problems with
-different TOOLS or with TEST buttons of the UPDATE screen</h2>
-<ul type="disc">
-  <li class="MsoNormal" style="color: black;">verify that different
-scripts in 'bin'      directory have a correct name for the 'perl' - by
-default, perl is      expected as '/usr/bin/perl', not as
-'usr/local/bin/perl'.<o:p></o:p></li>
-  <li class="MsoNormal" style="color: black;">verify that you have perl
-package 'Net::DNS'      installed.<o:p></o:p></li>
+
+<h2><a name=mozTocId734397></a>5.4 Problems with different TOOLS or with TEST
+buttons of the UPDATE screen</h2>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>verify that different scripts in 'bin'
+     directory have a correct name for the 'perl' - by default, perl is
+     expected as '/usr/bin/perl', not as 'usr/local/bin/perl'.</span><u1:p></u1:p></li>
+ <li class=MsoNormal style='color:black'><span style='font-size:8.5pt;
+     font-family:"Verdana","sans-serif"'>verify that you have perl package
+     'Net::DNS' installed.</span><u1:p></u1:p></li>
 </ul>
-<p class="MsoNormal">&nbsp;<o:p></o:p></p>
-<pre>&nbsp;<o:p></o:p></pre>
-<h2><a name="mozTocId539460" class="mozTocH2"></a>5.5 Table 'SQL9a3a_0'
-is full</h2>
-<p>Your database has run out of temporary storage for executing a large
-query. This can happen in several places, but especially on the 'Tools'
-page. To solve4 this, either upgrade to Mysql 3.23, or set the
-big-tables option in /etc/my.cnf:<br>
+
+<p class=MsoNormal><span style='color:black'>&nbsp;</span><u1:p></u1:p></p>
+
+<pre><span style='color:black'>&nbsp;</span><u1:p></u1:p></pre>
+
+<h2><a name=mozTocId539460></a>5.5 Table 'SQL9a3a_0' is full</h2>
+
+<p>Your database has run out of temporary storage for executing a large query.
+This can happen in several places, but especially on the 'Tools' page. To
+solve4 this, either upgrade to Mysql 3.23, or set the big-tables option in
+/etc/my.cnf:<br>
 <br>
 [mysqld]<br>
 big-tables</p>
-<h1><a name="mozTocId295213" class="mozTocH1"></a>APPENDIX I.
-References:</h1>
-<ol>
-  <li>Internal liinks:<br>
-  </li>
-  <ol>
-    <li><a href="Design.htm">ProBIND2 Design and implementation.</a><o:p></o:p></li>
-    <li><a href="manual.html">ProBIND2 manual.</a><o:p></o:p></li>
-  </ol>
-  <li>External links:<o:p></o:p></li>
-  <ol>
-    <li>&nbsp;<a href="http://www.php.net">PHP scripting language;</a></li>
-    <li><o:p></o:p><a href="http://www.apache.org">Apache web server;</a><o:p></o:p></li>
-    <li><a href="http://www.isc.org/products/BIND/">ISC Bind Name Server</a></li>
-    <li><a href="http://www.perl.org/">Perl Scripting language</a></li>
-    <li><o:p></o:p></li>
-    <li><a href="http://search.cpan.org/search?module=Net::DNS">Perl
-Net::DNS module</a><br>
-    </li>
-    <li><a href="http://www.mysql.com/">MySQL Data Base</a><o:p></o:p></li>
-  </ol>
-</ol>
-<p class="MsoNormal" style="margin-bottom: 12pt;">If you use FreeBSD, I
-recommend do not install components manually, but use ports (/usr/ports,
-see <a href="http://www.freebsd.org/ports/">http://www.freebsd.org/ports/)&nbsp;</a><br>
-instead. <br>
-</p>
-<p class="MsoNormal" style="margin-bottom: 12pt;"> <br style="">
-<br style="">
-<o:p></o:p></p>
+
+<h1><a name=mozTocId295213></a>APPENDIX I. References:</h1>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>1.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>Internal
+liinks:</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>1.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'><a
+href="Design.htm">ProBIND2 Design and implementation.</a></span></p>
+
+<u1:p></u1:p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>2.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'><a
+href="manual.html">ProBIND2 manual.</a></span></p>
+
+<u1:p></u1:p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>2.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>External
+links:</span></p>
+
+<u1:p></u1:p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>1.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>&nbsp;<a
+href="http://www.php.net">PHP scripting language;</a></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>2.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'><a
+href="http://www.apache.org"><u1:p></u1:p>Apache web server;</a></span></p>
+
+<u1:p></u1:p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>3.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'><a
+href="http://www.isc.org/products/BIND/">ISC Bind Name Server</a></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>4.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'><a
+href="http://www.perl.org/">Perl Scripting language</a></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>5.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>&nbsp;</span></p>
+
+<u1:p></u1:p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>6.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'><a
+href="http://search.cpan.org/search?module=Net::DNS">Perl Net::DNS module</a></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in'><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'>7.</span><span
+style='font-size:7.0pt;color:black'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif";color:black'><a
+href="http://www.mysql.com/">MySQL Data Base</a></span></p>
+
+<u1:p></u1:p>
+
+<p class=MsoNormal style='margin-bottom:12.0pt'><span style='color:black'>If
+you use FreeBSD, I recommend do not install components manually, but use ports
+(/usr/ports, see <a href="http://www.freebsd.org/ports/"><span
+style='font-size:8.5pt;font-family:"Verdana","sans-serif"'>http://www.freebsd.org/ports/)&nbsp;</span></a><br>
+instead. </span></p>
+
+<p class=MsoNormal style='margin-bottom:12.0pt'><span style='color:black'><br>
+<br>
+</span></p>
+
 </div>
+
+<u1:p></u1:p>
 </body>
+
 </html>
