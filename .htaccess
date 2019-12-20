@@ -1,0 +1,26 @@
+    AuthName probind-OPERATOR
+    require group read
+<FILES "addzone.php">
+       AuthName probind-ADMIN
+       require group dnsadm
+</FILES>
+
+<FILES "delzone.php">
+       AuthName probind-ADMIN
+       require group dnsadm
+</FILES>
+
+<FILES "wrzones.php">
+       AuthName probind-OPERATOR
+       require group dns
+</FILES>
+
+<FILES "update.php">
+       AuthName probind-OPERATOR
+       require group dns
+</FILES>
+
+<FILES "zonedetails.php">
+       AuthName probind-ADMIN
+       require group dnsadm
+</FILES>

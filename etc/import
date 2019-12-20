@@ -1,0 +1,417 @@
+#!/usr/local/bin/php -q
+<?
+
+require '../inc/lib.inc';
+require '../inc/getopt.inc';
+
+function usage() 
+{
+	die("
+Usage: import [-v] [-a] [-d] [-N] [file]
+
+The input file or standard input is assumed to be a BIND8 named.conf file.
+
+Options:
+	-a	Put a copy of the zone file into the annotation for each
+		zone loaded.
+	-v	Verbose operation.
+	-d 	delete zone if it already exists
+	-F	import file name from named.conf (do not use subdirectories in the file names!)
+	-h	Print this text.
+");
+}
+
+
+# Return a text describing problems with the current database, or 
+# an empty string to signify all clear.
+function verify_database()
+{
+	global $MYSQL_DB;
+	$tables['annotations'] = 1;
+	$tables['blackboard'] = 1;
+	$tables['deleted_domains'] = 1;
+	$tables['records'] = 1;
+	$tables['servers'] = 1;
+	$tables['typesort'] = 1;
+	$tables['zones'] = 1;
+	# Check if the tables are in the database
+	$rid = mysql_list_tables($MYSQL_DB);
+	for ($i=0; $i < mysql_num_rows($rid); $i++) {
+		$tables[mysql_tablename($rid, $i)] = 0;
+	}
+	mysql_free_result($rid);
+	while ($table = each($tables)) {
+		if ($table['value'])
+			$errors .= "ERROR: Table '".$table['key']."' is missing from the database.\n";
+	}
+	# Make sure that at least one BIND server exists
+	$rid = sql_query("SELECT * FROM servers");
+	if (!mysql_num_rows($rid))
+		$errors .= "ERROR: No BIND servers defined in the database.\n";
+	mysql_free_result($rid);
+	# Check that settings are available
+	if (!strlen($errors))
+		$errors .= database_state();
+	# Done
+	return $errors;
+}
+
+# Return the next token from the $input filehandle
+function next_conf_token($input)
+{
+	global $conf_input_buffer;
+	global $opts;
+	$TRE = '/([-\/\w\.]+|"[^"]*"|\{|\}|;)/';
+	$srch = array("/#.*$/", "/\/\/.*$/", "/'/");
+	$repl = array('', '', '"');
+	while (!preg_match($TRE, $conf_input_buffer, $matches)) {
+		if (feof($input))
+			return 0;
+		$tmp = fgets($input, 1024);
+		$conf_input_buffer = preg_replace($srch, $repl, $tmp);
+	}
+	$pos = strpos($conf_input_buffer, $matches[1]) + strlen($matches[1]);
+	$newlen = strlen($conf_input_buffer) - $pos;
+	$conf_input_buffer = substr($conf_input_buffer, $pos, $newlen);
+	return $matches[1];
+}
+
+function load_zone($zname, $file, $zid, $zone, $master, $opts)
+{
+	global $SERVERS, $DEFAULT_PTR_DOMAIN;
+	$origin = "";
+	if ($opts['v'])
+		print "Loading '$file' for zone($zone)\n";
+	if (!($zonefile = fopen($file, "r"))) {
+		print "ERROR: Cannot open '$file'\n";
+		return;
+	}
+	# Extract the (usually multi-line) SOA
+	while (!feof($zonefile) && !$break) {
+		$raw = fgets($zonefile, 1024);
+		if ($opts['a'])
+			$text .= $raw;
+		$cooked = preg_replace('/;.*/', '', chop($raw));
+		$fields = preg_split('/\s+/', $cooked, 0, PREG_SPLIT_NO_EMPTY);
+		if (!count($fields))
+			continue;
+		if (strtoupper($fields[0]) == '$TTL') {
+			# Get the default TTL spec
+			$ttl = $fields[1];
+			continue;
+		}		
+		if (strtoupper($fields[0]) == '$ORIGIN') {
+			# Get origin
+			$origin = $fields[1];
+			continue;
+		}		
+		
+		while ($field = each($fields)) {
+			$soa[] = $field[1];
+		}
+		if (preg_match('/\)/', $cooked))
+			break;
+	}
+	$mname = $soa[3];
+	if ( $soa[6] != '(' ) {
+	    $serial = $soa[6];
+	    $refresh = ttl_to_seconds($soa[7]);
+	    $retry = ttl_to_seconds($soa[8]);
+	    $expire = ttl_to_seconds($soa[9]);
+	    $ttl = ttl_to_seconds($soa[10]);
+	}
+	else {
+	    $serial = $soa[7];
+	    $refresh = ttl_to_seconds($soa[8]);
+	    $retry = ttl_to_seconds($soa[9]);
+	    $expire = ttl_to_seconds($soa[10]);
+	    $ttl = ttl_to_seconds($soa[11]);
+	}
+	if ($soa[0] == '@') {
+		$lastdomain = $origin;
+	} else {
+		$lastdomain = $soa[0];
+	}
+	if (!preg_match('/\.$/', $lastdomain) && $origin) {
+		if ($origin == '.') {
+			$lastdomain = $lastdomain.'.';
+		} else {
+			$lastdomain = $lastdomain.'.'.$origin;
+		}
+	}
+	$parsecount++;
+	$insertcount++;
+	if (strtoupper($lastdomain) == strtoupper("$zone."))
+		$lastdomain = "@";
+	insert_record($zid, $lastdomain, $ttl, 'SOA', '', '', 0);
+	if ( $opt['F'])
+		update_zone($zid, $serial, $refresh, $retry, $expire, $master);	
+	else
+		update_zone($zid, $serial, $refresh, $retry, $expire, $master);
+	# Get the rest
+	while (!feof($zonefile) && !$break) {
+		$raw = fgets($zonefile, 1024);
+		if ($opts['a'])
+			$text .= $raw;
+		$cooked = preg_replace('/;.*/', '', chop($raw));
+		$fields = preg_split('/\s+/', $cooked);
+		if (!strlen(join('', $fields)))	# skip empty lines
+			continue;
+		if (strtoupper($fields[0]) == '$TTL') {
+			# Get the default TTL spec
+			$ttl = $fields[1];
+			continue;
+		}
+		if (strtoupper($fields[0]) == '$ORIGIN') {
+			# Get origin
+			$origin = $fields[1];
+			if (strtoupper($origin) == strtoupper("$zone.")) {
+				$origin = "";
+			} else {
+				$origin = preg_replace("/.$zone\.$/i",'', $origin);
+			}
+			continue;
+		}		
+		
+		if (preg_match('/^\s/', $cooked)) {
+			# record starts with a whitespace
+			# more records for the previous domain
+			$domain = $lastdomain;
+			array_shift($fields); # Loose the empty field
+		} else {
+			$domain = array_shift($fields);
+			if ($domain == '@') {
+				$domain = $origin;
+			}	
+		
+			if (!preg_match('/\.$/', $domain) && $origin) {
+				$domain = $domain.'.'.$origin;
+			}
+		} 
+			
+		# Check for optional per-RR TTL spec
+		$rrttl = ttl_to_seconds($fields[0]);
+		if (!strcasecmp(seconds_to_ttl($rrttl), $fields[0])) {
+			# Explicit per-RR TTL
+			# the ttl is specified with wdms
+			array_shift($fields); # loose the ttl field
+		} elseif (preg_match('/^\d+$/', $fields[0])) {
+			# Explicit per-RR TTL
+			# the ttl is specified as seconds
+			$rrttl = array_shift($fields);
+		} else {
+			# Implicit TTL for this RR
+			$rrttl = $ttl;
+		}
+
+		if (strtoupper($fields[0]) == 'IN') {
+			# Get rid of the optional 'IN'
+			array_shift($fields);
+		}
+		$type = strtoupper(array_shift($fields));
+		if ($type == 'MX')
+			$pref = array_shift($fields);
+		else
+			$pref = '';
+		$data = ltrim(rtrim(join(' ', $fields)));
+		if ($type == 'TXT')
+			$data = preg_replace('/"/', '', $data);
+		$parsecount++;
+		$lastdomain = $domain;
+		# Skip NS records which will be autogenerated in zonefiles
+		# output from mkzonefile
+		if ($type == 'NS' && $SERVERS[$data]) {
+			continue;
+		}
+		# Skip PTR records which will be autogenerated in zonefiles
+		# output from mkzonefile
+		if (preg_match("/\.in-addr.arpa\.?$/", $zone) 
+		&& $type == 'PTR' 
+		&& preg_match("/^host-\d+-\d+-\d+-$domain\.$DEFAULT_PTR_DOMAIN/", $data)) {
+			continue;
+		}
+		$w = validate_record($zid, $domain, $rrttl, $type, $pref, $data);
+		if ($w) {
+			print "WARNING: Invalid record: '$cooked', $w\n";
+			print " zone '$zone' domain '$domain' ttl '$rrttl'";
+			print " type '$type' pref '$pref' data '$data'\n";
+			continue;
+		}
+		insert_record($zid, $domain, $rrttl, $type, $pref, $data, 0);
+		$insertcount++;
+	}
+	fclose($zonefile);
+	$comment = preg_replace("/'/", '"', $text);
+	if ($opts['a']) {
+		$query = "INSERT INTO annotations (zone, descr) VALUES($zid, '$comment')";
+		sql_query($query);
+	}
+	if ($opts['v'])
+		print "Imported $insertcount of $parsecount resource records.\n";
+	return $count;
+}
+
+function parse_type($input, &$type)
+{
+	$type = strtolower(next_conf_token($input));
+	if ($type != "master" && $type != "slave") {
+		print "Warning: misplaced token '$type' in zone '$zone'\n";
+		return 0;
+	}
+	next_conf_token($input); # Skip the trailing semicolon
+	return 1;
+}
+
+function parse_file($input, &$file)
+{
+	$tmp = next_conf_token($input);
+	$file = preg_replace('/"/', '', $tmp);
+	next_conf_token($input);	# Skip trailing semicolon
+	return 1;
+}
+
+function parse_masters($input, &$masters, $type)
+{
+	if ($type != "slave") {
+		print "Warning: Masters section in '$zone', but type is '$type'\n";
+		return 0;
+	}
+	next_conf_token($input); # Skip the leading brace
+	$masters = strtolower(next_conf_token($input));
+	next_conf_token($input); # Skip the trailing brace
+	next_conf_token($input); # Skip the trailing semicolon
+	print "masters = '$masters'\n";
+	return 1;
+}
+
+function parse_zone($input, $opts)
+{
+	$token = strtolower(next_conf_token($input));
+	if ($token == '"."')
+		# skip the root server cache definition
+		return;
+	$zone = preg_replace('/"/', '', $token);
+	if ($opts['v'])
+		print "Found zone: '$zone'\n";
+	next_conf_token($input); # skip the leading brace
+	$braces = 1;
+	$options = "";
+	while ($braces > 0) {
+		switch ($token = strtolower(next_conf_token($input))) {
+		case 'type';
+			$in_options = 0;
+			if (!parse_type($input, $type))
+				return;
+			break;
+		case 'file';
+			$in_options = 0;
+			if (!parse_file($input, $file))
+				return;
+			break;
+		case 'masters';
+			$in_options = 0;
+			if (!parse_masters($input, $masters, $type))
+				return;
+			break;
+		case '{':
+			$braces++;
+			break;
+		case '}':
+			$braces--;
+			if ($braces == 0)
+				$in_options = 0;
+			break;
+		default:
+			$in_options = 1;
+			break;
+#		default:
+#			print "Warning: misplaced '$token' in $zone, expected 'file', 'type' or 'masters'\n";
+		}
+		if ($in_options) {
+			if ($options && $token != ';' )
+				$options .= " ";
+			$options .= $token;
+			if ( $token == "{" || $token == ';') {
+				$options .= "\n";
+			}
+		}
+	}
+	next_conf_token(input); # Skip the trailing semicolon
+	if (!$type
+	|| (($type == "master") && !$file)
+	|| (($type == "slave") && !master)) {
+		print "Warning: Cannot parse '$zone'\n";
+		return;
+	}
+	if ($info = get_named_zone($zone)) {
+		print "Warning: '$zone' already exists in the database. options = $options\n";
+		if (!$opts['d'])
+			return;
+		$id = $info['id'];
+		del_zone($id);				        
+	}
+	if ( $zone == "0.0.127.in-addr.arpa" ) {
+		print "******************************************************************************************************\n";
+		print "ATTENTION. Zone 0.0.127.in-addr.arpa imported. Be sure that this zone was not defined in the template!\n";
+		print "Delete it from the data base if you do want to keep it in the template\n";
+		print "******************************************************************************************************\n";
+	}		
+	if ($opts['v'])
+		print "Adding zone '$zone', master = '$master'\n";
+	#
+	# zone_type = '' as function can recognize it automatically.
+	#
+	$zid = add_domain($zone, $masters, '', $options);
+	sql_query("DELETE FROM records WHERE zone = $zid");
+	if ($type == "master") 
+		$count = load_zone($zone, $file, $zid, $zone, $master, $opts);
+	if ($opts['v'])
+		print "Loaded '$zone' options=$options\n\n";
+}
+
+#
+# MAIN
+#
+# Parse command line and initialize
+
+set_time_limit(0);
+$opts = getopts($argv, "ahvF");
+if ($opts['h'])
+	usage();
+
+if ($opts['v'])
+	print "Checking database for readyness.\n";
+if ($err = verify_database()) {
+	print "Aborting due to the following errors:\n";
+	print "$err\n";
+	exit();
+}
+if ($opts['v'])
+	print "OK\n";
+
+$rid = sql_query("SELECT hostname FROM servers WHERE mknsrec");
+if ($opts['v'])
+	print "Found ".mysql_num_rows($rid)." servers in the database with NS records.\n";
+while ($server = mysql_fetch_row($rid)) {
+	$SERVERS[$server[0]."."] = 1;
+}
+mysql_free_result($rid);
+
+if (count($argv)) {
+	if ($opts['v'])
+		print "Opening $argv[0] ...\n";
+	$filename = $argv[0];
+	chdir(dirname($filename));
+} else {
+	if ($opts['v'])
+		print "Opening standard input ...\n";
+	$filename = "php://stdin";
+}
+$input = fopen($filename, "r");
+
+while ($token = next_conf_token($input)) {
+	if ($token == "zone")
+		parse_zone($input, $opts);
+}
+
+?>

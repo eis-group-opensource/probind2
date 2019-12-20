@@ -1,0 +1,32 @@
+<?
+
+$TOP = "/usr/local/bind-web/probind";
+$TMP="/tmp";
+$MYSQL_HOST = "localhost";
+$MYSQL_DB = "named";
+$MYSQL_USER = "root";
+$MYSQL_PASSWD = "*******"; // Set up password here
+$NAME_SPACE = "TEST";
+// moved into the settings // $SHOW_ALL= 1; // show all zones on the first page
+// moved into the settings // $TWO_STEP_UPDATE = 1; // Do update in 2 steps - 1) Sync and 2) Reconfig
+// moved into the settings // $SLAVE_ON_SLAVES = 1; // Allocate slave zones on ALL servers, no only on masters
+
+$DEFAULT_PUSH = "push.remote";
+$DEFAULT_DIR  = "/var/named9";
+$DEFAULT_TMPL = "v9-master";
+$CVSROOT="";     // no CVS on the current stage
+
+// Directories - templates, HOSTS and LOGS
+$TEMPL_DIR = "$TOP/templates";
+$HOST_DIR =  "$TOP/HOSTS";
+$LOG_DIR  =  "$TOP/LOGS";
+
+// Access to the HOSTS and LOGS directories from the web
+$HOST_URL = "HOSTS/";
+$LOG_URL  = "LOGS/";
+// We do not want this to appear on the screen so disable notice messages
+error_reporting(E_ERROR|E_WARNING|E_PARSE);
+// This date used to generate serial number in SOA record
+date_default_timezone_set('America/Los_Angeles');
+
+?>

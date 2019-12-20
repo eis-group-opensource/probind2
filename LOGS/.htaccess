@@ -1,0 +1,8 @@
+#
+IndexOptions FancyIndexing
+IndexOrderDefault descending date
+IndexIgnore .* CVS
+AddType text/plain .log
+HeaderName .header.html
+ReadmeName .footer.html
+

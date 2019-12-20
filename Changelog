@@ -1,0 +1,69 @@
+
+Version 2.2.1
+==============
+
+Released 20-Dec-2019 by EIS Group . System moved to github (was on source forge).
+
+Version numbers are formed this way now:
+2.2 - Database version
+.1 - GUI version for this database
+So 2.2.1 - database 2.2 and gui .1 (after initial .0)
+
+DATABASE:
+- comments and options size changed
+- information about 'who created / modify record' added
+- new zone types added
+  - forward
+  - stub
+  - static (static stub)
+- bind version added
+- sql files used to crate databae adapted to the current MYSQL,
+
+GUI:
+- Page size added in zone editor, and it supports multi page edits now
+- Filter added into zone editor
+- Comment added into the search
+- System rearranged so that we can have now 3 roles 
+   - read - can view DNS zones and search
+   - dns - can edit zones (records) and push updates
+   - dnsadm - can create/delete zones, reconfigure ProBIND and so on.
+
+Files:
+- etc/convert_002.sql added to conver from 2.1.0 to 2.2
+- etc/mktables_22.sql - to create 2.2 tables from scratch
+- inc/brzones.inc - has now all common functions for brzone
+- wrzone.php - RR updates and zone updates moved into it to allow better access control 
+  (brzones.php do not change data)
+
+Version 2.0.0
+==============
+- Comments added to the records
+- Zone edit feature added
+- Overall design improved, many new improvements
+
+
+Version 1.0.1
+=============
+
+Released 15-feb-2001, mostly a bugfix release
+
+- Updated the INSTALL document with some badly needed troubleshooting tips.
+- Updated the TODO list with a few new ideas
+- Added the tools/full-report.php and bin/domain-report scripts, updated 
+  tools/toolmenu and manual.html to match.
+- Added the sbin/copy-local update script
+- Fixed a bug in tools/ip-ranges which could cause incomplete lists to
+  be displayed.
+- Fixed a missing </BODY></HTML> in addzone.php and update.php
+- Fixed some marginal SQL SELECT syntax in several places
+- Fixed a bad mysql call in inc/lib.php
+- Fixed a bad library call in addzone.php
+- Changed addzone.php to allow bulk zone creation
+- Made bin/mknamed.conf work in the absence of slave servers
+- Fixed bin/mkzonefile to add a missing TTL in zone files
+- Added an IP number check to inc/lib.inc:validate_record
+
+Version 1.0
+===========
+
+Released 19-dec-2000

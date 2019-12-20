@@ -1,0 +1,364 @@
+ProBIND Installation Guide
+Document author:Alexei RoudnevDate:12 Dec 2019Version:2.2Status:Release
+
+Table of content
+* Introduction
+* 0 Backup
+* 1 Prerequisites 
+o 1.2 Configure PHP
+* 2 Install the ProBIND software 
+o 2.1 Unpack ProBIND system and set up apache server
+o 2.2 Create work directories
+o 2.3 MySQL configuration
+o 2.4 Edit inc/config.inc
+o 2.5 Database initialization
+o 2.6 Check (and edit if necessary) program names in scripts
+o 2.6 Configure .htaccess and tools/.htaccess files.
+* 3 Configure the ProBIND software 
+o 3.1 Settings
+o 3.2 Describing your BIND servers
+o 3.2 Preparing remote name servers, and 'rsync' setting
+o 4 Start using ProBIND
+o 4.1 Using the import script
+o 4.2 Update the BIND servers
+* 5 Troubleshooting 
+o 5.1 Web server and php configuration
+o 5.2 Pushing updates failed on the first (update) step, even when you use 'nop' script.
+o 5.3 Problems with 'PUSH' and 'RECONFIG' steps of the update
+o 5.4 Problems with different TOOLS or with TEST buttons of the UPDATE screen
+o 5.5 Table 'SQL9a3a_0' is full
+* APPENDIX I. References:
+ 
+Introduction
+This is a step-by-step procedure for getting started with ProBIND. In the examples, I will assume that your Apache document root is in /www/htdocs, and that the stand-alone PHP interpreter is installed as /usr/local/bin/php 
+0 Backup
+Before you do anything to an actual, live DNS server, be sure that you have a usable backup of the configuration and zone files! 
+Release notes
+This manual is slightly outdated. System was used in this configuration:
+-      FreeBSD 10.3
+-      Mysql 5.5
+-      PHP 5.6
+-      Perl 5.24
+-      p5-Net-DNS-1.14
+-      apache2.4
+ 
+It do not have much dependencies of these components so can be easily adapted to other mysql, php and apache., perl is used ONLY in testing module (green test buttons).
+ 
+1 Prerequisites
+Make sure that you have the following software installed (most of which is included in recent distributions of Linux): 
+* mysql-5 or similar
+* php-5.6 or later (apache module and stand alone interpreter)
+* apache 
+* perl-5 or later for DNS test function (only)
+* Net::DNS-0.12 or later  (perl mmodule for DNS test function)
+* openssh (optional) 
+The Net::DNS perl module is available from CPAN, or from this URL: http://www.perl.com/CPAN/authors/id/MFUHR/Net-DNS-0.12.tar.gz 
+The apache server must have the mysql and PHP modules available. 
+The only unusual bit about these packages, is that PHP must be installed _both_ as an Apache module, and as a CGI interpreter, i.e. as a stand- alone interpreter. 
+1.1     Installing stand-alone PHP4
+(Ignore it for other versions)
+Download the PHP4 sources from http://www.php.net/mirrors.php. Unpack the tarball somewhere, e.g. /home/your/src/php. Change to this directory. Then execute these commands:
+  
+./configure --with-mysq
+
+ make
+
+ make install 
+1.2 Configure PHP
+ 
+Configure php, for the configuration, verify /usr/local/etc/php.ini,
+/usr/local/etc/php.standalone/php.ini files (names depends of your php version),
+and set up variables if it is version is 4.2.3 or bigger:
+
+
+
+
+   
+register_globals = On
+register_argc_argv = On
+
+
+
+
+
+
+
+Modern php have different php.ini files for the php module and standalone php interpreter, so be sure to configure both module and interpreter. 
+2 Install the ProBIND software
+2.1 Unpack ProBIND system and set up apache server
+Unpack the ProBIND tarball somewhere that is reachable by your apache server. Usually, this would be in a directory in the document root for your Apache installation, e.g. /www/htdocs/probind. Create this directory.
+I recommend to use '/var/PROBIND/' directory, and create a symbolic link into this directory from your apache home directory. If you plan to use ProBIND for a few different name spaces, create a subdirectory (for example, /var/PROBIND/intdns and /var/PROBIND/extdns), and unpack ProBIND into each of them. Use symlinks, or configure http daemon using <DIRECTORY> operator. 
+In any case, you must have url pointing to the home directory of ProBIND, one for every of your name spaces, for example:
+* https://your_host/probind/intdns
+* https://your_host/probind/extdns
+Or, if you have single name space and no https:
+* http://you_host/probind/
+
+
+If you created a few different name directories for the different name spaces, move content of 'parent' directory into the parent level of your ProBIND and edit  html files in it:
+cp parent/* ..
+vi ../menu.html 
+This directory contains a simple html page, and you can write your own, if you wish.
+I recommend using a separate apache server, running in https mode on separate port, for all administrative functions, and run it as a special user (for example, 'monitor'). It makes configuration much simpler. If you have installed 'snmpstat' monitoring system, use apache running in this system - it already has all necessary settings and authentications.
+In any case, apache server should be run as a special user with existing home directory and existing shell, to allow different configuration scripts to work. You can experiment with standard apache installation, which runs as 'nobody', or run apache in a jail, but be sure that you will be able to configure 'rsync' and 'ssh' for remote access to the named@name_servers without the password.
+2.2 Create work directories
+
+Now create working directories for configured host files (HOSTS) and log files (LOGS) (you can use symlinks if you wish to use different disks for the ProBIND and it's working files). Make this directory writable for your apache server and scripts. For example, if you run 'httpd' as a user 'httpd', you should run:
+ 
+mkdir HOSTS
+mkdir LOGS
+chown httpd HOSTS LOGShttp server must support Indexing in these directories. If you are not sure how to do it, create .htaccess file in HOME directory:
+ 
+cat > HOSTS/.htaccess
+
+Options Indexes
+
+FancyIndexing on
+
+^D
+
+cat > LOGS/.htaccess
+
+Options Indexes
+
+FancyIndexing on
+
+^D 
+2.3 MySQL configuration
+ 
+Now you must create a MySQL database instance. The name of the database instance is not important, so pick something descriptive, e.g. 'intdns' or 'extdns'. You should also create a MySQL user for ProBIND.
+  
+mysql -u root -p
+
+Enter password:
+
+mysql>create database intdns;
+
+mysql>quit 
+NB: There is no need to run the MySQL database and the Apache server
+on the same host.
+It is recommended to use Windows GUI for MySQL, instead of command line 'mysql' program.
+If you want to maintain a few name spaces, create different databases for all name spaces.
+2.4 Edit inc/config.inc
+ 
+The inc/config.inc file is a mini PHP script, which enables ProBIND to
+find its way around your installation. An example of config.inc is
+provided in the tarball. It contains few settings, which you must edit
+to reflect your installation:
+  
+<?
+
+$TOP = "/var/PROBIND/intdns";
+$TMP="/tmp";
+$MYSQL_HOST = "localhost";
+$MYSQL_DB = "named";
+$MYSQL_USER = "probind";
+$MYSQL_PASSWD = "*******"; // Set up password here
+$NAME_SPACE = "TEST";
+
+$DEFAULT_PUSH = "push.remote";
+$DEFAULT_DIR  = "/var/named9";
+$DEFAULT_TMPL = "v9-master";
+
+// Directories - templates, HOSTS and LOGS
+$TEMPL_DIR = "$TOP/templates";
+$HOST_DIR =  "$TOP/HOSTS";
+$LOG_DIR  =  "$TOP/LOGS";
+
+// Access to the HOSTS and LOGS directories from the web, relative to the current directory
+$HOST_URL = "HOSTS/";
+$LOG_URL  = "LOGS/";
+
+?>
+
+Edit variables:
+* $TOP - full name of the probind directory. If you install a few different name spaces, each will have it's own name;
+* $MYSQL_DB - data base name (see previous step);
+* $MYSQL_USER and $MYSQL_PASSWD - user and password for mysql access;
+* $NAME_SPACE - name space name, as it will be shown on the screen. If you create a few name spaces, use the same names and you used in the root level menu.
+* $DEFAULT_* - defaults for the name servers; I recommend do not change it;
+* $TEMPL_DIR - name server templates; change it only if you are going to use non standard templates and name server configurations;
+* $HOST_DIR - directory created to keep all hosts configurations (writable by apache php);
+* $LOG_DIR - directory for the log files (writable by apache php).
+* $HOST_URL and $LOG_URL - relative names for http access (do not change).
+2.5 Database initialization
+Then load the etc/mktables.sql file into the MySQL database you just create
+mysql -u probind -p intdns < etc/mktables2.2.sql
+
+Enter password: 
+* probind - $MYSQL_USER
+* intdns - $MYSQL_DB
+ For updating from version 2.1, run
+mysql -u probind -p intdns < etc/convert_002.sql
+ 
+This concludes basic installation, you should now be able to open the web interface in a browser. The database is still empty though. In the next phase, you create the settings for further operations.
+ 
+ 
+2.6 Check (and edit if necessary) program names in scripts
+Run:
+grep perl */*
+
+  
+
+grep bash */* 
+and verify if your system has perl and bash on the proper place; edit scripts or set up symlink if necessary.
+ 
+2.6 Configure .htaccess and tools/.htaccess files.
+ 
+By default, accesses require group 'dns' and ProBIND configuration (including cleaning locks) require dnsadm group; change .htaccess and toosl/.htaccess if you need other access rules.
+ProBIND uses apache authentication by default. Check .htaccess files in the ProBIND directory and tools subdirectory, and edit them if you need another access poli4cy. I recommend turning authentication off on the installation stage, and then turning it back and restoring authentication after you have all components up and running.
+ 
+3 Configure the ProBIND software
+Open the ProBIND web interface. If you installed ProBIND directly in the Apache document root, open your browser on this URL: http://yourhost/probind (or https://yourhost/probind/intdns, if you use https and few name spaces).
+You must see a ProBIND menu (read manual) . , with a message
+The database is not in an operational state. The following problems exist: 
+On this step, few errors are possible:
+* Unable to connect to the database - verify $MYSQL_USER, $MYSQL_PASSWORD and $MYSQL_HOST;
+* Database ... not found - verify $MYSQL_DB;
+* Numerous error messages are possible if you have incorrect $TOP variable;
+* What's cooking doc? I've never even <i>heard</i> about that HTTP method:- if you forget to configure register_globals = On and register_argc_argv = On
+*  You see php file instead of seen result of the script - php module was not configuring in apache. Follow php instructions to do it.
+If you can see ProBIND screen, and it is just saying that data base is not in the operational mode, go to the next step and configure ProBIND settings. This step it is safe - you will not break any DNS server until you configure 'rsync' and create working directories on the servers, so you can start with real information. Do not use existing directory names - it is much easier to create a new named directory and then, after all zones are imported and rsync is configured, just to symlink /etc/named.conf to the new place. 
+3.1 Settings
+Click the 'Misc. tools' link in the top frame. Then select 'Settings' in the sub-menu that appears. Fill out the fields according to your needs and click the 'Update settings' button. See manual - settings for additional details of the setting.
+3.2 Describing your BIND servers
+Now you must tell the database about your BIND servers. Click 'Servers' on the submenu. Add a description for each server you wish to manage through the ProBIND interface. For each server, you must specify its hostname, an IP number and some supplemental information that ProBIND needs: If the server is used as a master or slave server, whether it should receive updates from ProBIND, and whether the server should appear in NS records for the domains managed by ProBIND. The latter two settings makes it possible to use ProBIND e.g. while you are
+migrating a BIND server from one host to another, or deals with a dual-interface server that must receive updates through one interface, but speaks with the outside world on another.
+Three fields in the server description are used when delivering an update to the server. 
+* The first field tells ProBIND where the zonefiles exist on the server, e.g. /var/named.
+NB: ProBIND expects that the named.conf file exists in the same directory as the zone files. You may have to create a symlink in /etc to /var/named/named.conf to alleviate this. 
+
+Also NB: All files in this directory are subject to being completely rewritten/overwritten/deleted by ProBIND. If you have some interesting hacks in your named.conf, be sure to put them into the ProBIND template file before you update the BIND server. You can use 'Server options' and macro $OPTIONS in the template file, as well.
+You can not set up server options on this step; to configure them, open server after you created it and edits options, then click 'Update' button.
+ 
+* You must also specify a template directory for the name server. It is one of the directories from $TEMPL_DIR. You can copy one of pre-defined template directories and create your own templates. 'named.tmpl' file is a template for 'named.conf', with the macros
+o $OPTIONS - server options;
+o $ZONE_DIR - zone directory;
+o $ZONE_DEFINITIONS - replaced by the zone definitions generated by the system;
+* Finally, you must specify a script that will copy zonefiles to the BIND server, and then restart the BIND server. This script must exist in the sbin directory of ProBIND installation. See the push.remote script included in the distribution, it is based on openssh for secure access to the BIND server host. If you want to try out ProBIND without risk to your servers, specify the included 'nop' script in this field.
+See manual - serves for more details.
+3.2 Preparing remote name servers, and 'rsync' setting
+If (most likely) you use push.remote script, you need to configure ssh to work without password for the proper 'rsync' work. By default, push.remote use 'ssh' (or ssh2, if exists) to the user 'named' on the host by its IP address. Such steps are recommended:
+ 
+1.      On the remote name server - Create user 'named' for the named control functions on the name server; .
+2.      On the remote name server - Create a directory for the 'named' configuration (I recommend /var/named9) and make a link
+ ln -s /var/named9/named.conf /etc/named.conf          
+4. If you are doing it on the running name server, postpone this step until you have rsync running, and all zones imported and configured.
+5.      On the remote name server Sun solaris - check that init.d scripts run your (right) named server instead of (if it exists) old ugly 'in.named' server. Other system - set up proper script.
+6.      On the remote name server - create '~named/.ssh' (or ~named/.ssh2) directory (where ~named - home directory of the user 'named' and root directory for the named server), and configure ssh access from ( httpd user @ ProBind server) to ( named @ remote server)  without the password. I recommend to use 'public key' authentication, create proper .ssh directory and then copy it into all remote '/var/named9' directories so that, to set up new name server, you should only create a use and copy this directory.
+1.      If your ProBIND system use 'openssh':
+1) generate .ssh/id_dsa, id_dsa.pub and id_dsa_ssh2.pub
+2) copy id_dsa.pub into .ssh directory on the host running 'named' if it use 'openssh';
+3) copy id_dsa_ssh2.pub into .ssh2 directory on the host running 'named' if it use commercial 'ssh', and edit 'authorization' file in .ssh2 directory.
+2.       Consult manual in all other cases;
+7.      login locally as httpd user (user running php scripts for ProBIND), chdir to probind directory, probind, and try to run 'ssh -l named HOST rsync' where HOST is ip address of the  host running 'named'; confirm all prompts if necessary. In the result, this command should not ask any passwords or confirmations.
+8.      You can configure 'host' based login method, which are a little more complicated, consult manuals.
+9.      If you need to change a script, copy sbin/push.rsync to the new script (in sbin directory) and edit it. Do not proceed with ProBIND until you can run test 'ssh' command without the password. You can set uncomment test 'ssh' command in the push.remote script, if necessary, and start with it, but I do not recommend to do it until you can run 'ssh -l named HOST  who' (or 'ssh ... rsync') manually.
+ 
+REMEMBER - to run a script, ProBIND (which works with the user id of your http server) need
+to run 'rsync', and 'rsync' in turn needs to run 'ssh' without the password. So, configure 'ssh'
+first and check everything manually.
+ 
+4 Start using ProBIND
+At this point you should click 'Browse domains' and flesh out the TEMPLATE pseudo-domain. If you have some data, which should apply to all your domains, add it now. This might include TXT or MX records which all your domains should contain.
+ 
+NB: DO NOT ADD ANY NS RECORDS TO YOUR TEMPLATE! NS records for your servers are automatically generated by ProBIND. You control how the NS records are generated when you describe your BIND servers.
+ 
+You are now ready to populate the database. You can do this manually, or you can use the etc/import script to load an existing BIND configuration with zone files into the database.
+NB. Remember - you do not make any real changes until you click 'Update' button, and after it, you do not apply changes to the real name server until you run 'Reconfigure' step of update and have remote 'rndc' configured properly. 
+4.1 Using the import script
+You probably already have a BIND installation that you want to streamline the management of. Otherwise you would not be looking at this program. The good news is that there is a small PHP script included with ProBIND, etc/import, which automates the task of converting BIND named.conf and zone files to ProBIND database entries.
+If you do have a fancy named configuration and want to move it into ProBIND, you can create a new template directory, specific for your name server, copy all configuration files into it, then import zones into the system and create a named.tmpl file from named.conf file by replacing all imported zone information to the macro $ZONE_DEFINITIONS. If you have as simple configuration, it can be easy to use standard 'named9' template and use configurable options to set up specific features of the name server. You can make a few experiments, but I recommend to use a standard configuration - in most cases, fancy named.conf file means bad design and bad reliability of your system. Do not forget to copy 'reconfig.sh' script into the new template directory.
+ 
+To import your BIND configuration, copy named.conf and your entire zone files into a separate on your ProBIND host.
+Then execute this command:
+# $PROBIND is your ProBIND directory. It is important because import search for the
+
+# configuration here .
+
+# $IMPORT_DIR is a directory where you copy named configuration files and zones.
+
+# It must be _FULL NAME_, not a relative name.
+
+# You can use exact name or set up a variable
+
+cd $PROBIND
+
+etc/import -v [-a] [-d] $IMPORT_DIR/named.conf | tee import.log 
+Options:   -a means _write out old zone content as an annotation; -d means _replace zone definition if it exists in the data base_.
+Note the $IMPOPT_DIR prefix on the filename. Due to a peculiarity of PHP as a stand-alone interpreter, it is necessary to specify the full path to the source file.
+Review the import log and the database carefully. You do not want to update your BIND servers, until your are confident that the database accurately represents your DNS data. If you have a lot of comments in your zone files, run import with the -a flag too (i.e. import -av $IMPORT_DIR/named.conf). That way the unaltered text of a zone file is put into the ProBIND database as a comment text for the zone.
+See manual - import for additional details.
+ 
+4.2 Update the BIND servers
+When you are satisfied with the contents, click the 'Update' link to generate the zone files and distribute them to the servers. You can inspect the zone files generated in the tmp/master directory in the ProBIND installation. If you set up 2 step update, you can inspect log files after a first 2 steps of update (generate files and rsync them) and then run 3-th step (reconfigure). You can manually disable every step, or remove some servers from the update.
+From the very beginning, you can need to push files into the server before running starting named server. I recommend such sequence in installation new server:
+1.     Set up named daemon and 'named' user on the remote system, create named directory (/var/named9) writable for 'named', and copy '.ssh' (or .ssh2)  directory into it. Verify remote access (ssh named@IP_ADDRESS who) from the user running ProBIND (script in apache);
+2.     Configure server in ProBIND, and run 'update' (all  3 steps). Update must succeed on the first stage (update and push) but fail on the third stage (reconfigure) because you have not running named yet (or you are running another named).
+3.     Now, verify content of '/var/named9' directory on the remote server, create (if necessary) symbolic link (rm /etc/named.conf; ln -s /var/named9/named.conf /etc/named.conf), and start named daemon on this system. Be sure that named daemon started successfully;
+4.     Now, uncheck 'ignore' checkbox (which was checked automatically because system get an update error) on the 'update' screen and repeat update. It must succeed.
+5.     Now, try 'TEST' button and verify zones created on the remote server making requests (SOA request is enough).
+
+If you want to see what ProBIND would do to your servers, without actually letting it touch them, specify the "nop" update script in the BIND server descriptions. This will let ProBIND generate all the files it thinks are needed on your BIND server, but not actually copy them. You can examine the generated files in the tmp/master and tmp/slave directories.
+See manual - push for additional information.
+ 
+5 Troubleshooting
+ProBIND is a complex distributed system, and there are a lot of possibilities to make something wrong during installation. Fortunately, after you installed it first time and set up remote access, it is very easy to add new name servers, set up additional name spaces, change named versions and manage DNS information.  Below I describe most common problems and their solutions:
+5.1 Web server and php configuration
+* Can not get access to the ProBIND home page - by default, ProBIND uses base authentication. Check (or temporary remove) .htaccess and tools/.htaccess files.
+* You can see top menu, but see script content instead of server statistics on the frame below - it is likely that you have not php installed or php data type is not configured; consult php documentation.
+* Php reports that 'What's cooking doc?' - you did not configured variables register_globals = On and register_argc_argv = On for php module; check that php is not configured in safe mode;
+* ProBIND can not open data base - verify $TOP and $MYSQL_* variables in inc/config.inc file, and MySQL data base parameters;
+* import script does not work - verify register_globals = On and register_argc_argv = On for stand alone php; verify that you have specified full name of the named.conf file, verify that you have stand alone php interpreter installed;
+* You can not make setting or change an information - verify that MySQL user configured in ProBIND have full access to the data base.
+* When you add a server, system can not create server file in 'HOSTS' directory - verify that php script running in apache server have a write (create directory) permission in the HOSTS directory, and that 'HOSTS' directory does exists;
+* lock is reported - go to Tools -> Setting and click on the 'Clean lock' button.
+* you can not see a context of the server configuration directory (reference from the 'update' screen) - check that your have permission to make 'indexing' for the HOSTS directory, and that your apache server have .conf and .dns file extensions configured as a text files.
+5.2 Pushing updates failed on the first (update) step, even when you use 'nop' script.
+Using 'nop' script is a next step to debug a system - if updates does not work, change scripts to 'nop' and be sure that  you can run 'update' to the very end.
+* update can not write log file, or you can not see log file for the update - check that php script have a write permissions in LOGS and HOSTS directories. 
+* update can not generate named.conf file or zone files - check that you have stand alone php installed and configured (see above), and check permissions (see above).
+* update does not generate named.conf file when you use custom template directory - be sure that your directory have 'named.tmpl' template file, and that this file has all necessary macros. Then, 'update' server configuration checking up the box 'update from template files';
+5.3 Problems with 'PUSH' and 'RECONFIG' steps of the update
+The "push.rsync" script depends on ssh to copy files from your probind server to one or more BIND servers. This means that your web server userid must somehow be allowed to copy files to the name server userid on the BIND server, without password prompts.
+An example to illustrate this: ProBIND is installed under an Apache server running under userid nobody on host foo.example.com. BIND is running under userid root on host bar.example.com. The problem is that a very untrusted user (nobody@foo.example.com) needs to upload data to root@bar.example.com, and reload the name server. Additionally, SSH insists on having a home directory so it can keep a database of keys in ~/.ssh.
+There are several ways around this. I recommend::
+1a) Make apache on foo run under a more privileged user id (e.g. httpd, for example), or
+1b) Make $TOP/sbin/push setuid to a more privileged user id, or
+1c) Give the nobody user a home directory with write access
+(The least bad idea of these is probably 1a, but this depends a lot on circumstances.). By default, ProBIND is installed with named user on remote name servers (named should never be run as a root, from security point of view, so it is highly recommended), and use 'ssh' access without the password from the current apache user to the remote 'named' users (which means that user used for apache should have a home directory).
+2) Make this more privileged trusted by root on bar. This is as easy as appending the /root/.ssh/identity.pub file from foo to /root/.ssh/known_hosts on bar. (or id_dsa.pub to known_hosts2).
+3) Verify that you can ssh from httpd@foo to named@bar by ip address of 'bar' without being prompted for a password.
+ 
+if you can run first and second steps of update, but can not 'reconfig' the server, check logs (clicking on the 'logs' on the update window) and verify:
+* you used correct template - named8 for  bind8, and named9 for bind9;
+* or you have a correct 'reconfig'sh' file in the template and HOSTS/server_name directory;
+* remote system have ndc (for bind8) or rndc (for bind9) in available for this script;
+* push.rsync script have a proper shell name (#!/bin/sh );
+* for named9 only - rndc did not find any syntax errors in the generated named.conf file.
+5.4 Problems with different TOOLS or with TEST buttons of the UPDATE screen
+* verify that different scripts in 'bin' directory have a correct name for the 'perl' - by default, perl is expected as '/usr/bin/perl', not as 'usr/local/bin/perl'.
+* verify that you have perl package 'Net::DNS' installed.
+ 
+ 
+5.5 Table 'SQL9a3a_0' is full
+Your database has run out of temporary storage for executing a large query. This can happen in several places, but especially on the 'Tools' page. To solve4 this, either upgrade to Mysql 3.23, or set the big-tables option in /etc/my.cnf:
+
+[mysqld]
+big-tables
+APPENDIX I. References:
+1.     Internal liinks:
+1.     ProBIND2 Design and implementation.
+2.     ProBIND2 manual.
+2.     External links:
+1.      PHP scripting language;
+2.     Apache web server;
+3.     ISC Bind Name Server
+4.     Perl Scripting language
+5.      
+6.     Perl Net::DNS module
+7.     MySQL Data Base
+If you use FreeBSD, I recommend do not install components manually, but use ports (/usr/ports, see http://www.freebsd.org/ports/) 
+instead. 
+
+
